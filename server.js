@@ -3,9 +3,9 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
-const port = process.env.PORT || 8000; // Update with your desired port
+const port = 10000; // Update with your desired port
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
+const OPENAI_API_KEY = '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'; // Replace with your actual OpenAI API key
 
 // In-memory user database (for demo purposes)
 const users = [
@@ -35,9 +35,6 @@ const authenticateUser = (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };
-
-// Serve static files from the 'public' directory
-app.use(express.static('public'));
 
 // Test endpoint to check if the server is running
 app.get('/test', (req, res) => {

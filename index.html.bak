@@ -7,11 +7,11 @@
 <body>
     <div class="container">
         <h1>Math Problem Solver</h1>
-		
+
 		<!-- Login button to open the pop-up -->
         <button onclick="openLoginPopup()" id="login-btn" style="display:inline-block;">Login</button>
 		<button type="button" onclick="logout()" id="logout-btn" style="display:none;">Logout</button>
-		
+
         <!-- Math Problem Solver Section -->
         <div id="math-solver" style="display:none;">
 			<form id="problem-form">
@@ -23,7 +23,7 @@
 			<div id="result"></div>
         <div id="status"></div>
     </div>
-	
+
 	<!-- Login pop-up -->
     <div id="login-popup" class="login-popup">
         <h2>Login</h2>
@@ -45,16 +45,16 @@
         function closeLoginPopup() {
             document.getElementById('login-popup').style.display = 'none';
         }
-		
+
 		let isLoggedIn = false;
-	
+
 		function login() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            
+
             // Send credentials to the server for validation
-            fetch('./login', {
+            fetch('http://localhost:8000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +84,7 @@
                 alert('An error occurred during login');
             });
         }
-		
+
 		function logout() {
 			// Log out the user
 			isLoggedIn = false;
@@ -99,7 +99,7 @@
 			// Show the Login button
 			document.getElementById('login-btn').style.display = 'inline-block';
 		}
-	
+
         function submitProblem() {
             const input = document.getElementById('problem-input').value;
             const result = document.getElementById('result');
@@ -110,7 +110,7 @@
             // Display 'Calculation in progress' message
             status.innerHTML = 'Calculation in progress...';
 
-            fetch('./solve', {
+            fetch('http://localhost:8000/solve', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -139,7 +139,7 @@
             // Display 'Testing server' message
             status.innerHTML = 'Testing server...';
 
-            fetch('./test')
+            fetch('http://localhost:8000/test')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // This should log the actual object received from the server
