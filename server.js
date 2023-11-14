@@ -5,7 +5,7 @@ const axios = require('axios');
 const app = express();
 const port = 10000; // Update with your desired port
 
-const OPENAI_API_KEY = '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'; // Replace with your actual OpenAI API key
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
 
 // In-memory user database (for demo purposes)
 const users = [
@@ -23,6 +23,7 @@ const processResponse = (data) => {
 };
 
 app.use(cors());
+app.use(express.static('public'));
 app.use(express.json());
 
 // Middleware to check if the user is authenticated

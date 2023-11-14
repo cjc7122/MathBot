@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Math Problem Solver</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="./public/styles.css">
 </head>
 <body>
     <div class="container">
@@ -54,7 +54,7 @@
 
 
             // Send credentials to the server for validation
-            fetch('http://localhost:10000/login', {
+            fetch('https://mathbot-5zr7.onrender.com/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,7 +110,7 @@
             // Display 'Calculation in progress' message
             status.innerHTML = 'Calculation in progress...';
 
-            fetch('http://localhost:10000/solve', {
+            fetch('https://mathbot-5zr7.onrender.com/solve', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -139,7 +139,7 @@
             // Display 'Testing server' message
             status.innerHTML = 'Testing server...';
 
-            fetch('http://localhost:10000/test')
+            fetch('https://mathbot-5zr7.onrender.com/test')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // This should log the actual object received from the server
