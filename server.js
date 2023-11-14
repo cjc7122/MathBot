@@ -3,7 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
-const port = process.env.PORT || 10000; // Update with your desired port
+const port = process.env.PORT || 8000; // Update with your desired port
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
 
