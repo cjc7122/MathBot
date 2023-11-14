@@ -23,7 +23,6 @@ const processResponse = (data) => {
 };
 
 app.use(cors());
-app.use(express.static('public'));
 app.use(express.json());
 
 // Middleware to check if the user is authenticated
@@ -36,6 +35,8 @@ const authenticateUser = (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };
+
+app.use(express.static('public'));
 
 // Test endpoint to check if the server is running
 app.get('/test', (req, res) => {
