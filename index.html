@@ -54,7 +54,7 @@
 
             
             // Send credentials to the server for validation
-            fetch('http://localhost:8000/login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,7 +110,7 @@
             // Display 'Calculation in progress' message
             status.innerHTML = 'Calculation in progress...';
 
-            fetch('http://localhost:8000/solve', {
+            fetch('/solve', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -139,7 +139,7 @@
             // Display 'Testing server' message
             status.innerHTML = 'Testing server...';
 
-            fetch('http://localhost:8000/test')
+            fetch('/test')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // This should log the actual object received from the server
