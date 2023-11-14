@@ -71,7 +71,7 @@ app.post('/solve', async (req, res) => {
             {
                 model: 'gpt-3.5-turbo',
                 messages: [
-					{ role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answer in a way that can be easily parsed step by step. do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
+					{ role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled Step 1, Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
 					{ role: 'user', content: `${problem}` }
 				],
                 temperature: 0,
