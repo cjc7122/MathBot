@@ -164,7 +164,7 @@
 		}
 
 		function login() {
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
 
@@ -174,7 +174,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ email, password }),
             })
             .then(response => response.json())
             .then(data => {
