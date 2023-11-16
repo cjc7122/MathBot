@@ -29,11 +29,10 @@
 
         <!-- Math Problem Solver Section -->
         <div id="math-solver">
-			<form id="problem-form">
+			<form>
 				<label for="problem-input">Enter your math problem:</label><br>
 				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100">Insert math problem here</textarea><br><br>
 				<button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
-
 				<!--<button type="button" onclick="testServer()">Test</button>-->
 			</form>
 			<div id="result"></div>
@@ -137,44 +136,45 @@
 				openLoginPopup();
 				return;
 			}
-		
-            const input = document.getElementById('problem-input').value;
-            const result = document.getElementById('result');
-            const status = document.getElementById('status');
+			if (isLoggedIn && isLoginSuccessful){
+				const input = document.getElementById('problem-input').value;
+				const result = document.getElementById('result');
+				const status = document.getElementById('status');
 
-            const prompt = `Solve the following math problem: ${input}`;
+				const prompt = `Solve the following math problem: ${input}`;
 
-            // Display 'Calculation in progress' message
-            status.innerHTML = 'Calculation in progress...';
-			
-			// Disable the Solve button to prevent multiple submissions
-			const solveButton = document.getElementById('solveButton');
-			solveButton.disabled = true;
+				// Display 'Calculation in progress' message
+				status.innerHTML = 'Calculation in progress...';
+				
+				// Disable the Solve button to prevent multiple submissions
+				const solveButton = document.getElementById('solveButton');
+				solveButton.disabled = true;
 
-            fetch('https://mathbot-5zr7.onrender.com/solve', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ problem: prompt }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display the result
-                result.innerHTML = `Solution: ${data.solution}`;
-                // Clear the 'Calculation in progress' message
-                status.innerHTML = '';
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                result.innerHTML = 'An error occurred. Please try again.';
-                // Clear the 'Calculation in progress' message
-                status.innerHTML = '';
-            });
-			.finally(() => {
-				// Enable the Solve button after the request is complete
-				solveButton.disabled = false;
-			});
+				fetch('https://mathbot-5zr7.onrender.com/solve', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ problem: prompt }),
+				})
+				.then(response => response.json())
+				.then(data => {
+					// Display the result
+					result.innerHTML = `Solution: ${data.solution}`;
+					// Clear the 'Calculation in progress' message
+					status.innerHTML = '';
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					result.innerHTML = 'An error occurred. Please try again.';
+					// Clear the 'Calculation in progress' message
+					status.innerHTML = '';
+				})
+				.finally(() => {
+					// Enable the Solve button after the request is complete
+					solveButton.disabled = false;
+				});
+			}
         }
 
         function testServer() {
