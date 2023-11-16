@@ -14,7 +14,7 @@
         <div class="header-container">
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
-		<div class="header-container centered-section" style="position:relative;">
+		<div class="header-container centered-section">
 			<img src="icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img>
 			<img src="icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img>
 			<img src="Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img>
@@ -22,7 +22,7 @@
 		<div class="header-container">
 			<button id="register-btn" onclick="registerPopup()" style="float:right;">Register</button>
             <button id="login-button" onclick="openLoginPopup()" style="float:right;">Login</button>
-			<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
+			<button id="logout-btn" onclick="logout()" style="display:none; float:right;">Logout</button>
         </div>
     </header>
 	
@@ -105,7 +105,7 @@
 					// Successful login, close the popup
 					document.getElementById('login-popup').style.display = 'none';
 					// Show the Logout button
-					document.getElementById('logout-btn').style.display = 'float:right;';
+					document.getElementById('logout-btn').style.display = 'inline-block;';
 					// Hide the Login button
 					document.getElementById('login-button').style.display = 'none';
 					document.getElementById('register-btn').style.display = 'none';
