@@ -63,7 +63,7 @@ const checkDuplicateUser = (req, res, next) => {
 const checkPassword = (req, res, next) => {
     const { password, password2 } = req.body;
 	console.log(password)
-	console.log(password1)
+	console.log(password2)
 	
 	if (password !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
