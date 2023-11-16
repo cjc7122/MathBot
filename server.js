@@ -61,7 +61,7 @@ const checkDuplicateUser = (req, res, next) => {
 
 // Middleware to check if the user is already registered
 const checkPassword = (req, res, next) => {
-    const { email, password, password2 } = req.body;
+    const { password, password2 } = req.body;
 	
 	if (password !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
@@ -71,32 +71,35 @@ const checkPassword = (req, res, next) => {
 
 // Middleware to handle email verification
 const sendVerificationEmail = async (req, res, next) => {
-    const { email } = req.body;
-    const verificationCode = generateVerificationCode(); // Implement your function to generate a code
-
-    // Send verification email
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'cjc7122@gmail.com',
-            pass: 'bany uvnf rhoi dnfj',
-        },
-    });
-
-    const mailOptions = {
-        from: 'cjc7122@gmail.com',
-        to: email,
-        subject: 'Verify Your Email',
-        text: `Your verification code is: ${verificationCode}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error);
-        } else {
-            console.log('Email sent:', info.response);
-        }
-    });
+    // Check if the passwords match and the email is not already registered
+    if (!res.headersSent) {
+        const { email } = req.body;
+        const verificationCode = generateVerificationCode();
+    
+        // Send verification email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'cjc7122@gmail.com',
+                pass: 'bany uvnf rhoi dnfj',
+            },
+        });
+    
+        const mailOptions = {
+            from: 'cjc7122@gmail.com',
+            to: email,
+            subject: 'Verify Your Email',
+            text: `Your verification code is: ${verificationCode}`,
+        };
+    
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+            } else {
+                console.log('Email sent:', info.response);
+            }
+        });
+    }
 };
 
 app.use(express.static('public'));
@@ -127,7 +130,7 @@ app.post('/logout', (req, res) => {
 
 // Registration endpoint
 app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
-    const { email, password, password2 } = req.body;
+    const { email, password } = req.body;
 	
     users.push({ email, password });
     res.json({ message: 'Register successful' });
