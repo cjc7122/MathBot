@@ -12,6 +12,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 // In-memory user database (for demo purposes)
 const users = [
     { email: 'user1', password: 'password1' },
+	{ email: 'colin.cressman@gmail.com', password: 'password1' },
     // Add more users as needed
 ];
 
@@ -56,6 +57,16 @@ const checkDuplicateUser = (req, res, next) => {
         return res.status(409).json({ error: 'Email already registered' });
     }
     next();
+};
+
+// Middleware to check if the user is already registered
+const checkPassword = (req, res, next) => {
+    const { email, password, password2 } = req.body;
+	
+	if (password !== password2) {
+        return res.status(400).json({ error: 'Passwords do not match' });
+    }
+	next();
 };
 
 // Middleware to handle email verification
@@ -115,12 +126,8 @@ app.post('/logout', (req, res) => {
 });
 
 // Registration endpoint
-app.post('/register', checkDuplicateUser, sendVerificationEmail, (req, res) => {
+app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
     const { email, password, password2 } = req.body;
-	
-	if (password !== password2) {
-        return res.status(400).json({ error: 'Passwords do not match' });
-    }
 	
     users.push({ email, password });
     res.json({ message: 'Register successful' });
