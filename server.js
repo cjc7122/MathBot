@@ -40,6 +40,8 @@ app.use(express.json());
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
     const { email, password } = req.body;
+	console.log(email)
+	console.log(password)
     const user = users.find((u) => u.email === email	&& u.password === password);
     if (user) {
         next();
