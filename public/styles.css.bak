@@ -14,9 +14,8 @@ input[type="text"].username-input {
 }
 
 input[type="text"]:not(.username-input) {
-    width: 100%;
-    padding: 10px;
     margin-bottom: 10px;
+	text-align: right;
 }
 
 input[type="password"] {
@@ -61,7 +60,6 @@ header {
 
 .centered-section {
     position: fixed;
-    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     /* Add additional styling if needed */

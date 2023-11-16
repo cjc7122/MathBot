@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -9,8 +11,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 const users = [
-    { username: 'user1', password: 'password1' },
-    { username: 'user2', password: 'password2' },
+    { email: 'user1', password: 'password1' },
     // Add more users as needed
 ];
 
@@ -22,18 +23,69 @@ const processResponse = (data) => {
     return solution;
 };
 
+// Function to generate a random verification code
+const generateVerificationCode = () => {
+    // Generate a random 3-byte (6-digit) hexadecimal code
+    const randomBytes = crypto.randomBytes(3);
+    const verificationCode = randomBytes.toString('hex').toUpperCase().slice(0, 6);
+
+    return verificationCode;
+};
+
+
 app.use(cors());
 app.use(express.json());
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
-    const { username, password } = req.body;
-    const user = users.find((u) => u.username === username && u.password === password);
+    const { email, password } = req.body;
+    const user = users.find((u) => u.email === email	&& u.password === password);
     if (user) {
         next();
     } else {
         return res.status(401).json({ error: 'Unauthorized' });
     }
+};
+
+// Middleware to check if the user is already registered
+const checkDuplicateUser = (req, res, next) => {
+    const { email } = req.body;
+    const userExists = users.some((u) => u.email === email);
+
+    if (userExists) {
+        return res.status(409).json({ error: 'Email already registered' });
+    }
+    next();
+};
+
+// Middleware to handle email verification
+const sendVerificationEmail = async (req, res, next) => {
+    const { email } = req.body;
+    const verificationCode = generateVerificationCode(); // Implement your function to generate a code
+
+    // Send verification email
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'cjc7122@gmail.com',
+            pass: '$Cellphone7122',
+        },
+    });
+
+    const mailOptions = {
+        from: 'cjc7122@gmail.com',
+        to: email,
+        subject: 'Verify Your Email',
+        text: `Your verification code is: ${verificationCode}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+        } else {
+            console.log('Email sent:', info.response);
+        }
+    });
 };
 
 app.use(express.static('public'));
@@ -45,9 +97,9 @@ app.get('/test', (req, res) => {
 
 // Login endpoint
 app.post('/login', authenticateUser, (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = users.find((u) => u.username === username && u.password === password);
+    const user = users.find((u) => u.email === email && u.password === password);
     if (user) {
         authenticatedUser = user;
         res.json({ message: 'Login successful' });
@@ -60,6 +112,18 @@ app.post('/login', authenticateUser, (req, res) => {
 app.post('/logout', (req, res) => {
     authenticatedUser = null;
     res.json({ message: 'Logout successful' });
+});
+
+// Registration endpoint
+app.post('/register', checkDuplicateUser, sendVerificationEmail, (req, res) => {
+    const { email, password, password2 } = req.body;
+	
+	if (password !== password2) {
+        return res.status(400).json({ error: 'Passwords do not match' });
+    }
+	
+    users.push({ email, password });
+    res.json({ message: 'Register successful' });
 });
 
 app.post('/solve', async (req, res) => {
