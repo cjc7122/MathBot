@@ -44,6 +44,7 @@ const authenticateUser = (req, res, next) => {
     if (user) {
         next();
     } else {
+		console.log(user)
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };
