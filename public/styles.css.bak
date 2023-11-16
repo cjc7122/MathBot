@@ -15,7 +15,7 @@ input[type="text"].username-input {
 
 input[type="text"]:not(.username-input) {
     margin-bottom: 10px;
-	text-align: right;
+	right: 100%;
 }
 
 input[type="password"] {

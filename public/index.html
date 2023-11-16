@@ -15,8 +15,8 @@
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
 		<div class="header-container centered-section">
-			<img src="./Pictures/icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:50px; left:-225px" onclick="goHome()"></img> <!-- top -10 -->
-			<img src="./Pictures/icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:65px; left:-180px" onclick="goHome()"></img> <!-- top 5 -->
+			<img src="./Pictures/background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:50px; left:-225px" onclick="goHome()"></img> <!-- top -10 -->
+			<img src="./Pictures/Mathbot.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:65px; left:-180px" onclick="goHome()"></img> <!-- top 5 -->
 			<img src="./Pictures/Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:65px; left:-110px;" onclick="goHome()"></img> <!-- top 5 -->
 		</div>
 		<div class="header-container">
@@ -166,7 +166,6 @@
 		function login() {
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
 
             // Send credentials to the server for validation
             fetch('https://mathbot-5zr7.onrender.com/login', {

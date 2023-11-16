@@ -40,13 +40,10 @@ app.use(express.json());
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
     const { email, password } = req.body;
-	console.log(email)
-	console.log(password)
     const user = users.find((u) => u.email === email	&& u.password === password);
     if (user) {
         next();
     } else {
-		console.log(user)
         return res.status(401).json({ error: 'Unauthorized' });
     }
 };
@@ -55,7 +52,7 @@ const authenticateUser = (req, res, next) => {
 const checkDuplicateUser = (req, res, next) => {
     const { email } = req.body;
     const userExists = users.some((u) => u.email === email);
-
+	console.log(email)
     if (userExists) {
         return res.status(409).json({ error: 'Email already registered' });
     }
@@ -65,6 +62,8 @@ const checkDuplicateUser = (req, res, next) => {
 // Middleware to check if the user is already registered
 const checkPassword = (req, res, next) => {
     const { password, password2 } = req.body;
+	console.log(password)
+	console.log(password1)
 	
 	if (password !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
