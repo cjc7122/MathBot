@@ -1,24 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang = "en">
 <head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Problem Solver</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9698461063501606" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Math Problem Solver</h1>
-
-		<!-- Login button to open the pop-up -->
-        <button onclick="openLoginPopup()" id="login-btn" style="display:inline-block;">Login</button>
-		<button type="button" onclick="logout()" id="logout-btn" style="display:none;">Logout</button>
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <button id="home-button" onclick="goHome()">Home</button>
+        </div>
+		<div class="header-container" style="position:relative;">
+			<img src="icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:65px; width:300px; top:-10px; left:-150px" onclick="goHome()"></img>
+			<img src="icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:0px; left:-125px" onclick="goHome()"></img>
+			<img src="Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:200px; position:absolute; top:0px; left:-75px;" onclick="goHome()"></img>
+        </div>
+		<div class="header-container">
+            <button id="login-button" onclick="openLoginPopup()" style="display:right-side">Login</button>
+			<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
+        </div>
+    </header>
+	
+	<div class="container">
 
         <!-- Math Problem Solver Section -->
         <div id="math-solver" style="display:none;">
 			<form id="problem-form">
 				<label for="problem-input">Enter your math problem:</label><br>
-				<input type="text" id="problem-input" name="problemInput"><br><br>
+				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100">Insert math problem here</textarea><br><br>
 				<button type="button" onclick="submitProblem()">Solve</button>
-				<button type="button" onclick="testServer()">Test</button>
+				<!--<button type="button" onclick="testServer()">Test</button>-->
 			</form>
 			<div id="result"></div>
         <div id="status"></div>
@@ -38,6 +53,17 @@
     </div>
 
     <script>
+		function adjustTextareaHeight() {
+        const textarea = document.getElementById('problem-input');
+        textarea.style.height = 'auto'; // Reset height to auto to recalculate scrollHeight
+        textarea.style.height = 50 + (textarea.scrollHeight) + 'px';
+		}
+
+		// Call the adjustTextareaHeight function on page load
+		window.onload = function () {
+			adjustTextareaHeight();
+		};
+	
 		function openLoginPopup() {
             document.getElementById('login-popup').style.display = 'block';
         }
@@ -74,7 +100,7 @@
 					// Show the Logout button
 					document.getElementById('logout-btn').style.display = 'inline-block';
 					// Hide the Login button
-					document.getElementById('login-btn').style.display = 'none';
+					document.getElementById('login-button').style.display = 'none';
 				} else {
 					alert('Invalid username or password');
 				}
@@ -97,7 +123,7 @@
 			// Show the login popup
 			document.getElementById('login-popup').style.display = 'block';
 			// Show the Login button
-			document.getElementById('login-btn').style.display = 'inline-block';
+			document.getElementById('login-button').style.display = 'inline-block';
 		}
 
         function submitProblem() {
