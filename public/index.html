@@ -14,24 +14,23 @@
         <div class="header-container">
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
-		<div class="header-container" style="position:relative;">
-			<img src="icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:70px; width:300px; top:-10px; left:-150px" onclick="goHome()"></img>
-			<img src="icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:0px; left:-125px" onclick="goHome()"></img>
-			<img src="Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:200px; position:absolute; top:0px; left:-75px;" onclick="goHome()"></img>
-        </div>
+		<div class="header-container centered-section">
+			<img src="icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img>
+			<img src="icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img>
+			<img src="Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img>
+		</div>
 		<div class="header-container">
-            <button id="login-button" onclick="openLoginPopup()" style="display:right-side">Login</button>
+			<button id="register-btn" onclick="registerPopup()" style="float:right;">Register</button>
+            <button id="login-button" onclick="openLoginPopup()" style="float:right;">Login</button>
 			<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
         </div>
     </header>
 	
 	<div class="container">
-
         <!-- Math Problem Solver Section -->
         <div id="math-solver">
-			<form>
-				<label for="problem-input">Enter your math problem:</label><br>
-				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100">Insert math problem here</textarea><br><br>
+			<form style="margin-top:100px">
+				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100" style="height:34px">Insert math problem here</textarea><br><br>
 				<button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
 				<!--<button type="button" onclick="testServer()">Test</button>-->
 			</form>
@@ -56,7 +55,7 @@
 		function adjustTextareaHeight() {
 			const textarea = document.getElementById('problem-input');
 			textarea.style.height = 'auto'; // Reset height to auto to recalculate scrollHeight
-			textarea.style.height = 50 + (textarea.scrollHeight) + 'px';
+			textarea.style.height = (textarea.scrollHeight) + 'px';
 		}
 
 		// Call the adjustTextareaHeight function on page load
@@ -106,9 +105,10 @@
 					// Successful login, close the popup
 					document.getElementById('login-popup').style.display = 'none';
 					// Show the Logout button
-					document.getElementById('logout-btn').style.display = 'display:right-side';
+					document.getElementById('logout-btn').style.display = 'float:right;';
 					// Hide the Login button
 					document.getElementById('login-button').style.display = 'none';
+					document.getElementById('register-btn').style.display = 'none';
 				} else {
 					alert('Invalid username or password');
 				}
@@ -127,7 +127,8 @@
 			// Clear the problem input
 			document.getElementById('problem-input').value = '';
 			// Show the Login button
-			document.getElementById('login-button').style.display = 'inline-block';
+			document.getElementById('register-btn').style.display = 'float:right;';
+			document.getElementById('login-button').style.display = 'float:right;';
 		}
 
         function submitProblem() {
