@@ -15,9 +15,9 @@
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
 		<div class="header-container centered-section">
-			<img src="icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img>
-			<img src="icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img>
-			<img src="Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img>
+			<img src="./icon-background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img>
+			<img src="./icon.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img>
+			<img src="./Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img>
 		</div>
 		<div class="header-container">
 			<button id="register-btn" onclick="registerPopup()" style="float:right;">Register</button>
