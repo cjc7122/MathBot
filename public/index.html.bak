@@ -63,8 +63,8 @@
 		<label for="E-Mail">E-Mail:</label>
         <input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <label for="password1">Password:</label>
+        <input type="password" id="password2" name="password2" required><br>
 		
 		<label for="password2">Re-Type Password:</label>
         <input type="password" id="password2" name="password2" required><br>
@@ -166,8 +166,6 @@
 		function login() {
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-			console.log(email);
-			console.log(password);
 
             // Send credentials to the server for validation
             fetch('https://mathbot-5zr7.onrender.com/login', {

@@ -63,8 +63,8 @@
 		<label for="E-Mail">E-Mail:</label>
         <input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <label for="password1">Password:</label>
+        <input type="password" id="password1" name="password1" required><br>
 		
 		<label for="password2">Re-Type Password:</label>
         <input type="password" id="password2" name="password2" required><br>
@@ -125,7 +125,7 @@
 
 		function Register() {
             const email = document.getElementById('E-Mail').value;
-            const password = document.getElementById('password').value;
+            const password1 = document.getElementById('password1').value;
             const password2 = document.getElementById('password2').value;
 			
 			// Send credentials to the server for duplicate check
@@ -134,7 +134,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password, password2 }),
+                body: JSON.stringify({ email, password1, password2 }),
             })
 			.then(response => response.json())
 			.then(data => {

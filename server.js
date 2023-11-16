@@ -61,11 +61,9 @@ const checkDuplicateUser = (req, res, next) => {
 
 // Middleware to check if the user is already registered
 const checkPassword = (req, res, next) => {
-    const { password, password2 } = req.body;
-	console.log(password)
-	console.log(password2)
+    const { password1, password2 } = req.body;
 	
-	if (password !== password2) {
+	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
 	next();
@@ -132,9 +130,9 @@ app.post('/logout', (req, res) => {
 
 // Registration endpoint
 app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
-    const { email, password } = req.body;
+    const { email, password1 } = req.body;
 	
-    users.push({ email, password });
+    users.push({ email, password1 });
     res.json({ message: 'Register successful' });
 });
 
