@@ -64,7 +64,7 @@
         <input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
 
         <label for="password1">Password:</label>
-        <input type="password" id="password2" name="password2" required><br>
+        <input type="password" id="password1" name="password1" required><br>
 		
 		<label for="password2">Re-Type Password:</label>
         <input type="password" id="password2" name="password2" required><br>
@@ -76,11 +76,22 @@
 		<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
 		<label id="EmailDoesNotExist" style="display:none; color:red">Email does not exist!</label>
     </div>
+	
+	<!-- Login pop-up -->
+    <div id="Verification-popup" class="login-popup">
+        <h2>Verify Email</h2>
+        <label for="verificationCode">Verification Code:</label>
+        <input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
+
+        <button type="button" onclick="Verify()">Login</button>
+        <button type="button" onclick="closeVerifyPopup()">Close</button>
+    </div>
 
     <script>
 		let isLoginSuccessful = false;
 		let isLoggedIn = false;
 		let isRegisterSuccessful = false;
+		let isVerificationSuccessful = false;
 		
 		function adjustTextareaHeight() {
 			const textarea = document.getElementById('problem-input');
@@ -115,6 +126,22 @@
 			isRegisterSuccessful = false;
         }
 		
+		function openVerifyPopup() {
+            document.getElementById('Verification-popup').style.display = 'block';
+        }
+		
+		function closeRegisterPopup() {
+            document.getElementById('Register-popup').style.display = 'none';
+			// Reset the flag when the popup is closed
+			isVerificationSuccessful = false;
+        }
+
+        function closeRegisterPopup() {
+            document.getElementById('Register-popup').style.display = 'none';
+			// Reset the flag when the popup is closed
+			isRegisterSuccessful = false;
+        }
+		
 		function SuccessLogin() {
             document.getElementById('login-popup').style.display = 'none';
         }
@@ -122,10 +149,55 @@
 		function SuccessRegister() {
             document.getElementById('Register-popup').style.display = 'none';
         }
+		
+		function SuccessVerify() {
+            document.getElementById('Verification-popup').style.display = 'none';
+        }
+		
+		function Verify() {
+			const verificationCode = document.getElementById('verificationCode').value;
+            const email = document.getElementById('E-Mail').value;
+			const password3 = document.getElementById('password2').value;
+			
+			// Send credentials to the server for duplicate check
+            fetch('https://mathbot-5zr7.onrender.com/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password3, verificationCode }),
+            })
+			.then(response => response.json())
+			.then(data => {
+                if (data.message === 'Verification successful') {
+					// Successful login
+					isLoggedIn = true;
+					isLoginSuccessful = true;
+					// Successful login, close the popup
+					SuccessVerify();
+					SuccessRegister();
+					// Show the Logout button
+					document.getElementById('logout-btn').style.display = 'block';
+					// Hide the Login button
+					document.getElementById('login-button').style.display = 'none';
+					document.getElementById('register-btn').style.display = 'none';
+				} else if (data.message === 'Email already registered') {
+					document.getElementById('EmailDuplicate').style.display = 'block';
+				} else if (data.message === 'Passwords do not match') {
+					document.getElementById('PasswordsDifferent').style.display = 'block';
+				} else if (data.message === 'Email does not exist') {
+					document.getElementById('EmailDoesNotExist').style.display = 'block';
+				}
+            })
+			.catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during registration');
+            });
+		}
 
 		function Register() {
             const email = document.getElementById('E-Mail').value;
-            const password = document.getElementById('password').value;
+            const password1 = document.getElementById('password1').value;
             const password2 = document.getElementById('password2').value;
 			
 			// Send credentials to the server for duplicate check
@@ -134,21 +206,13 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password, password2 }),
+                body: JSON.stringify({ email, password1, password2 }),
             })
 			.then(response => response.json())
 			.then(data => {
                 if (data.message === 'Register successful') {
-					// Successful login
-					isLoggedIn = true;
-					isLoginSuccessful = true;
 					// Successful login, close the popup
-					SuccessRegister();
-					// Show the Logout button
-					document.getElementById('logout-btn').style.display = 'block';
-					// Hide the Login button
-					document.getElementById('login-button').style.display = 'none';
-					document.getElementById('register-btn').style.display = 'none';
+					openVerifyPopup();
 				} else if (data.message === 'Email already registered') {
 					document.getElementById('EmailDuplicate').style.display = 'block';
 				} else if (data.message === 'Passwords do not match') {

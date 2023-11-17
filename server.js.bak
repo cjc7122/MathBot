@@ -16,6 +16,11 @@ const users = [
     // Add more users as needed
 ];
 
+const tempVerify = [
+    { email: 'user1', verificationCode: '######' },
+    // Add more users as needed
+];
+
 let authenticatedUser = null;
 
 // Function to process the GPT-3 API response
@@ -61,11 +66,9 @@ const checkDuplicateUser = (req, res, next) => {
 
 // Middleware to check if the user is already registered
 const checkPassword = (req, res, next) => {
-    const { password, password2 } = req.body;
-	console.log(password)
-	console.log(password2)
+    const { password1, password2 } = req.body;
 	
-	if (password !== password2) {
+	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
 	next();
@@ -77,7 +80,8 @@ const sendVerificationEmail = async (req, res, next) => {
     if (!res.headersSent) {
         const { email } = req.body;
         const verificationCode = generateVerificationCode();
-    
+		tempVerify.push({ email, verificationCode });
+		
         // Send verification email
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -132,10 +136,22 @@ app.post('/logout', (req, res) => {
 
 // Registration endpoint
 app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
-    const { email, password } = req.body;
-	
-    users.push({ email, password });
     res.json({ message: 'Register successful' });
+});
+
+app.post('/verify', (req, res) => {
+    const { email, password3, verificationCode } = req.body;
+	
+	const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+
+    if (!matchingEntry) {
+        return res.status(401).json({ error: 'Invalid verification code' });
+    }
+	
+	tempVerify = tempVerify.filter(entry => entry.email !== email);
+	
+    users.push({ email, password3 });
+    res.json({ message: 'Verification successful' });
 });
 
 app.post('/solve', async (req, res) => {

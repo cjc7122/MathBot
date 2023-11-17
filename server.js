@@ -16,6 +16,11 @@ const users = [
     // Add more users as needed
 ];
 
+const tempVerify = [
+    { email: 'user1', verificationCode: '######' },
+    // Add more users as needed
+];
+
 let authenticatedUser = null;
 
 // Function to process the GPT-3 API response
@@ -34,7 +39,32 @@ const generateVerificationCode = () => {
 };
 
 
-app.use(cors());
+// Define CORS options
+const corsOptions = {
+    origin: 'https://mathbot-5zr7.onrender.com/', // Replace with the actual origin of your frontend application
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    optionsSuccessStatus: 204, // Return a 204 status code for preflight requests
+};
+
+// Enable CORS with options
+app.use(cors(corsOptions));
+
+// Security Headers Middleware
+app.use((req, res, next) => {
+    // Set security headers
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'deny');
+    res.setHeader('Content-Security-Policy', "default-src 'self'");
+
+    // Set additional headers to enhance security (adjust as needed)
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+
+    next();
+});
+
 app.use(express.json());
 
 // Middleware to check if the user is authenticated
@@ -75,7 +105,8 @@ const sendVerificationEmail = async (req, res, next) => {
     if (!res.headersSent) {
         const { email } = req.body;
         const verificationCode = generateVerificationCode();
-    
+		tempVerify.push({ email, verificationCode });
+		
         // Send verification email
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -130,10 +161,22 @@ app.post('/logout', (req, res) => {
 
 // Registration endpoint
 app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
-    const { email, password1 } = req.body;
-	
-    users.push({ email, password1 });
     res.json({ message: 'Register successful' });
+});
+
+app.post('/verify', (req, res) => {
+    const { email, password3, verificationCode } = req.body;
+	
+	const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+
+    if (!matchingEntry) {
+        return res.status(401).json({ error: 'Invalid verification code' });
+    }
+	
+	tempVerify = tempVerify.filter(entry => entry.email !== email);
+	
+    users.push({ email, password3 });
+    res.json({ message: 'Verification successful' });
 });
 
 app.post('/solve', async (req, res) => {
