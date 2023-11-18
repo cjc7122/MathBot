@@ -48,23 +48,7 @@ const corsOptions = {
 };
 
 // Enable CORS with options
-app.use(cors(corsOptions));
-
-// Security Headers Middleware
-app.use((req, res, next) => {
-    // Set security headers
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'deny');
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
-
-    // Set additional headers to enhance security (adjust as needed)
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
-
-    next();
-});
-
+app.use(cors());
 app.use(express.json());
 
 // Middleware to check if the user is authenticated
