@@ -10,13 +10,13 @@ const port = 10000; // Update with your desired port
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
 
 // In-memory user database (for demo purposes)
-const users = [
+let users = [
     { email: 'user1', password: 'password1' },
 	{ email: 'colin.cressman@gmail.com', password: 'password1' },
     // Add more users as needed
 ];
 
-const tempVerify = [
+let tempVerify = [
     { email: 'user1', verificationCode: '######' },
     // Add more users as needed
 ];
@@ -151,16 +151,22 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
 
 app.post('/verify', (req, res) => {
     const { email, password3, verificationCode } = req.body;
-	
-	const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+
+    const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
 
     if (!matchingEntry) {
         return res.status(401).json({ error: 'Invalid verification code' });
     }
-	
-	tempVerify = tempVerify.filter(entry => entry.email !== email);
-	
+
+    // Remove the matching entry from the temporary verification array
+    tempVerify = tempVerify.filter(entry => entry.email !== email);
+
+    // Add the user to the main users array
     users.push({ email, password3 });
+
+    // Log the verification success
+    console.log(`Verification successful for ${email}`);
+
     res.json({ message: 'Verification successful' });
 });
 

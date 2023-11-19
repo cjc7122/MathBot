@@ -216,7 +216,6 @@
 			.then(response => response.json())
 			.then(data => {
                 if (data.message === 'Register successful') {
-					console.log('1');
 					// Successful login, close the popup
 					openVerifyPopup();
 				} else if (data.message === 'Email already registered') {

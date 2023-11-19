@@ -84,13 +84,13 @@
 	
 	<!-- Login pop-up -->
     <div id="Verification-popup" class="login-popup">
-        <h2>Verify Email</h2>
-        <label for="verificationCode">Verification Code:</label>
-        <input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
+		<h2>Verify Email</h2>
+		<label for="verificationCode">Verification Code:</label>
+		<input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
 
-        <button type="button" onclick="Verify()">Login</button>
-        <button type="button" onclick="closeVerifyPopup()">Close</button>
-    </div>
+		<button type="button" onclick="Verify()">Verify</button>
+		<button type="button" onclick="closeVerifyPopup()">Close</button>
+	</div>
 
     <script>
 		let isLoginSuccessful = false;
@@ -135,16 +135,10 @@
             document.getElementById('Verification-popup').style.display = 'block';
         }
 		
-		function closeRegisterPopup() {
+		function closeVerifyPopup() {
             document.getElementById('Verification-popup').style.display = 'none';
 			// Reset the flag when the popup is closed
 			isVerificationSuccessful = false;
-        }
-
-        function closeRegisterPopup() {
-            document.getElementById('Register-popup').style.display = 'none';
-			// Reset the flag when the popup is closed
-			isRegisterSuccessful = false;
         }
 		
 		function SuccessLogin() {
