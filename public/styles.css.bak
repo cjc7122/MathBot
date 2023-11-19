@@ -1,7 +1,14 @@
+body {
+    background-color: #f0f0f0; /* Light gray color */
+}
+
 .container {
     width: 50%;
     margin: 0 auto;
     text-align: center;
+	position: fixed;
+	left: 25%;
+	top: 12%;
 }
 
 form {
@@ -15,7 +22,6 @@ input[type="text"].username-input {
 
 input[type="text"]:not(.username-input) {
     margin-bottom: 10px;
-	right: 100%;
 }
 
 input[type="password"] {

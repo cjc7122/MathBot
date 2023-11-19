@@ -115,6 +115,7 @@ const sendVerificationEmail = async (req, res, next) => {
             }
         });
     }
+	next();
 };
 
 app.use(express.static('public'));

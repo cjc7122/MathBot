@@ -1,7 +1,14 @@
+body {
+    background-color: #f0f0f0; /* Light gray color */
+}
+
 .container {
     width: 50%;
     margin: 0 auto;
     text-align: center;
+	position: fixed;
+	left: 25%;
+	top: 25%;
 }
 
 form {

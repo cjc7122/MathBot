@@ -39,6 +39,15 @@ const generateVerificationCode = () => {
 };
 
 
+// Define CORS options
+const corsOptions = {
+    origin: 'https://mathbot-5zr7.onrender.com/', // Replace with the actual origin of your frontend application
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    optionsSuccessStatus: 204, // Return a 204 status code for preflight requests
+};
+
+// Enable CORS with options
 app.use(cors());
 app.use(express.json());
 

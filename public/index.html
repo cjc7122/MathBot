@@ -15,9 +15,9 @@
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
 		<div class="header-container centered-section">
-			<img src="./Pictures/background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:50px; left:-225px" onclick="goHome()"></img> <!-- top -10 -->
-			<img src="./Pictures/Mathbot.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:65px; left:-180px" onclick="goHome()"></img> <!-- top 5 -->
-			<img src="./Pictures/Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:65px; left:-110px;" onclick="goHome()"></img> <!-- top 5 -->
+			<img src="./Pictures/background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img> <!-- top -10 -->
+			<img src="./Pictures/Mathbot.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img> <!-- top 5 -->
+			<img src="./Pictures/Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img> <!-- top 5 -->
 		</div>
 		<div class="header-container">
 			<button id="register-btn" onclick="openRegisterPopup()" style="float:right;">Register</button>
@@ -27,9 +27,14 @@
     </header>
 	
 	<div class="container">
+		<p style="text-align: center; font-size: 18px; margin-bottom: 20px;">
+			MathBot - Your Instant Math Problem Solver<br>
+			Struggling with math problems? Enter your mathematical queries below and let MathBot provide step-by-step solutions.
+		</p>
+	
         <!-- Math Problem Solver Section -->
         <div id="math-solver">
-			<form style="margin-top:100px">
+			<form style="margin-top:10px">
 				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100" style="height:34px">Insert math problem here</textarea><br><br>
 				<button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
 				<!--<button type="button" onclick="testServer()">Test</button>-->
