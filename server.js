@@ -166,6 +166,8 @@ app.post('/verify', (req, res) => {
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);
+	console.log(users);
+	console.log(tempVerify);
 
     res.json({ message: 'Verification successful' });
 });
