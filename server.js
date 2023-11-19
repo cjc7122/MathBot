@@ -150,8 +150,8 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
 });
 
 app.post('/verify', (req, res) => {
-    const { email, password, verificationCode } = req.body;
-
+    const { email, password3, verificationCode } = req.body;
+	const password = password3;
     const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
 
     if (!matchingEntry) {
