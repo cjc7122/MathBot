@@ -11,8 +11,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 let users = [
-    { firstname: 'test', lastname: 'user', email: 'user1', password: 'password1' },
-	{ firstname: 'Colin', lastname: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1' },
+    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1' },
+	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1' },
     // Add more users as needed
 ];
 
@@ -151,7 +151,7 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
 });
 
 app.post('/verify', (req, res) => {
-    const { firstname, lastname, email, password3, verificationCode } = req.body;
+    const { firstName, lastName, email, password3, verificationCode } = req.body;
 	const password = password3;
     const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
 
@@ -163,7 +163,7 @@ app.post('/verify', (req, res) => {
     tempVerify = tempVerify.filter(entry => entry.email !== email);
 
     // Add the user to the main users array
-    users.push({ firstname, lastname, email, password });
+    users.push({ firstName, lastName, email, password });
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);

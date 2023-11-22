@@ -59,6 +59,8 @@ function SuccessVerify() {
 }
 
 function Verify() {
+    const firstName = document.getElementById('First_Name').value;
+    const lastName = document.getElementById('Last_Name').value;
 	const verificationCode = document.getElementById('verificationCode').value;
 	const email = document.getElementById('E-Mail').value;
 	const password3 = document.getElementById('password2').value;
@@ -69,7 +71,7 @@ function Verify() {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ email, password3, verificationCode }),
+		body: JSON.stringify({ firstname, lastname, email, password3, verificationCode }),
 	})
 	.then(response => response.json())
 	.then(data => {

@@ -71,7 +71,7 @@ function Verify() {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ firstname, lastname, email, password3, verificationCode }),
+		body: JSON.stringify({ firstName, lastName, email, password3, verificationCode }),
 	})
 	.then(response => response.json())
 	.then(data => {
