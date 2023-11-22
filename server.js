@@ -109,8 +109,8 @@ const sendVerificationEmail = async (req, res, next) => {
     
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.error('Error sending email:', error);
 				return res.status(402).json({ error: 'E-Mail failed to send!' });
+                console.error('Error sending email:', error);
             } else {
                 console.log('Email sent:', info.response);
             }
