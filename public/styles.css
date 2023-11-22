@@ -1,43 +1,92 @@
+/* Reset some default margin and padding */
+body,
+h1,
+h2,
+h3,
+p,
+div,
+ul,
+li,
+form,
+button,
+textarea {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: #f0f0f0; /* Light gray color */
+    margin: 0; /* Remove default margin */
 }
 
 .container {
     width: 50%;
     margin: 0 auto;
     text-align: center;
-	position: fixed;
-	left: 25%;
-	top: 25%;
+    position: fixed;
+    left: 25%;
+    top: 25%;
 }
 
-form {
-    margin-top: 20px;
+/* Header styles */
+header {
+    padding: 10px;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Distribute space between items */
 }
 
-/* Style for the username input */
-input[type="text"].username-input {
-    margin-bottom: 10px;
+.centered-section {
+    position: absolute;
+	top: 0;
+    left: 50%;
+    transform: translate(-50%);
 }
 
-input[type="text"]:not(.username-input) {
-    margin-bottom: 10px;
-}
-
-input[type="password"] {
-    margin-bottom: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
+/* Styles for header buttons */
+header button {
+    background-color: #333;
     color: white;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
 }
 
-button:hover {
-    opacity: 0.8;
+header button:hover {
+    background-color: #555;
+}
+
+/* Add styles for the images */
+#background-img {
+    width: 450px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+}
+
+#mathbot-img {
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    width: 75px; /* Adjust the width as needed */
+    height: 75px; /* Adjust the height as needed */
+}
+
+#header-words-img {
+    position: absolute;
+    top: 50%;
+    left: 58%;
+    transform: translate(-50%, -50%);
+    width: 275px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+}
+
+/* Intro text styles */
+.intro-text {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
 }
 
 /* Styles for the login pop-up */
@@ -54,37 +103,42 @@ button:hover {
     z-index: 1000;
 }
 
-/* Header styles */
-header {
-    padding: 10px;
-    text-align: center;
-    color: white;
-    display: flex;
-	flex-direction: row;
-	justify-content: space-between; /* Distribute space between items */
+.login-popup label,
+.login-popup input,
+.login-popup button {
+    margin-top: 10px; /* Adjust the margin as needed */
 }
 
-.centered-section {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* Add additional styling if needed */
+/* Styles for the textarea */
+.problem-textarea {
+    height: 30px;
+	width: 100%;
+    /* Add more styles as needed */
 }
 
-
-header button {
-    background-color: #333;
+/* Styles for the solve button */
+#solveButton {
+    padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
     cursor: pointer;
 }
 
-header button:hover {
-    background-color: #555;
+#solveButton:hover {
+    opacity: 0.8;
 }
 
-img {
-    width: 75px;
-    height: 75px;
+/* Styles for the solve button */
+#pop-up-Button {
+	margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#pop-up-Button:hover {
+    opacity: 0.8;
 }

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang = "en">
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Problem Solver</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9698461063501606" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9698461063501606" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Header Section -->
@@ -14,334 +14,89 @@
         <div class="header-container">
             <button id="home-button" onclick="goHome()">Home</button>
         </div>
-		<div class="header-container centered-section">
-			<img src="./Pictures/background.png" alt="MathBot"  style="vertical-align:middle; position:absolute; height:105px; width:450px; top:-10px; left:-225px" onclick="goHome()"></img> <!-- top -10 -->
-			<img src="./Pictures/Mathbot.png" alt="MathBot"  style="vertical-align:middle; position:absolute; top:5px; left:-180px" onclick="goHome()"></img> <!-- top 5 -->
-			<img src="./Pictures/Header-Words.png" alt="MathBot"  style="vertical-align:middle; width:300px; position:absolute; top:5px; left:-110px;" onclick="goHome()"></img> <!-- top 5 -->
-		</div>
-		<div class="header-container">
-			<button id="register-btn" onclick="openRegisterPopup()" style="float:right;">Register</button>
+        <div class="header-container centered-section">
+            <img src="./Pictures/background.png" alt="MathBot" id="background-img" onclick="goHome()">
+            <img src="./Pictures/Mathbot.png" alt="MathBot" id="mathbot-img" onclick="goHome()">
+            <img src="./Pictures/Header-Words.png" alt="MathBot" id="header-words-img" onclick="goHome()">
+        </div>
+        <div class="header-container">
+            <button id="register-btn" onclick="openRegisterPopup()" style="float:right;">Register</button>
             <button id="login-button" onclick="openLoginPopup()" style="float:right;">Login</button>
-			<button id="logout-btn" onclick="logout()" style="display:none; float:right;">Logout</button>
+            <button id="logout-btn" onclick="logout()" style="display:none; float:right;">Logout</button>
         </div>
     </header>
 	
 	<div class="container">
-		<p style="text-align: center; font-size: 18px; margin-bottom: 20px;">
-			MathBot - Your Instant Math Problem Solver<br>
-			Struggling with math problems? Enter your mathematical queries below and let MathBot provide step-by-step solutions.
-		</p>
-	
+		<p class="intro-text">
+            MathBot - Your Instant Math Problem Solver<br>
+            Struggling with math problems? Enter your mathematical queries below and let MathBot provide step-by-step solutions.
+        </p>
+
         <!-- Math Problem Solver Section -->
         <div id="math-solver">
-			<form style="margin-top:10px">
-				<textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100" style="height:34px">Insert math problem here</textarea><br><br>
-				<button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
-				<!--<button type="button" onclick="testServer()">Test</button>-->
-			</form>
-			<div id="result"></div>
-        <div id="status"></div>
-    </div>
-
-	<!-- Login pop-up -->
-    <div id="login-popup" class="login-popup">
-        <h2>Login</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" class="username-input" required><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <button type="button" onclick="login()">Login</button>
-        <button type="button" onclick="closeLoginPopup()">Close</button>
-    </div>
-	
-	<!-- Register pop-up -->
-    <div id="Register-popup" class="login-popup">
-        <h2>Register</h2>
-        <label for="First_Name">First Name:</label>
-        <input type="text" id="First_Name" name="First_Name" class="FirstName-input" required><br>
-
-		<label for="Last_Name">Last Name:</label>
-        <input type="text" id="Last_Name" name="Last_Name" class="LastName-input" required><br>
+            <form>
+                <textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100" class="problem-textarea">Insert math problem here</textarea><br><br>
+                <button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
+            </form>
+            <div id="result"></div>
+            <div id="status"></div>
+        </div>
 		
-		<label for="E-Mail">E-Mail:</label>
-        <input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
+		<!-- Login pop-up -->
+		<div id="login-popup" class="login-popup">
+			<h2>Login</h2>
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username" class="username-input" required><br>
 
-        <label for="password1">Password:</label>
-        <input type="password" id="password1" name="password1" required><br>
-		
-		<label for="password2">Re-Type Password:</label>
-        <input type="password" id="password2" name="password2" required><br>
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required><br>
 
-        <button type="button" onclick="Register()">Register</button>
-        <button type="button" onclick="closeRegisterPopup()">Close</button>
-		
-		<label id="EmailDuplicate" style="display:none; color:red">E-Mail is already in use!</label>
-		<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
-		<label id="EmailDoesNotExist" style="display:none; color:red">Email does not exist!</label>
-    </div>
-	
-	<!-- Login pop-up -->
-    <div id="Verification-popup" class="login-popup">
-		<h2>Verify Email</h2>
-		<label for="verificationCode">Verification Code:</label>
-		<input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
-
-		<button type="button" onclick="Verify()">Verify</button>
-		<button type="button" onclick="closeVerifyPopup()">Close</button>
-	</div>
-
-    <script>
-		let isLoginSuccessful = false;
-		let isLoggedIn = false;
-		let isRegisterSuccessful = false;
-		let isVerificationSuccessful = false;
-		
-		function adjustTextareaHeight() {
-			const textarea = document.getElementById('problem-input');
-			textarea.style.height = 'auto'; // Reset height to auto to recalculate scrollHeight
-			textarea.style.height = (textarea.scrollHeight) + 'px';
-		}
-
-		// Call the adjustTextareaHeight function on page load
-		window.onload = function () {
-			adjustTextareaHeight();
-		};
-	
-		function openLoginPopup() {
-            document.getElementById('login-popup').style.display = 'block';
-            document.getElementById('Register-popup').style.display = 'none';
-        }
-
-        function closeLoginPopup() {
-            document.getElementById('login-popup').style.display = 'none';
-			// Reset the flag when the popup is closed
-			isLoginSuccessful = false;
-        }
-		
-		function openRegisterPopup() {
-            document.getElementById('Register-popup').style.display = 'block';
-            document.getElementById('login-popup').style.display = 'none';
-        }
-
-        function closeRegisterPopup() {
-            document.getElementById('Register-popup').style.display = 'none';
-			// Reset the flag when the popup is closed
-			isRegisterSuccessful = false;
-        }
-		
-		function openVerifyPopup() {
-            document.getElementById('Verification-popup').style.display = 'block';
-        }
-		
-		function closeVerifyPopup() {
-            document.getElementById('Verification-popup').style.display = 'none';
-			// Reset the flag when the popup is closed
-			isVerificationSuccessful = false;
-        }
-		
-		function SuccessLogin() {
-            document.getElementById('login-popup').style.display = 'none';
-        }
-		
-		function SuccessRegister() {
-            document.getElementById('Register-popup').style.display = 'none';
-        }
-		
-		function SuccessVerify() {
-            document.getElementById('Verification-popup').style.display = 'none';
-        }
-		
-		function Verify() {
-			const verificationCode = document.getElementById('verificationCode').value;
-            const email = document.getElementById('E-Mail').value;
-			const password3 = document.getElementById('password2').value;
+			<button type="button" id="pop-up-Button" onclick="login()">Login</button>
+			<button type="button" id="pop-up-Button" onclick="closeLoginPopup()">Close</button>
 			
-			// Send credentials to the server for duplicate check
-            fetch('https://mathbot-5zr7.onrender.com/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password3, verificationCode }),
-            })
-			.then(response => response.json())
-			.then(data => {
-                if (data.message === 'Verification successful') {
-					// Successful login
-					isLoggedIn = true;
-					isLoginSuccessful = true;
-					// Successful login, close the popup
-					SuccessVerify();
-					SuccessRegister();
-					// Show the Logout button
-					document.getElementById('logout-btn').style.display = 'block';
-					// Hide the Login button
-					document.getElementById('login-button').style.display = 'none';
-					document.getElementById('register-btn').style.display = 'none';
-				} else if (data.message === 'Email already registered') {
-					document.getElementById('EmailDuplicate').style.display = 'block';
-				} else if (data.message === 'Passwords do not match') {
-					document.getElementById('PasswordsDifferent').style.display = 'block';
-				} else if (data.message === 'Email does not exist') {
-					document.getElementById('EmailDoesNotExist').style.display = 'block';
-				}
-            })
-			.catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during registration');
-            });
-		}
-
-		function Register() {
-            const email = document.getElementById('E-Mail').value;
-            const password1 = document.getElementById('password1').value;
-            const password2 = document.getElementById('password2').value;
 			
-			// Send credentials to the server for duplicate check
-            fetch('https://mathbot-5zr7.onrender.com/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password1, password2 }),
-            })
-			.then(response => response.json())
-			.then(data => {
-                if (data.message === 'Register successful') {
-					// Successful login, close the popup
-					openVerifyPopup();
-				} else if (data.message === 'Email already registered') {
-					document.getElementById('EmailDuplicate').style.display = 'block';
-				} else if (data.message === 'Passwords do not match') {
-					document.getElementById('PasswordsDifferent').style.display = 'block';
-				} else if (data.message === 'Email does not exist') {
-					document.getElementById('EmailDoesNotExist').style.display = 'block';
-				}
-            })
-			.catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during registration');
-            });
-		}
+			<label id="NoLogin" style="display:none; color:red">Incorrect email or password!</label>
+		</div>
+		
+		<!-- Register pop-up -->
+		<div id="Register-popup" class="login-popup">
+			<h2>Register</h2>
+			<label for="First_Name">First Name:</label>
+			<input type="text" id="First_Name" name="First_Name" class="FirstName-input" required><br>
 
-		function login() {
-            const email = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+			<label for="Last_Name">Last Name:</label>
+			<input type="text" id="Last_Name" name="Last_Name" class="LastName-input" required><br>
+			
+			<label for="E-Mail">E-Mail:</label>
+			<input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
 
-            // Send credentials to the server for validation
-            fetch('https://mathbot-5zr7.onrender.com/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message === 'Login successful') {
-					// Successful login
-					isLoggedIn = true;
-					isLoginSuccessful = true;
-					// Successful login, close the popup
-					SuccessLogin();
-					// Successful login, close the popup
-					document.getElementById('login-popup').style.display = 'none';
-					// Show the Logout button
-					document.getElementById('logout-btn').style.display = 'block';
-					// Hide the Login button
-					document.getElementById('login-button').style.display = 'none';
-					document.getElementById('register-btn').style.display = 'none';
-				} else {
-					alert('Invalid username or password');
-				}
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during login');
-            });
-        }
+			<label for="password1">Password:</label>
+			<input type="password" id="password1" name="password1" required><br>
+			
+			<label for="password2">Re-Type Password:</label>
+			<input type="password" id="password2" name="password2" required><br>
 
-		function logout() {
-			// Log out the user
-			isLoggedIn = false;
-			// Hide the Logout button
-			document.getElementById('logout-btn').style.display = 'none';
-			// Clear the problem input
-			document.getElementById('problem-input').value = '';
-			// Show the Login button
-			document.getElementById('register-btn').style.display = 'block';
-			document.getElementById('login-button').style.display = 'block';
-		}
+			<button type="button" id="pop-up-Button" onclick="Register()">Register</button>
+			<button type="button" id="pop-up-Button" onclick="closeRegisterPopup()">Close</button>
+			
+			<label id="EmailDuplicate" style="display:none; color:red">E-Mail is already in use!</label>
+			<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
+			<label id="EmailDoesNotExist" style="display:none; color:red">Email does not exist!</label>
+		</div>
+		
+		<!-- Login pop-up -->
+		<div id="Verification-popup" class="login-popup">
+			<h2>Verify Email</h2>
+			<label for="verificationCode">Verification Code:</label>
+			<input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
 
-        function submitProblem() {
-			if (!isLoggedIn) {
-				// User is not logged in, show the login popup
-				openLoginPopup();
-				return;
-			}
-			if (isLoggedIn && isLoginSuccessful){
-				const input = document.getElementById('problem-input').value;
-				const result = document.getElementById('result');
-				const status = document.getElementById('status');
-
-				const prompt = `Solve the following math problem: ${input}`;
-
-				// Display 'Calculation in progress' message
-				status.innerHTML = 'Calculation in progress...';
-				
-				// Disable the Solve button to prevent multiple submissions
-				const solveButton = document.getElementById('solveButton');
-				solveButton.disabled = true;
-
-				fetch('https://mathbot-5zr7.onrender.com/solve', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ problem: prompt }),
-				})
-				.then(response => response.json())
-				.then(data => {
-					// Display the result
-					result.innerHTML = `Solution: ${data.solution}`;
-					// Clear the 'Calculation in progress' message
-					status.innerHTML = '';
-				})
-				.catch(error => {
-					console.error('Error:', error);
-					result.innerHTML = 'An error occurred. Please try again.';
-					// Clear the 'Calculation in progress' message
-					status.innerHTML = '';
-				})
-				.finally(() => {
-					// Enable the Solve button after the request is complete
-					solveButton.disabled = false;
-				});
-			}
-        }
-
-        function testServer() {
-            const result = document.getElementById('result');
-            const status = document.getElementById('status');
-
-            // Display 'Testing server' message
-            status.innerHTML = 'Testing server...';
-
-            fetch('https://mathbot-5zr7.onrender.com/test')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); // This should log the actual object received from the server
-                    // Clear the 'Testing server' message
-                    status.innerHTML = '';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // Clear the 'Testing server' message
-                    status.innerHTML = '';
-                });
-        }
-    </script>
+			<button type="button" id="pop-up-Button" onclick="Verify()">Verify</button>
+			<button type="button" id="pop-up-Button" onclick="closeVerifyPopup()">Close</button>
+			
+			<label id="CodeNoGo" style="display:none; color:red">That code did not match!</label>
+		</div>
+		
+		<script src="script.js"></script>
+    </div>
 </body>
 </html>
