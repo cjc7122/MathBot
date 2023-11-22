@@ -100,9 +100,30 @@ function Verify() {
 }
 
 function register() {
+    const firstName = document.getElementById('First_Name').value;
+    const lastName = document.getElementById('Last_Name').value;
     const email = document.getElementById('E-Mail').value;
     const password1 = document.getElementById('password1').value;
     const password2 = document.getElementById('password2').value;
+	
+	// Validate first and last name
+    if (!firstName || !lastName) {
+        // Display an error message for missing first or last name
+        document.getElementById('MissingName').style.display = 'block';
+        return;
+    } else {
+		document.getElementById('MissingName').style.display = 'none';
+	}
+	
+	// Validate email format using a regular expression
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        // Display an error message for invalid email format
+        document.getElementById('EmailDoesNotExist').style.display = 'block';
+        return;
+    } else {
+        document.getElementById('EmailDoesNotExist').style.display = 'none';
+	}
 
     // Add password complexity requirements
     const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -111,7 +132,9 @@ function register() {
         // Password does not meet complexity requirements
         document.getElementById('PasswordComplexity').style.display = 'block';
         return;
-    }
+    } else {
+        document.getElementById('PasswordComplexity').style.display = 'none';
+	}
 
     // Send credentials to the server for duplicate check
     fetch('https://mathbot-5zr7.onrender.com/register', {
@@ -119,7 +142,7 @@ function register() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password1, password2 }),
+        body: JSON.stringify({ firstName, lastName, email, password1, password2 }),
     })
     .then(response => {
         if (response.ok) {
@@ -128,6 +151,7 @@ function register() {
             document.getElementById('EmailDuplicate').style.display = 'none';
             document.getElementById('EmailDoesNotExist').style.display = 'none';
             document.getElementById('PasswordComplexity').style.display = 'none';
+            document.getElementById('MissingName').style.display = 'none';
             openVerifyPopup();
         } else {
             // Handle registration errors
@@ -135,12 +159,11 @@ function register() {
                 if (response.status === 409) {
                     // Email already registered
                     document.getElementById('EmailDuplicate').style.display = 'block';
+                    document.getElementById('PasswordsDifferent').style.display = 'none';
                 } else if (response.status === 400) {
                     // Passwords do not match
                     document.getElementById('PasswordsDifferent').style.display = 'block';
-                } else if (response.status === 402) {
-                    // Passwords do not match
-                    document.getElementById('PasswordComplexity').style.display = 'block';
+                    document.getElementById('EmailDuplicate').style.display = 'none';
                 } else {
                     // Handle other status codes
                     throw new Error(`Unexpected response: ${response.status}`);

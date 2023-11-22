@@ -11,8 +11,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 let users = [
-    { email: 'user1', password: 'password1' },
-	{ email: 'colin.cressman@gmail.com', password: 'password1' },
+    { firstname: 'test', lastname: 'user', email: 'user1', password: 'password1' },
+	{ firstname: 'Colin', lastname: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1' },
     // Add more users as needed
 ];
 
@@ -79,12 +79,6 @@ const checkPassword = (req, res, next) => {
 	
 	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
-    }
-	
-	// Check password requirements (e.g., minimum length)
-    const minPasswordLength = 8; // Adjust the minimum length as needed
-    if (password1.length < minPasswordLength) {
-        return res.status(402).json({ error: `Password must be at least ${minPasswordLength} characters long` });
     }
 	
 	next();
@@ -157,7 +151,7 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
 });
 
 app.post('/verify', (req, res) => {
-    const { email, password3, verificationCode } = req.body;
+    const { firstname, lastname, email, password3, verificationCode } = req.body;
 	const password = password3;
     const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
 
@@ -169,7 +163,7 @@ app.post('/verify', (req, res) => {
     tempVerify = tempVerify.filter(entry => entry.email !== email);
 
     // Add the user to the main users array
-    users.push({ email, password });
+    users.push({ firstname, lastname, email, password });
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);

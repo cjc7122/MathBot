@@ -76,12 +76,13 @@
 			<label for="password2">Re-Type Password:</label>
 			<input type="password" id="password2" name="password2" required><br>
 
-			<button type="button" id="pop-up-Button" onclick="Register()">Register</button>
+			<button type="button" id="pop-up-Button" onclick="register()">Register</button>
 			<button type="button" id="pop-up-Button" onclick="closeRegisterPopup()">Close</button>
 			
 			<label id="EmailDuplicate" style="display:none; color:red">E-Mail is already in use!</label>
 			<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
 			<label id="EmailDoesNotExist" style="display:none; color:red">Email does not exist!</label>
+			<label id="PasswordComplexity" style="display:none; color:red">Password must contain 1 capital letter, 1 lower case letter, 1 symbol, 1 number and 8 characters long!</label>
 		</div>
 		
 		<!-- Login pop-up -->
