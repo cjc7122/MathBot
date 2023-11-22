@@ -3,12 +3,12 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const { Pool } = require('pg');
+//const { Pool } = require('pg');
 
 const app = express();
 const port = 10000; // Update with your desired port
 
-const pool = new Pool({
+/*const pool = new Pool({
     user: 'mathbotsql_user',
     host: 'dpg-clf4fjrl00ks739vs450-a',
     database: 'mathbotsql',
@@ -22,7 +22,7 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
     console.error('Error connecting to the database:', err);
-});
+});*/
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
 
@@ -221,11 +221,11 @@ app.post('/solve', async (req, res) => {
 });
 
 // Close the database connection pool when the server is stopped
-process.on('SIGINT', async () => {
+/*process.on('SIGINT', async () => {
     await pool.end();
     console.log('Database connection pool closed');
     process.exit(0);
-});
+});*/
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
