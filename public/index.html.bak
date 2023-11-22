@@ -53,6 +53,9 @@
 
 			<button type="button" id="pop-up-Button" onclick="login()">Login</button>
 			<button type="button" id="pop-up-Button" onclick="closeLoginPopup()">Close</button>
+			
+			
+			<label id="NoLogin" style="display:none; color:red">Incorrect email or password!</label>
 		</div>
 		
 		<!-- Register pop-up -->
@@ -89,6 +92,8 @@
 
 			<button type="button" id="pop-up-Button" onclick="Verify()">Verify</button>
 			<button type="button" id="pop-up-Button" onclick="closeVerifyPopup()">Close</button>
+			
+			<label id="CodeNoGo" style="display:none; color:red">That code did not match!</label>
 		</div>
 		
 		<script src="script.js"></script>

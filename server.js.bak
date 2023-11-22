@@ -80,6 +80,13 @@ const checkPassword = (req, res, next) => {
 	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
+	
+	// Check password requirements (e.g., minimum length)
+    const minPasswordLength = 8; // Adjust the minimum length as needed
+    if (password1.length < minPasswordLength) {
+        return res.status(400).json({ error: `Password must be at least ${minPasswordLength} characters long` });
+    }
+	
 	next();
 };
 
@@ -108,13 +115,12 @@ const sendVerificationEmail = async (req, res, next) => {
         };
     
         transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
+			if (error) {
+				console.error('Error sending email:', error);
 				return res.status(402).json({ error: 'E-Mail failed to send!' });
-                console.error('Error sending email:', error);
-            } else {
-                console.log('Email sent:', info.response);
-            }
-        });
+			}
+			console.log('Email sent:', info.response);
+		});
     }
 	next();
 };

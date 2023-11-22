@@ -80,6 +80,13 @@ const checkPassword = (req, res, next) => {
 	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
+	
+	// Check password requirements (e.g., minimum length)
+    const minPasswordLength = 8; // Adjust the minimum length as needed
+    if (password1.length < minPasswordLength) {
+        return res.status(402).json({ error: `Password must be at least ${minPasswordLength} characters long` });
+    }
+	
 	next();
 };
 

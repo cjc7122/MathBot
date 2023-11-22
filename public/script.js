@@ -99,48 +99,61 @@ function Verify() {
 	});
 }
 
-function Register() {
-	const email = document.getElementById('E-Mail').value;
-	const password1 = document.getElementById('password1').value;
-	const password2 = document.getElementById('password2').value;
-	
-	// Send credentials to the server for duplicate check
-	fetch('https://mathbot-5zr7.onrender.com/register', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ email, password1, password2 }),
-	})
-	.then(response => {
-		if (!response.ok) {
-			// Handle different error cases based on status codes
-			if (response.status === 409) {
-				// Email already registered
-				document.getElementById('EmailDuplicate').style.display = 'block';
-			} else if (response.status === 400) {
-				// Passwords do not match
-				document.getElementById('PasswordsDifferent').style.display = 'block';
-			} else if (response.status === 402) {
-				document.getElementById('EmailDoesNotExist').style.display = 'block';
-			} else {
-				// Handle other status codes
-				throw new Error('Unexpected response');
-			}
-		}
-		return response.json();
-	})
-	.then(data => {
-		if (data.message === 'Register successful') {
-		  // Successful login, close the popup
-		  openVerifyPopup();
-		}
-	})
-	.catch(error => {
-		console.error('Error:', error);
-		alert('An error occurred during registration');
-	});
+function register() {
+    const email = document.getElementById('E-Mail').value;
+    const password1 = document.getElementById('password1').value;
+    const password2 = document.getElementById('password2').value;
+
+    // Add password complexity requirements
+    const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRequirementsRegex.test(password1)) {
+        // Password does not meet complexity requirements
+        document.getElementById('PasswordComplexity').style.display = 'block';
+        return;
+    }
+
+    // Send credentials to the server for duplicate check
+    fetch('https://mathbot-5zr7.onrender.com/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password1, password2 }),
+    })
+    .then(response => {
+        if (response.ok) {
+            // Successful registration, close the popup or redirect as needed
+            document.getElementById('PasswordsDifferent').style.display = 'none';
+            document.getElementById('EmailDuplicate').style.display = 'none';
+            document.getElementById('EmailDoesNotExist').style.display = 'none';
+            document.getElementById('PasswordComplexity').style.display = 'none';
+            openVerifyPopup();
+        } else {
+            // Handle registration errors
+            return response.json().then(data => {
+                if (response.status === 409) {
+                    // Email already registered
+                    document.getElementById('EmailDuplicate').style.display = 'block';
+                } else if (response.status === 400) {
+                    // Passwords do not match
+                    document.getElementById('PasswordsDifferent').style.display = 'block';
+                } else if (response.status === 402) {
+                    // Passwords do not match
+                    document.getElementById('PasswordLength').style.display = 'block';
+                } else {
+                    // Handle other status codes
+                    throw new Error(`Unexpected response: ${response.status}`);
+                }
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during registration');
+    });
 }
+
 
 function login() {
 	const email = document.getElementById('username').value;
