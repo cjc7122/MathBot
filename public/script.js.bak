@@ -113,19 +113,24 @@ function Register() {
 		body: JSON.stringify({ email, password1, password2 }),
 	})
 	.then(response => {
-		console.log(response); // Log the entire response for debugging
+		if (response.status === 409) {
+			// Email already registered
+			document.getElementById('EmailDuplicate').style.display = 'block';
+		} else if (response.status === 400) {
+			// Passwords do not match
+			document.getElementById('PasswordsDifferent').style.display = 'block';
+		} else if (response.status === 402) {
+			document.getElementById('EmailDoesNotExist').style.display = 'block';
+		} else {
+			// Handle other status codes
+			throw new Error('Unexpected response');
+		}
 		return response.json();
 	})
 	.then(data => {
 		if (data.message === 'Register successful') {
 		  // Successful login, close the popup
 		  openVerifyPopup();
-		} else if (data.message === 'Email already registered') {
-		  document.getElementById('EmailDuplicate').style.display = 'block';
-		} else if (data.message === 'Passwords do not match') {
-		  document.getElementById('PasswordsDifferent').style.display = 'block';
-		} else if (data.message === 'Email does not exist') {
-		  document.getElementById('EmailDoesNotExist').style.display = 'block';
 		}
 	})
 	.catch(error => {

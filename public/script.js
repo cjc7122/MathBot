@@ -113,17 +113,20 @@ function Register() {
 		body: JSON.stringify({ email, password1, password2 }),
 	})
 	.then(response => {
-		if (response.status === 409) {
-			// Email already registered
-			document.getElementById('EmailDuplicate').style.display = 'block';
-		} else if (response.status === 400) {
-			// Passwords do not match
-			document.getElementById('PasswordsDifferent').style.display = 'block';
-		} else if (response.status === 402) {
-			document.getElementById('EmailDoesNotExist').style.display = 'block';
-		} else {
-			// Handle other status codes
-			throw new Error('Unexpected response');
+		if (!response.ok) {
+			// Handle different error cases based on status codes
+			if (response.status === 409) {
+				// Email already registered
+				document.getElementById('EmailDuplicate').style.display = 'block';
+			} else if (response.status === 400) {
+				// Passwords do not match
+				document.getElementById('PasswordsDifferent').style.display = 'block';
+			} else if (response.status === 402) {
+				document.getElementById('EmailDoesNotExist').style.display = 'block';
+			} else {
+				// Handle other status codes
+				throw new Error('Unexpected response');
+			}
 		}
 		return response.json();
 	})
