@@ -111,9 +111,8 @@ const sendVerificationEmail = async (req, res, next) => {
 			if (error) {
 				console.error('Error sending email:', error);
 				return res.status(402).json({ error: 'E-Mail failed to send!' });
-			} else {
-				console.log('Email sent:', info.response);
 			}
+			console.log('Email sent:', info.response);
 		});
     }
 	next();
