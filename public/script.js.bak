@@ -71,7 +71,7 @@ function Verify() {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ firstname, lastname, email, password3, verificationCode }),
+		body: JSON.stringify({ firstName, lastName, email, password3, verificationCode }),
 	})
 	.then(response => response.json())
 	.then(data => {
@@ -183,6 +183,7 @@ function register() {
 function login() {
 	const email = document.getElementById('username').value;
 	const password = document.getElementById('password').value;
+	const userInfoElement = document.getElementById('user-info');
 
 	// Send credentials to the server for validation
 	fetch('https://mathbot-5zr7.onrender.com/login', {
@@ -199,10 +200,13 @@ function login() {
 			isLoggedIn = true;
 			isLoginSuccessful = true;
 			// Successful login, close the popup
+			const { user } = data;
+            userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
 			// Show the Logout button
+			document.getElementById('user-info').style.display = 'block';
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
