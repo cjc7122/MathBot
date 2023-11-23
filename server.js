@@ -150,11 +150,13 @@ app.post('/login', authenticateUser, (req, res) => {
     const user = users.find((u) => u.email === email && u.password === password);
     if (user) {
         authenticatedUser = user;
-        res.json({ message: 'Login successful', user });
+        // Include the user's token balance in the response
+        res.json({ message: 'Login successful', user: { ...user, password: undefined, tokens: user.tokens } });
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
     }
 });
+
 
 // Logout endpoint
 app.post('/logout', (req, res) => {
@@ -180,28 +182,39 @@ app.post('/verify', (req, res) => {
     tempVerify = tempVerify.filter(entry => entry.email !== email);
 
     // Add the user to the main users array
-    users.push({ firstName, lastName, email, password });
+    users.push({ firstName, lastName, email, password, tokens: 10 });
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);
-	console.log(users);
-	console.log(tempVerify);
 
-    res.json({ message: 'Verification successful' });
+    res.json({ message: 'Verification successful', user: { ...user, password: undefined, tokens: 10 } });
 });
 
-app.post('/solve', async (req, res) => {
+// /solve endpoint
+app.post('/solve', authenticateUser, async (req, res) => {
     const { problem } = req.body;
 
     try {
+        // Find the authenticated user
+        const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
+
+        // Ensure the user is found
+        if (userIndex === -1) {
+            return res.status(500).json({ error: 'Authenticated user not found' });
+        }
+
+        // Deduct 1 from the user's tokens
+        users[userIndex].tokens -= 1;
+
+        // Make the request to OpenAI
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
             {
                 model: 'gpt-3.5-turbo',
                 messages: [
-					{ role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled ||Step 1, ||Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
-					{ role: 'user', content: `${problem}` }
-				],
+                    { role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled ||Step 1, ||Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
+                    { role: 'user', content: `${problem}` }
+                ],
                 temperature: 0,
             },
             {
@@ -212,13 +225,24 @@ app.post('/solve', async (req, res) => {
             }
         );
 
+        // Process the OpenAI response
         const solution = processResponse(response.data);
-        res.json({ solution });
+
+        // Return the solution and the updated token balance
+        res.json({ solution, tokens: users[userIndex].tokens });
     } catch (error) {
         console.error('Error:', error.message);
-        res.status(500).json({ error: 'An error occurred' });
+
+        // If an error occurs, roll back the deduction of tokens
+        if (userIndex !== -1) {
+            users[userIndex].tokens += 1;
+        }
+
+        res.status(500).json({ error: 'An error occurred', tokens: users[userIndex].tokens });
     }
 });
+
+
 
 // Close the database connection pool when the server is stopped
 /*process.on('SIGINT', async () => {

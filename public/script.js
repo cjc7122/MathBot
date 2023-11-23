@@ -86,7 +86,7 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
+            userInfoElement.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
@@ -187,7 +187,7 @@ function register() {
 function login() {
 	const email = document.getElementById('username').value;
 	const password = document.getElementById('password').value;
-	const userInfoElement = document.getElementById('user-info');
+	let userInfoElement = document.getElementById('user-info');
 
 	// Send credentials to the server for validation
 	fetch('https://mathbot-5zr7.onrender.com/login', {
@@ -230,6 +230,7 @@ function logout() {
 	isLoggedIn = false;
 	// Hide the Logout button
 	document.getElementById('logout-btn').style.display = 'none';
+	document.getElementById('user-info').style.display = 'none';
 	// Clear the problem input
 	document.getElementById('problem-input').value = '';
 	// Show the Login button
@@ -243,18 +244,19 @@ function submitProblem() {
 		openLoginPopup();
 		return;
 	}
-	if (isLoggedIn && isLoginSuccessful){
+	if (isLoggedIn && isLoginSuccessful) {
 		const input = document.getElementById('problem-input').value;
 		const result = document.getElementById('result');
 		const status = document.getElementById('status');
+		const solveButton = document.getElementById('solveButton');
+		const userInfoElement2 = document.getElementById('user-info');
 
 		const prompt = `Solve the following math problem: ${input}`;
 
 		// Display 'Calculation in progress' message
 		status.innerHTML = 'Calculation in progress...';
-		
+
 		// Disable the Solve button to prevent multiple submissions
-		const solveButton = document.getElementById('solveButton');
 		solveButton.disabled = true;
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
@@ -264,14 +266,16 @@ function submitProblem() {
 			},
 			body: JSON.stringify({ problem: prompt }),
 		})
-		.then(response => response.json())
-		.then(data => {
+		.then((response) => response.json())
+		.then((data) => {
 			// Display the result
 			result.innerHTML = `Solution: ${data.solution}`;
+			// Update the user's token balance
+			updateTokenBalance(data.tokens); // Assuming the server sends back the updated token balance
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
 		})
-		.catch(error => {
+		.catch((error) => {
 			console.error('Error:', error);
 			result.innerHTML = 'An error occurred. Please try again.';
 			// Clear the 'Calculation in progress' message
@@ -281,6 +285,14 @@ function submitProblem() {
 			// Enable the Solve button after the request is complete
 			solveButton.disabled = false;
 		});
+	}
+}
+
+// Function to update the user's token balance in the UI
+function updateTokenBalance(newBalance) {
+	let userInfoElement = document.getElementById('user-info');
+	if (userInfoElement) {
+		userInfoElement.textContent = `userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${newBalance};
 	}
 }
 

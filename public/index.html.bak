@@ -22,6 +22,7 @@
         <div class="header-container">
             <button id="register-btn" onclick="openRegisterPopup()" style="float:right;">Register</button>
             <button id="login-button" onclick="openLoginPopup()" style="float:right;">Login</button>
+			<label id="user-info" style="display:none; float:right;">empty</label>
             <button id="logout-btn" onclick="logout()" style="display:none; float:right;">Logout</button>
         </div>
     </header>

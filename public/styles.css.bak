@@ -58,6 +58,11 @@ header button:hover {
     background-color: #555;
 }
 
+header label {
+	color: black;
+	margin: 10px;
+}
+
 /* Add styles for the images */
 #background-img {
     width: 450px; /* Adjust the width as needed */
@@ -111,7 +116,7 @@ header button:hover {
 
 /* Styles for the textarea */
 .problem-textarea {
-    height: 34px;
+    height: 30px;
 	width: 100%;
     /* Add more styles as needed */
 }

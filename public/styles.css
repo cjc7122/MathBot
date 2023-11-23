@@ -58,6 +58,12 @@ header button:hover {
     background-color: #555;
 }
 
+header label {
+	color: black;
+	margin: 10px;
+	cursor: pointer;
+}
+
 /* Add styles for the images */
 #background-img {
     width: 450px; /* Adjust the width as needed */
