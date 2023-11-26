@@ -86,7 +86,7 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
+            userInfoElement.textContent = `${data.user.firstName} logged in. Tokens:`; /*${data.user.tokens}`;*/
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
@@ -205,7 +205,7 @@ function login() {
 			isLoginSuccessful = true;
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
+            userInfoElement.textContent = `${user.firstName} logged in.`; /*Tokens: ${user.tokens}`;*/
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
@@ -271,7 +271,7 @@ function submitProblem() {
 			// Display the result
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
-			updateTokenBalance(data.tokens); // Assuming the server sends back the updated token balance
+			//updateTokenBalance(data.tokens); // Assuming the server sends back the updated token balance
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
 		})
@@ -289,14 +289,14 @@ function submitProblem() {
 }
 
 // Function to update the user's token balance in the UI
-function updateTokenBalance(newBalance) {
+/*function updateTokenBalance(newBalance) {
 	let userInfoElement = document.getElementById('user-info');
 	if (userInfoElement) {
-		userInfoElement.textContent = `userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${newBalance};
+		userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${newBalance}`;
 	}
-}
+}*/
 
-function testServer() {
+/*function testServer() {
 	const result = document.getElementById('result');
 	const status = document.getElementById('status');
 
@@ -315,4 +315,4 @@ function testServer() {
 			// Clear the 'Testing server' message
 			status.innerHTML = '';
 		});
-}
+}*/

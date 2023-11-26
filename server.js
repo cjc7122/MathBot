@@ -28,8 +28,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 let users = [
-    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 10, ad_free: false },
-	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1', tokens: 10, ad_free: false},
+    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1'/*, tokens: 10, ad_free: false*/ },
+	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1'/*, tokens: 10, ad_free: false*/},
     // Add more users as needed
 ];
 
@@ -151,7 +151,7 @@ app.post('/login', authenticateUser, (req, res) => {
     if (user) {
         authenticatedUser = user;
         // Include the user's token balance in the response
-        res.json({ message: 'Login successful', user: { ...user, password: undefined, tokens: user.tokens } });
+        res.json({ message: 'Login successful', user: { ...user, password: undefined/*, tokens: user.tokens*/ } });
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -182,12 +182,12 @@ app.post('/verify', (req, res) => {
     tempVerify = tempVerify.filter(entry => entry.email !== email);
 
     // Add the user to the main users array
-    users.push({ firstName, lastName, email, password, tokens: 10 });
+    users.push({ firstName, lastName, email, password/*, tokens: 10*/ });
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);
 
-    res.json({ message: 'Verification successful', user: { ...user, password: undefined, tokens: 10 } });
+    res.json({ message: 'Verification successful', user: { ...user, password: undefined/*, tokens: 10*/ } });
 });
 
 // /solve endpoint
