@@ -191,7 +191,7 @@ app.post('/verify', (req, res) => {
 });
 
 // /solve endpoint
-app.post('/solve', authenticateUser, async (req, res) => {
+app.post('/solve', /*authenticateUser,*/ async (req, res) => {
     const { problem } = req.body;
 
     try {
