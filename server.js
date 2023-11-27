@@ -3,33 +3,16 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-//const { Pool } = require('pg');
 
 const app = express();
 const port = 10000; // Update with your desired port
-
-/*const pool = new Pool({
-    user: 'mathbotsql_user',
-    host: 'dpg-clf4fjrl00ks739vs450-a',
-    database: 'mathbotsql',
-    password: 'ojFiYKf9Q1cBnMMbrZ5KiMzppjT2o1Uv',
-    port: 5432, // PostgreSQL default port
-});
-
-pool.on('connect', () => {
-    console.log('Connected to the database');
-});
-
-pool.on('error', (err) => {
-    console.error('Error connecting to the database:', err);
-});*/
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
 
 // In-memory user database (for demo purposes)
 let users = [
-    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1'/*, tokens: 10, ad_free: false*/ },
-	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1'/*, tokens: 10, ad_free: false*/},
+    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 10, ad_free: false },
+	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1', tokens: 10, ad_free: false},
     // Add more users as needed
 ];
 
@@ -83,7 +66,6 @@ const authenticateUser = (req, res, next) => {
 const checkDuplicateUser = (req, res, next) => {
     const { email } = req.body;
     const userExists = users.some((u) => u.email === email);
-	//console.log(email)
     if (userExists) {
         return res.status(409).json({ error: 'Email already registered' });
     }
@@ -93,7 +75,7 @@ const checkDuplicateUser = (req, res, next) => {
 // Middleware to check if the user is already registered
 const checkPassword = (req, res, next) => {
     const { password1, password2 } = req.body;
-	
+
 	if (password1 !== password2) {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
@@ -138,11 +120,6 @@ const sendVerificationEmail = async (req, res, next) => {
 
 app.use(express.static('public'));
 
-// Test endpoint to check if the server is running
-//app.get('/test', (req, res) => {
-//    res.json({ message: 'Server is working!' });
-//});
-
 // Login endpoint
 app.post('/login', authenticateUser, (req, res) => {
     const { email, password } = req.body;
@@ -151,12 +128,11 @@ app.post('/login', authenticateUser, (req, res) => {
     if (user) {
         authenticatedUser = user;
         // Include the user's token balance in the response
-        res.json({ message: 'Login successful', user: { ...user, password: undefined/*, tokens: user.tokens*/ } });
+        res.json({ message: 'Login successful', user: { ...user, password: undefined, tokens: user.tokens } });
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
     }
 });
-
 
 // Logout endpoint
 app.post('/logout', (req, res) => {
@@ -182,12 +158,12 @@ app.post('/verify', (req, res) => {
     tempVerify = tempVerify.filter(entry => entry.email !== email);
 
     // Add the user to the main users array
-    users.push({ firstName, lastName, email, password/*, tokens: 10*/ });
+    users.push({ firstName, lastName, email, password, tokens: 10 });
 
     // Log the verification success
     console.log(`Verification successful for ${email}`);
 
-    res.json({ message: 'Verification successful', user: { ...user, password: undefined/*, tokens: 10*/ } });
+    res.json({ message: 'Verification successful', user: { ...user, password: undefined, tokens: 10 } });
 });
 
 // /solve endpoint
