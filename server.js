@@ -167,7 +167,7 @@ app.post('/verify', (req, res) => {
 });
 
 // /solve endpoint
-app.post('/solve', /*authenticateUser,*/ async (req, res) => {
+app.post('/solve', async (req, res) => {
     const { problem } = req.body;
 
     try {
@@ -180,7 +180,7 @@ app.post('/solve', /*authenticateUser,*/ async (req, res) => {
         }
 
         // Deduct 1 from the user's tokens
-        //users[userIndex].tokens -= 1;
+        users[userIndex].tokens -= 1;
 
         // Make the request to OpenAI
         const response = await axios.post(
@@ -205,27 +205,18 @@ app.post('/solve', /*authenticateUser,*/ async (req, res) => {
         const solution = processResponse(response.data);
 
         // Return the solution and the updated token balance
-        res.json({ solution/*, tokens: users[userIndex].tokens*/ });
+        res.json({ solution, tokens: users[userIndex].tokens });
     } catch (error) {
         console.error('Error:', error.message);
 
         // If an error occurs, roll back the deduction of tokens
-        /*if (userIndex !== -1) {
+        if (userIndex !== -1) {
             users[userIndex].tokens += 1;
-        }*/
+        }
 
-        res.status(500).json({ error: 'An error occurred'/*, tokens: users[userIndex].tokens*/ });
+        res.status(500).json({ error: 'An error occurred', tokens: users[userIndex].tokens });
     }
 });
-
-
-
-// Close the database connection pool when the server is stopped
-/*process.on('SIGINT', async () => {
-    await pool.end();
-    console.log('Database connection pool closed');
-    process.exit(0);
-});*/
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
