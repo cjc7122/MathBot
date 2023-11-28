@@ -85,7 +85,7 @@ function Verify() {
 			SuccessRegister();
 			// Show the Logout button
 			// Successful login, close the popup
-			const { user } = data;
+			let { user } = data;
             userInfoElement1.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button

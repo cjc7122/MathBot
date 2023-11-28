@@ -146,25 +146,39 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
 });
 
 app.post('/verify', (req, res) => {
-    const { firstName, lastName, email, password3, verificationCode } = req.body;
-	const password = password3;
-    const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+    try {
+        console.log('Verification request received:', req.body);
 
-    if (!matchingEntry) {
-        return res.status(401).json({ error: 'Invalid verification code' });
+        const { firstName, lastName, email, password3, verificationCode } = req.body;
+        const password = password3;
+
+        console.log('Verification data:', { firstName, lastName, email, password, verificationCode });
+
+        const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+
+        if (!matchingEntry) {
+            console.log('Invalid verification code');
+            return res.status(401).json({ error: 'Invalid verification code' });
+        }
+
+        // Remove the matching entry from the temporary verification array
+        tempVerify = tempVerify.filter(entry => entry.email !== email);
+
+        // Add the user to the main users array
+        users.push({ firstName, lastName, email, password, tokens: 10, ad_free: false });
+
+        // Log the verification success
+        console.log(`Verification successful for ${email}`);
+
+        res.json({ message: 'Verification successful', user: { email, firstName, tokens: 10 } });
+    } catch (error) {
+        console.error('Error during verification:', error);
+
+        // Log the error details
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    // Remove the matching entry from the temporary verification array
-    tempVerify = tempVerify.filter(entry => entry.email !== email);
-
-    // Add the user to the main users array
-    users.push({ firstName, lastName, email, password, tokens: 10, ad_free: false });
-
-    // Log the verification success
-    console.log(`Verification successful for ${email}`);
-
-    res.json({ message: 'Verification successful', user: { ...user, password: undefined, tokens: 10 } });
 });
+
 
 // /solve endpoint
 app.post('/solve', async (req, res) => {
