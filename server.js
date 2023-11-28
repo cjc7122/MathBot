@@ -222,9 +222,11 @@ app.post('/solve', async (req, res) => {
 
         // Process the OpenAI response
         const solution = processResponse(response.data);
+		
+		const user = users.find((u) => u.email === email);
 
         // Return the solution and the updated token balance
-        res.json({ solution, tokens: users[userIndex].tokens });
+        res.json({ solution, user: { ...user, password: undefined, tokens: user.tokens } });
     } catch (error) {
         console.error('Error:', error.message);
 
@@ -233,9 +235,8 @@ app.post('/solve', async (req, res) => {
             users[userIndex].tokens += 1;
         }
 
-		const user = users.find((u) => u.email === email);
 		
-        res.status(500).json({ error: 'An error occurred', user: { ...user, password: undefined, tokens: user.tokens } });
+        res.status(500).json({ error: 'An error occurred' });
     }
 });
 

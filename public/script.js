@@ -273,6 +273,7 @@ function submitProblem() {
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
 			const { user } = data;
+			console.log(user)
             userInfoElement2.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';

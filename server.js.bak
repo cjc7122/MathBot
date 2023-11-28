@@ -188,18 +188,18 @@ app.post('/solve', async (req, res) => {
 
     try {
         // Find the authenticated user
-        const user = users.findIndex((u) => u.email === authenticatedUser.email);
+        const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
 
         // Ensure the user is found
-        if (user === -1) {
+        if (userIndex === -1) {
             return res.status(500).json({ error: 'Authenticated user not found' });
         }
 		
-		if (users[user].tokens <= 0) {
+		if (users[userIndex].tokens <= 0) {
 			console.log('no more tokens');
 		}
         // Deduct 1 from the user's tokens
-        users[user].tokens -= 1;
+        users[userIndex].tokens -= 1;
 
         // Make the request to OpenAI
         const response = await axios.post(
@@ -224,15 +224,17 @@ app.post('/solve', async (req, res) => {
         const solution = processResponse(response.data);
 
         // Return the solution and the updated token balance
-        res.json({ solution, tokens: users[user].tokens });
+        res.json({ solution, tokens: users[userIndex].tokens });
     } catch (error) {
         console.error('Error:', error.message);
 
         // If an error occurs, roll back the deduction of tokens
-        if (user !== -1) {
-            users[user].tokens += 1;
+        if (userIndex !== -1) {
+            users[userIndex].tokens += 1;
         }
 
+		const user = users.find((u) => u.email === email);
+		
         res.status(500).json({ error: 'An error occurred', user: { ...user, password: undefined, tokens: user.tokens } });
     }
 });
