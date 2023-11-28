@@ -272,7 +272,7 @@ function submitProblem() {
 			// Display the result
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
-			//updateTokenBalance(data.tokens); // Assuming the server sends back the updated token balance
+            userInfoElement2.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
 		})
@@ -288,12 +288,4 @@ function submitProblem() {
 		});
 	}
 }
-
-// Function to update the user's token balance in the UI
-/*function updateTokenBalance(newBalance) {
-	let userInfoElement = document.getElementById('user-info');
-	if (userInfoElement) {
-		userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${newBalance}`;
-	}
-}*/
 

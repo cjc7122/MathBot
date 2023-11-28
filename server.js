@@ -233,7 +233,7 @@ app.post('/solve', async (req, res) => {
             users[userIndex].tokens += 1;
         }
 
-        res.status(500).json({ error: 'An error occurred', tokens: users[userIndex].tokens });
+        res.status(500).json({ error: 'An error occurred', userIndex: { ...user, password: undefined, tokens: user.tokens } });
     }
 });
 
