@@ -86,7 +86,7 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${data.user.firstName} logged in. Tokens:`; /*${data.user.tokens}`;*/
+            userInfoElement1.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
@@ -205,7 +205,7 @@ function login() {
 			isLoginSuccessful = true;
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${user.firstName} logged in.`; /*Tokens: ${user.tokens}`;*/
+            userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
@@ -296,23 +296,3 @@ function submitProblem() {
 	}
 }*/
 
-/*function testServer() {
-	const result = document.getElementById('result');
-	const status = document.getElementById('status');
-
-	// Display 'Testing server' message
-	status.innerHTML = 'Testing server...';
-
-	fetch('https://mathbot-5zr7.onrender.com/test')
-		.then(response => response.json())
-		.then(data => {
-			console.log(data); // This should log the actual object received from the server
-			// Clear the 'Testing server' message
-			status.innerHTML = '';
-		})
-		.catch(error => {
-			console.error('Error:', error);
-			// Clear the 'Testing server' message
-			status.innerHTML = '';
-		});
-}*/
