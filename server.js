@@ -169,8 +169,10 @@ app.post('/verify', (req, res) => {
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
+		
+		const user = users.find((u) => u.email === email && u.password === password);
 
-        res.json({ message: 'Verification successful', user: { ...user, password: undefined, tokens: user.tokens } });
+        res.json({ message: 'Verification successful', user: { email, firstName, tokens: 10 } });
     } catch (error) {
         console.error('Error during verification:', error);
 
