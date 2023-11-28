@@ -223,7 +223,7 @@ app.post('/solve', async (req, res) => {
         // Process the OpenAI response
         const solution = processResponse(response.data);
 		console.log('2')
-		const user = users.find((u) => u.email === email);
+		const user = users.find((u) => u.email === authenticatedUser.email);
 		console.log('3')
         // Return the solution and the updated token balance
         res.json({ solution, user: { ...user, password: undefined, tokens: user.tokens } });

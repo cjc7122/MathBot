@@ -200,7 +200,7 @@ app.post('/solve', async (req, res) => {
 		}
         // Deduct 1 from the user's tokens
         users[userIndex].tokens -= 1;
-
+		console.log('0')
         // Make the request to OpenAI
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
