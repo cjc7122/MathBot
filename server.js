@@ -200,7 +200,7 @@ app.post('/solve', async (req, res) => {
 		}
         // Deduct 1 from the user's tokens
         users[userIndex].tokens -= 1;
-
+		console.log('0')
         // Make the request to OpenAI
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
@@ -219,12 +219,12 @@ app.post('/solve', async (req, res) => {
                 },
             }
         );
-
+		console.log('1')
         // Process the OpenAI response
         const solution = processResponse(response.data);
-		
+		console.log('2')
 		const user = users.find((u) => u.email === email);
-
+		console.log('3')
         // Return the solution and the updated token balance
         res.json({ solution, user: { ...user, password: undefined, tokens: user.tokens } });
     } catch (error) {
@@ -232,7 +232,7 @@ app.post('/solve', async (req, res) => {
 
         // If an error occurs, roll back the deduction of tokens
         if (userIndex !== -1) {
-            users[userIndex].tokens += 1;
+            users[userIndex].tokens += 1;S
         }
 
 		
