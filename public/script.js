@@ -87,6 +87,7 @@ function Verify() {
 			// Successful login, close the popup
 			let { user } = data;
             userInfoElement1.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
+			document.getElementById('user-info').style.display = 'block';
 			document.getElementById('logout-btn').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
@@ -271,7 +272,7 @@ function submitProblem() {
 			// Display the result
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
-			//updateTokenBalance(data.tokens); // Assuming the server sends back the updated token balance
+            userInfoElement2.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
 		})
@@ -287,12 +288,4 @@ function submitProblem() {
 		});
 	}
 }
-
-// Function to update the user's token balance in the UI
-/*function updateTokenBalance(newBalance) {
-	let userInfoElement = document.getElementById('user-info');
-	if (userInfoElement) {
-		userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${newBalance}`;
-	}
-}*/
 

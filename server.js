@@ -194,7 +194,10 @@ app.post('/solve', async (req, res) => {
         if (userIndex === -1) {
             return res.status(500).json({ error: 'Authenticated user not found' });
         }
-
+		
+		if (users[userIndex].tokens <= 0) {
+			console.log('no more tokens');
+		}
         // Deduct 1 from the user's tokens
         users[userIndex].tokens -= 1;
 
