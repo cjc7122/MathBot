@@ -12,23 +12,25 @@
     <!-- Header Section -->
     <header>
         <div class="header-container">
-            <button id="home-button" onclick="goHome()">Home</button>
+            <button id="GetCoin" onclick="openGetCoinPage()">Get MathCoins</button>
         </div>
         <div class="header-container centered-section">
-            <img src="./Pictures/background.png" alt="MathBot" id="background-img" onclick="goHome()">
-            <img src="./Pictures/Mathbot.png" alt="MathBot" id="mathbot-img" onclick="goHome()">
-            <img src="./Pictures/Header-Words.png" alt="MathBot" id="header-words-img" onclick="goHome()">
+            <img src="./Pictures/background.png" alt="MathBot" id="background-img">
+            <img src="./Pictures/Mathbot.png" alt="MathBot" id="mathbot-img">
+            <img src="./Pictures/Header-Words.png" alt="MathBot" id="header-words-img">
         </div>
         <div class="header-container">
-            <button id="register-btn" onclick="openRegisterPopup()" style="float:right;">Register</button>
-            <button id="login-button" onclick="openLoginPopup()" style="float:right;">Login</button>
-			<label id="user-info" style="display:none; float:right;">empty</label>
-            <button id="logout-btn" onclick="logout()" style="display:none; float:right;">Logout</button>
-        </div>
+			<div class="top-right">
+				<button id="register-btn" onclick="openRegisterPopup()">Register</button>
+				<button id="login-button" onclick="openLoginPopup()">Login</button>
+				<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
+				<label id="user-info" style="display:none; float:right;">empty</label>
+			</div>
+		</div>
     </header>
 	
 	<div class="container">
-		<p class="intro-text">
+		<p class="intro-text" id="intro-text">
             MathBot - Your Instant Math Problem Solver<br>
             Struggling with math problems? Enter your mathematical queries below and let MathBot provide step-by-step solutions.
         </p>
@@ -37,7 +39,7 @@
         <div id="math-solver">
             <form>
                 <textarea type="text" id="problem-input" name="problemInput" oninput="adjustTextareaHeight()" cols="100" class="problem-textarea">Insert math problem here</textarea><br><br>
-                <button type="button" id="solveButton" onclick="submitProblem()">Solve</button>
+                <button type="button" id="solveButton" onclick="submitProblem()">Solve</button><br>
             </form>
             <div id="result"></div>
             <div id="status"></div>
@@ -101,5 +103,12 @@
 		
 		<script src="script.js"></script>
     </div>
+	
+	<!-- Footer Section -->
+	<footer>
+		<div class="footer-container">
+			<p>© 2023 MathBot. All rights reserved.</p>
+		</div>
+	</footer>
 </body>
 </html>

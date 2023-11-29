@@ -291,3 +291,18 @@ function submitProblem() {
 	}
 }
 
+function openGetCoinPage() {
+	document.getElementById('problem-input').style.display = 'none';
+	document.getElementById('solveButton').style.display = 'none';
+	document.getElementById('intro-text').style.display = 'none';
+	document.getElementById('GetCoin').style.display = 'none';
+	document.getElementById('GoHome').style.display = 'block';
+}
+
+function GoHome() {
+	document.getElementById('problem-input').style.display = '';
+	document.getElementById('solveButton').style.display = '';
+	document.getElementById('intro-text').style.display = '';
+	document.getElementById('GetCoin').style.display = 'block';
+	document.getElementById('GoHome').style.display = 'none';
+}

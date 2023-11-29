@@ -273,7 +273,7 @@ function submitProblem() {
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
 			const { user } = data;
-			console.log('1')
+			console.log(user)
             userInfoElement2.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
@@ -291,3 +291,18 @@ function submitProblem() {
 	}
 }
 
+function openGetCoinPage() {
+	document.getElementById('problem-input').style.display = 'none';
+	document.getElementById('solveButton').style.display = 'none';
+	document.getElementById('intro-text').style.display = 'none';
+	document.getElementById('GetCoin').style.display = 'none';
+	document.getElementById('GoHome').style.display = 'block';
+}
+
+function GoHome() {
+	document.getElementById('problem-input').style.display = 'block';
+	document.getElementById('solveButton').style.display = '';
+	document.getElementById('intro-text').style.display = 'block';
+	document.getElementById('GetCoin').style.display = 'block';
+	document.getElementById('GoHome').style.display = 'none';
+}
