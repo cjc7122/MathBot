@@ -87,8 +87,8 @@ function Verify() {
 			// Successful login, close the popup
 			let { user } = data;
             userInfoElement1.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
-			document.getElementById('user-info').style.display = 'block';
 			document.getElementById('logout-btn').style.display = 'block';
+			document.getElementById('user-info').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
@@ -211,8 +211,8 @@ function login() {
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
 			// Show the Logout button
-			document.getElementById('user-info').style.display = 'block';
 			document.getElementById('logout-btn').style.display = 'block';
+			document.getElementById('user-info').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
