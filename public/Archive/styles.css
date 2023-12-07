@@ -38,8 +38,26 @@ body {
 	}
 
 	/* Add styles for the images */
-	#MathBotLogo {
+	#background-img {
 		width: 450px; /* Adjust the width as needed */
+		height: 100px; /* Adjust the height as needed */
+	}
+
+	#mathbot-img {
+		position: fixed;
+		top: 50%;
+		left: 20%;
+		transform: translate(-50%, -50%);
+		width: 75px; /* Adjust the width as needed */
+		height: 75px; /* Adjust the height as needed */
+	}
+
+	#header-words-img {
+		position: fixed;
+		top: 50%;
+		left: 58%;
+		transform: translate(-50%, -50%);
+		width: 275px; /* Adjust the width as needed */
 		height: 100px; /* Adjust the height as needed */
 	}
 }
@@ -63,8 +81,26 @@ body {
 	}
 
 	/* Add styles for the images */
-	#MathBotLogo {
+	#background-img {
 		width: 450px; /* Adjust the width as needed */
+		height: 100px; /* Adjust the height as needed */
+	}
+
+	#mathbot-img {
+		position: fixed;
+		top: 50%;
+		left: 20%;
+		transform: translate(-50%, -50%);
+		width: 75px; /* Adjust the width as needed */
+		height: 75px; /* Adjust the height as needed */
+	}
+
+	#header-words-img {
+		position: fixed;
+		top: 50%;
+		left: 58%;
+		transform: translate(-50%, -50%);
+		width: 275px; /* Adjust the width as needed */
 		height: 100px; /* Adjust the height as needed */
 	}
 }
@@ -88,9 +124,27 @@ body {
 	}
 
 	/* Add styles for the images */
-	#MathBotLogo {
+	#background-img {
 		width: 300px; /* Adjust the width as needed */
 		height: 66px; /* Adjust the height as needed */
+	}
+
+	#mathbot-img {
+		position: fixed;
+		top: 50%;
+		left: 20%;
+		transform: translate(-50%, -50%);
+		width: 50px; /* Adjust the width as needed */
+		height: 50px; /* Adjust the height as needed */
+	}
+
+	#header-words-img {
+		position: fixed;
+		top: 50%;
+		left: 58%;
+		transform: translate(-50%, -50%);
+		width: 180px; /* Adjust the width as needed */
+		height: 70px; /* Adjust the height as needed */
 	}
 }
 
