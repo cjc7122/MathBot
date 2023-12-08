@@ -64,7 +64,8 @@ function Verify() {
 	const verificationCode = document.getElementById('verificationCode').value;
 	const email = document.getElementById('E-Mail').value;
 	const password3 = document.getElementById('password2').value;
-	const userInfoElement1 = document.getElementById('user-info');
+	const userInfoElement1 = document.getElementById('user-info1');
+	const userInfoElement2 = document.getElementById('user-info2');
 	
 	// Send credentials to the server for duplicate check
 	fetch('https://mathbot-5zr7.onrender.com/verify', {
@@ -86,7 +87,9 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			let { user } = data;
-            userInfoElement1.textContent = `${data.user.firstName} logged in. Tokens: ${data.user.tokens}`;
+            userInfoElement1.textContent = `${data.user.firstName} logged in.`;
+			document.getElementById('MathCoin').style.display = 'block';
+			userInfoElement2.textContent = `: ${data.user.tokens}`;
 			document.getElementById('logout-btn').style.display = 'block';
 			document.getElementById('user-info').style.display = 'block';
 			// Hide the Login button
@@ -188,7 +191,8 @@ function register() {
 function login() {
 	const email = document.getElementById('username').value;
 	const password = document.getElementById('password').value;
-	let userInfoElement = document.getElementById('user-info');
+	let userInfoElement1 = document.getElementById('user-info1');
+	let userInfoElement2 = document.getElementById('user-info2');
 
 	// Send credentials to the server for validation
 	fetch('https://mathbot-5zr7.onrender.com/login', {
@@ -206,13 +210,16 @@ function login() {
 			isLoginSuccessful = true;
 			// Successful login, close the popup
 			const { user } = data;
-            userInfoElement.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
+            userInfoElement1.textContent = `${data.user.firstName} logged in.`;
+			document.getElementById('MathCoin').style.display = 'block';
+			userInfoElement2.textContent = `: ${data.user.tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
 			// Show the Logout button
 			document.getElementById('logout-btn').style.display = 'block';
-			document.getElementById('user-info').style.display = 'block';
+			document.getElementById('user-info1').style.display = 'block';
+			document.getElementById('user-info2').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
@@ -273,8 +280,7 @@ function submitProblem() {
 			result.innerHTML = `Solution: ${data.solution}`;
 			// Update the user's token balance
 			const { user } = data;
-			console.log(user)
-            userInfoElement2.textContent = `${user.firstName} logged in. Tokens: ${user.tokens}`;
+			userInfoElement2.textContent = `: ${data.user.tokens}`;
 			// Clear the 'Calculation in progress' message
 			status.innerHTML = '';
 		})

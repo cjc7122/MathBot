@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Problem Solver</title>
-	<link rel="icon" href="./pictures/TabPicture.png" type="image/x-icon">
+	<link rel="icon" href="./Pictures/TabPicture.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9698461063501606" crossorigin="anonymous"></script>
 </head>
@@ -23,7 +23,9 @@
 			<div class="top-right">
 				<button id="login-button" onclick="openLoginPopup()">Login</button>
 				<button id="register-btn" onclick="openRegisterPopup()">Register</button>
-				<label id="user-info" style="display:none;">empty</label>
+				<label id="user-info1" style="display:none;">empty</label>
+				<img src="./Pictures/MathCoin.png" alt="MathBot" id="MathCoin" style="display:block;">
+				<label id="user-info2" style="display:block;">empty</label>
 				<button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
 			</div>
 		</div>
