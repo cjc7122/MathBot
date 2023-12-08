@@ -134,6 +134,12 @@ header label {
 	cursor: pointer;
 }
 
+header #MathCoin {
+	width: 25px;
+	height: 25px;
+	margin: -10px;
+}
+
 /* Intro text styles */
 .intro-text {
 	top: 100px;
