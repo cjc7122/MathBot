@@ -40,18 +40,18 @@ body {
 	/* Add styles for the images */
 	#MathBotLogo {
 		width: 450px; /* Adjust the width as needed */
-		height: 100px; /* Adjust the height as needed */
+		height: 125px; /* Adjust the height as needed */
 	}
 }
 
 /* Styles for larger screens */
-@media only screen and (max-width: 810px) and (min-width: 690px) {
+@media only screen and (max-width: 810px) and (min-width: 720px) {
 	.container {
-		width: 50%;
+		width: 60%;
 		margin: 0 auto;
 		text-align: center;
 		position: absolute;
-		left: 25%;
+		left: 20%;
 		top: 25%;
 	}
 	
@@ -65,24 +65,24 @@ body {
 	/* Add styles for the images */
 	#MathBotLogo {
 		width: 450px; /* Adjust the width as needed */
-		height: 100px; /* Adjust the height as needed */
+		height: 125px; /* Adjust the height as needed */
 	}
 }
 
 /* Styles for larger screens */
-@media only screen and (max-width: 690px){
+@media only screen and (max-width: 720px){
 	.container {
-		width: 50%;
+		width: 60%;
 		margin: 0 auto;
 		text-align: center;
 		position: absolute;
-		left: 25%;
+		left: 20%;
 		top: 20%;
 	}
 	
 	.centered-section {
 		position: fixed;
-		top: 85px;
+		top: 90px;
 		left: 50%;
 		transform: translate(-50%, -50%);
 	}
@@ -90,7 +90,7 @@ body {
 	/* Add styles for the images */
 	#MathBotLogo {
 		width: 300px; /* Adjust the width as needed */
-		height: 66px; /* Adjust the height as needed */
+		height: 83px; /* Adjust the height as needed */
 	}
 }
 
@@ -134,10 +134,15 @@ header label {
 	cursor: pointer;
 }
 
+header #user-info1:hover {
+    text-decoration: underline;
+}
+
 header #MathCoin {
 	width: 25px;
 	height: 25px;
 	margin: -10px;
+	cursor: pointer;
 }
 
 /* Intro text styles */
@@ -185,6 +190,18 @@ header #MathCoin {
 }
 
 #solveButton:hover {
+    opacity: 0.8;
+}
+
+#WatchAd {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#WatchAd:hover {
     opacity: 0.8;
 }
 

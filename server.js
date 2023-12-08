@@ -200,7 +200,6 @@ app.post('/solve', async (req, res) => {
 		}
         // Deduct 1 from the user's tokens
         users[userIndex].tokens -= 1;
-		console.log('0')
         // Make the request to OpenAI
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
@@ -235,6 +234,33 @@ app.post('/solve', async (req, res) => {
 		
         res.status(500).json({ error: 'An error occurred' });
     }
+});
+
+// Update your backend API endpoint for watching an ad
+app.post('/watch-ad', (req, res) => {
+	try {
+		// Assume authentication has already been handled
+		const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
+
+		if (userIndex === -1) {
+            return res.status(500).json({ error: 'Authenticated user not found' });
+        }
+
+		// Increment the user's MathCoins (e.g., reward 5 MathCoins for watching an ad)
+		users[userIndex].tokens += 5; // Adjust the reward amount as needed
+		const user = users.find((u) => u.email === authenticatedUser.email);
+		res.json({ message: 'Ad watched successfully', user: { ...user, password: undefined, tokens: user.tokens } });
+	} catch (error) {
+		console.error('Error:', error.message);
+
+        // If an error occurs, roll back the deduction of tokens
+        if (userIndex !== -1) {
+            users[userIndex].tokens -= 5;
+        }
+
+		
+        res.status(500).json({ error: 'An error occurred' });
+	}
 });
 
 app.listen(port, () => {
