@@ -196,7 +196,7 @@ app.post('/solve', async (req, res) => {
         }
 		
 		if (users[userIndex].tokens <= 0) {
-			console.log('no more tokens');
+			return res.status(510).json({ error: 'No more tokens' });
 		}
         // Deduct 1 from the user's tokens
         users[userIndex].tokens -= 1;
