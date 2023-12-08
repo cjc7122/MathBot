@@ -259,7 +259,7 @@ function submitProblem() {
 		const result = document.getElementById('result');
 		const status = document.getElementById('status');
 		const solveButton = document.getElementById('solveButton');
-		const userInfoElement2 = document.getElementById('user-info');
+		const userInfoElement2 = document.getElementById('user-info2');
 
 		const prompt = `Solve the following math problem: ${input}`;
 
@@ -276,15 +276,23 @@ function submitProblem() {
 			},
 			body: JSON.stringify({ problem: prompt }),
 		})
-		.then((response) => response.json())
-		.then((data) => {
-			// Display the result
-			result.innerHTML = `Solution: ${data.solution}`;
-			// Update the user's token balance
-			const { user } = data;
-			userInfoElement2.textContent = `:${data.user.tokens}`;
-			// Clear the 'Calculation in progress' message
-			status.innerHTML = '';
+		.then((response) => {
+			if (response.ok) {
+				return response.json().then((data) => {
+					// Display the result
+					result.innerHTML = `Solution: ${data.solution}`;
+					// Update the user's token balance
+					const { user } = data;
+					userInfoElement2.textContent = `:${data.user.tokens}`;
+					// Clear the 'Calculation in progress' message
+					status.innerHTML = '';
+				});
+			} else {
+				// Handle registration errors
+				if (response.status === 510) {
+					alert('Out of MathCoins!');
+				}
+			}
 		})
 		.catch((error) => {
 			console.error('Error:', error);
@@ -306,6 +314,7 @@ function openGetCoinPage() {
 	document.getElementById('GetCoin').style.display = 'none';
 	document.getElementById('GoHome').style.display = 'block';
 	document.getElementById('WatchAd').style.display = '';
+	document.getElementById('Ad-Text').style.display = '';
 }
 
 function GoHome() {
@@ -315,6 +324,7 @@ function GoHome() {
 	document.getElementById('GetCoin').style.display = 'block';
 	document.getElementById('GoHome').style.display = 'none';
 	document.getElementById('WatchAd').style.display = 'none';
+	document.getElementById('Ad-Text').style.display = 'none';
 }
 
 function watchAd() {
@@ -339,6 +349,8 @@ function watchAd() {
 		})
 		.then((response) => response.json())
 		.then((data) => {
+			const { user } = data;
+			userInfoElement2.textContent = `:${data.user.tokens}`;
 			console.log('Watch Ad response:', data);
 		})
 		.catch((error) => {

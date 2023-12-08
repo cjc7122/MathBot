@@ -255,7 +255,7 @@ app.post('/watch-ad', (req, res) => {
 
         // If an error occurs, roll back the deduction of tokens
         if (userIndex !== -1) {
-            users[userIndex].tokens += 1;
+            users[userIndex].tokens -= 5;
         }
 
 		
