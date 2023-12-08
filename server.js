@@ -11,7 +11,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 let users = [
-    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 10, ad_free: false },
+    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 0, ad_free: false },
 	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1', tokens: 10, ad_free: false},
     // Add more users as needed
 ];
