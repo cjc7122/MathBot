@@ -190,7 +190,7 @@ function register() {
 
 function login() {
 	const email = document.getElementById('username').value;
-	const password = document.getElementById('password').value;
+	const password1 = document.getElementById('password').value;
 	let userInfoElement1 = document.getElementById('user-info1');
 	let userInfoElement2 = document.getElementById('user-info2');
 
@@ -200,7 +200,7 @@ function login() {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ email, password }),
+		body: JSON.stringify({ email, password1 }),
 	})
 	.then(response => response.json())
 	.then(data => {
