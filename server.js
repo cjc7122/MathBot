@@ -145,7 +145,7 @@ const sendVerificationEmail = async (req, res, next) => {
 app.use(express.static('public'));
 
 // Login endpoint
-app.post('/login', authenticateUser, (req, res) => {
+app.post('/login', authenticateUser, async (req, res) => {
     const { email, password } = req.body;
 
     try {
