@@ -148,13 +148,38 @@ app.use(express.static('public'));
 app.post('/login', authenticateUser, (req, res) => {
     const { email, password } = req.body;
 
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (user) {
-        authenticatedUser = user;
-        // Include the user's token balance in the response
-        res.json({ message: 'Login successful', user: { ...user, password: undefined, tokens: user.tokens } });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
+    try {
+		await client.connect();
+		
+		const db = client.db("MathBot");
+		const collection = db.collection("MathbotUsers");
+		const credentials = await collection.findOne({ email, password});
+	
+		if (credentials) {
+			// Search for the user information in the "MathbotUserInfo" collection
+            const userInfoCollection = db.collection("MathbotUserInfo");
+            const userInfo = await userInfoCollection.findOne({ email });
+			
+			if (userInfo) {
+                // Combine the user credentials and information
+                const user = { ...credentials, ...userInfo };
+                
+                // Include the user's token balance in the response
+                res.json({ message: 'Login successful', user: { ...user, password: undefined } });
+            } else {
+                // Handle case where user information is not found
+                res.status(500).json({ error: 'User information not found' });
+            }
+        } else {
+            // Handle case where credentials are not found
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+	} catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'An error occurred' });
+    } finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
     }
 });
 
