@@ -13,13 +13,13 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 const uri = "mongodb+srv://ccressman:$Cellphone7122@mathbot.i7o0at3.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+/*const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
   }
-});
+});*/
 
 // In-memory user database (for demo purposes)
 let users = [
