@@ -63,7 +63,7 @@ app.use(cors());
 app.use(express.json());
 
 // Async function to connect to MongoDB
-async function connectToMongoDB() {
+/*async function connectToMongoDB() {
     try {
         // Connect the client to the server (optional starting in v4.7)
         await client.connect();
@@ -73,7 +73,7 @@ async function connectToMongoDB() {
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
-}
+}*/
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
