@@ -3,8 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const MongoClient = require('mongodb');
-const ServerApiVersion = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
 const port = 10000; // Update with your desired port
