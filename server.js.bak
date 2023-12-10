@@ -3,6 +3,9 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const uri = "mongodb+srv://ccressman:$Cellphone7122@mathbot.i7o0at3.mongodb.net/?retryWrites=true&w=majority";
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -11,7 +14,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'sk-Gojyb0Xzmz9yt06BBUhwT3B
 
 // In-memory user database (for demo purposes)
 let users = [
-    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 10, ad_free: false },
+    { firstName: 'test', lastName: 'user', email: 'user1', password: 'password1', tokens: 0, ad_free: false },
 	{ firstName: 'Colin', lastName: 'Cressman', email: 'colin.cressman@gmail.com', password: 'password1', tokens: 10, ad_free: false},
     // Add more users as needed
 ];
@@ -95,13 +98,13 @@ const sendVerificationEmail = async (req, res, next) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'cjc7122@gmail.com',
-                pass: 'bany uvnf rhoi dnfj',
+                user: 'mail.mathbot@gmail.com',
+                pass: 'ccwk rejs pwwf uysd',
             },
         });
     
         const mailOptions = {
-            from: 'cjc7122@gmail.com',
+            from: 'mail.mathbot@gmail.com',
             to: email,
             subject: 'Verify Your Email',
             text: `Your verification code is: ${verificationCode}`,

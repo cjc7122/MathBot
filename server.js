@@ -3,11 +3,23 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
 const port = 10000; // Update with your desired port
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
+
+const uri = "mongodb+srv://ccressman:$Cellphone7122@mathbot.i7o0at3.mongodb.net/?retryWrites=true&w=majority";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 // In-memory user database (for demo purposes)
 let users = [
@@ -38,7 +50,6 @@ const generateVerificationCode = () => {
     return verificationCode;
 };
 
-
 // Define CORS options
 const corsOptions = {
     origin: 'https://mathbot-5zr7.onrender.com/', // Replace with the actual origin of your frontend application
@@ -50,6 +61,19 @@ const corsOptions = {
 // Enable CORS with options
 app.use(cors());
 app.use(express.json());
+
+// Async function to connect to MongoDB
+async function connectToMongoDB() {
+    try {
+        // Connect the client to the server (optional starting in v4.7)
+        await client.connect();
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+    }
+}
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
@@ -95,13 +119,13 @@ const sendVerificationEmail = async (req, res, next) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'cjc7122@gmail.com',
-                pass: 'bany uvnf rhoi dnfj',
+                user: 'mail.mathbot@gmail.com',
+                pass: 'ccwk rejs pwwf uysd',
             },
         });
     
         const mailOptions = {
-            from: 'cjc7122@gmail.com',
+            from: 'mail.mathbot@gmail.com',
             to: email,
             subject: 'Verify Your Email',
             text: `Your verification code is: ${verificationCode}`,
