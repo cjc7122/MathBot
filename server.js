@@ -211,7 +211,8 @@ app.post('/login', authenticateUser, async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
 	} catch (error) {
-        res.status(500).json({ error: 'An error occurred' });
+        console.error('Login error:', error); // Add this line for detailed error logging
+        res.status(500).json({ error: 'An error occurred during login' });
     } finally {
         // Ensure that the client will close when you finish/error
         await client.close();
