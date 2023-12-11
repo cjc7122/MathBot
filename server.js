@@ -76,14 +76,27 @@ async function connectToMongoDB() {
 }
 
 // Middleware to check if the user is authenticated
-const authenticateUser = (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = users.find((u) => u.email === email	&& u.password === password);
-    if (user) {
-        next();
-    } else {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+	
+	try {
+		await client.connect();
+		
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const creds = await collection.findOne( { email: email, password: password } );
+		
+		if (creds) {
+			next();
+		} else {
+			return res.status(401).json({ error: 'Unauthorized' });
+		}
+	} catch (error) {
+        res.status(500).json({ error: 'An error occurred' });
+	} finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
+	}
 };
 
 // Middleware to check if the user is already registered
@@ -206,12 +219,23 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
     res.json({ message: 'Register successful' });
 });
 
-app.post('/verify', (req, res) => {
+app.post('/verify', async (req, res) => {
     try {
         console.log('Verification request received:', req.body);
 
         const { firstName, lastName, email, password3, verificationCode } = req.body;
         const password = password3;
+		const newUser = {
+			email: email,
+			password: password
+		};
+		const newUserInfo = {
+			email: email,
+			firstName: firstName,
+			lastName: lastName,
+			tokens: 10,
+			ad_free: false
+		};
 
         console.log('Verification data:', { firstName, lastName, email, password, verificationCode });
 
@@ -224,7 +248,17 @@ app.post('/verify', (req, res) => {
 
         // Remove the matching entry from the temporary verification array
         tempVerify = tempVerify.filter(entry => entry.email !== email);
+	
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const collection2 = db.collection("MathbotUserInfo");
 
+		const result = await collection.insertOne(newUser);
+        console.log(`Inserted ${result.insertedCount} document into the collection`);
+		const result2 = await collection2.insertOne(newUserInfo);
+        console.log(`Inserted ${result2.insertedCount} document into the collection`);
         // Add the user to the main users array
         users.push({ firstName, lastName, email, password, tokens: 10, ad_free: false });
 
