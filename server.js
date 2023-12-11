@@ -156,14 +156,14 @@ app.post('/login', authenticateUser, async (req, res) => {
 		const creds = await collection.findOne( { email: email, password: password } );
 		console.log('Credentials found:', creds);
 	
-		if (credentials) {
+		if (creds) {
 			// Search for the user information in the "MathbotUserInfo" collection
             const userInfoCollection = db.collection("MathbotUserInfo");
             const userInfo = await userInfoCollection.findOne({ email });
 			
 			if (userInfo) {
                 // Combine the user credentials and information
-                const user = { ...credentials, ...userInfo };
+                const user = { ...creds, ...userInfo };
                 
                 // Include the user's token balance in the response
                 res.json({ message: 'Login successful', user: { ...user, password: undefined } });
