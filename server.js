@@ -93,12 +93,14 @@ const authenticateUser = async (req, res, next) => {
 		const creds = await collection.findOne( { email: email, password: password } );
 		
 		if (creds) {
+			await client.close();
 			next();
 		} else {
 			return res.status(401).json({ error: 'Unauthorized' });
 		}
 	} catch (error) {
-        res.status(500).json({ error: 'An error occurred' });
+        console.error('MongoDB Error:', error);
+        res.status(500).json({ error: 'An error occurred during authentication' });
 	} finally {
         // Ensure that the client will close when you finish/error
         await client.close();
