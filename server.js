@@ -265,15 +265,17 @@ app.post('/verify', async (req, res) => {
 // /solve endpoint
 app.post('/solve', async (req, res) => {
     const { problem, email } = req.body;
+	console.log(email);
+	
 
     try {
 		await client.connect();
- 
+		console.log('1');
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUserInfo");
-
+		console.log('2');
 		const user = await collection.findOne( { email: email } );
-		
+		console.log('3');
 		if (user.tokens <= 0) {
 			return res.status(510).json({ error: 'No more tokens' });
 		}
