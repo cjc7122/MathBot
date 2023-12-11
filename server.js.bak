@@ -169,7 +169,7 @@ app.post('/login', async (req, res) => {
 				res.cookie('email', email);
 				res.cookie('firstName', userInfo.firstName);
                 
-                res.json({ message: 'Login successful' });
+                res.json({ message: 'Login successful', userInfo });
             } else {
                 // Handle case where user information is not found
                 res.status(500).json({ error: 'User information not found' });
@@ -306,7 +306,7 @@ app.post('/solve', async (req, res) => {
         const solution = processResponse(response.data);
 		//const user = users.find((u) => u.email === authenticatedUser.email);
         // Return the solution and the updated token balance
-        res.json({ solution, user: { ...user, password: undefined, tokens: user.tokens } });
+        res.json({ solution, tokens: user.tokens });
     } catch (error) {
         console.error('Error:', error.message);
 

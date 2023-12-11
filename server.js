@@ -169,7 +169,7 @@ app.post('/login', async (req, res) => {
 				res.cookie('email', email);
 				res.cookie('firstName', userInfo.firstName);
                 
-                res.json({ message: 'Login successful' });
+                res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
             } else {
                 // Handle case where user information is not found
                 res.status(500).json({ error: 'User information not found' });

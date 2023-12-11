@@ -221,11 +221,14 @@ function login() {
 			// Successful login
 			isLoggedIn = true;
 			isLoginSuccessful = true;
-			// Successful login, close the popup
+			
+			// Retrieve the first name from the cookie
+			const firstName = getCookie('firstName');
 			const { user } = data;
-            userInfoElement1.textContent = `Hi ${data.user.firstName}!`;
+			
+            userInfoElement1.textContent = `Hi ${firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
-			userInfoElement2.textContent = `:${data.user.tokens}`;
+			userInfoElement2.textContent = `:${user.tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
@@ -296,8 +299,6 @@ function submitProblem() {
 				return response.json().then((data) => {
 					// Display the result
 					result.innerHTML = `Solution: ${data.solution}`;
-					// Update the user's token balance
-					const { user } = data;
 					userInfoElement2.textContent = `:${data.user.tokens}`;
 					// Clear the 'Calculation in progress' message
 					status.innerHTML = '';

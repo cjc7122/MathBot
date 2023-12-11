@@ -221,11 +221,13 @@ function login() {
 			// Successful login
 			isLoggedIn = true;
 			isLoginSuccessful = true;
-			// Successful login, close the popup
-			const { user } = data;
-            userInfoElement1.textContent = `Hi ${data.user.firstName}!`;
+			
+			// Retrieve user information from the response
+			const { email, firstName, tokens } = data.user;
+			
+            userInfoElement1.textContent = `Hi ${firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
-			userInfoElement2.textContent = `:${data.user.tokens}`;
+			userInfoElement2.textContent = `:${tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
