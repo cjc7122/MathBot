@@ -173,18 +173,6 @@ const sendVerificationEmail = async (req, res, next) => {
 
 app.use(express.static('public'));
 
-app.get('/set-cookie', (req, res) => {
-    // Set a cookie with some data
-    res.cookie('user', 'John Doe', { maxAge: 900000, httpOnly: true });
-    res.send('Cookie has been set');
-});
-
-app.get('/get-cookie', (req, res) => {
-    // Retrieve and display the value of the 'user' cookie
-    const username = req.cookies.user;
-    res.send(`User: ${username || 'Not set'}`);
-});
-
 // Login endpoint
 app.post('/login', authenticateUser, async (req, res) => {
     const { email, password } = req.body;
@@ -203,9 +191,10 @@ app.post('/login', authenticateUser, async (req, res) => {
 			
 			if (userInfo) {
                 // Combine the user credentials and information
-                const user = { ...creds, ...userInfo };
+                const user = { userInfo };
                 
-                res.json({ message: 'Login successful', user: { ...user, password: undefined } });
+				res.cookie('user-info', user);
+                res.json({ message: 'Login successful', user: { user } });
             } else {
                 // Handle case where user information is not found
                 res.status(500).json({ error: 'User information not found' });
@@ -215,7 +204,7 @@ app.post('/login', authenticateUser, async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
 	} catch (error) {
-        res.status(500).json({ error: 'An error occurred' });
+        res.status(501).json({ error: 'An error occurred' });
     } finally {
         // Ensure that the client will close when you finish/error
         await client.close();

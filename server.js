@@ -193,7 +193,7 @@ app.post('/login', authenticateUser, async (req, res) => {
                 // Combine the user credentials and information
                 const user = { userInfo };
                 
-				res.cookie('user-info', user);
+				//res.cookie('user-info', user);
                 res.json({ message: 'Login successful', user: { user } });
             } else {
                 // Handle case where user information is not found
@@ -204,7 +204,7 @@ app.post('/login', authenticateUser, async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
 	} catch (error) {
-        res.status(500).json({ error: 'An error occurred' });
+        res.status(501).json({ error: 'An error occurred' });
     } finally {
         // Ensure that the client will close when you finish/error
         await client.close();
