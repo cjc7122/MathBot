@@ -151,11 +151,11 @@ app.post('/login', authenticateUser, async (req, res) => {
     try {
 		await client.connect();
  
-		const db = client.db("MathBot");
-		const collection = db.collection("MathbotUsers");
-		console.log('Attempting to find user:', { email, password });
-		const credentials = await collection.findOne();
-		console.log('Credentials found:', credentials);
+		//const db = client.db("MathBot");
+		//const collection = db.collection("MathbotUsers");
+		//console.log('Attempting to find user:', { email, password });
+		const creds = await db.MathbotUsers.findOne();
+		console.log('Credentials found:', creds);
 	
 		if (credentials) {
 			// Search for the user information in the "MathbotUserInfo" collection
