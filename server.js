@@ -3,11 +3,23 @@ const cors = require('cors');
 const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const app = express();
 const port = 10000; // Update with your desired port
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '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'; // Replace with your actual OpenAI API key
+
+const uri = "mongodb+srv://ccressman:$Cellphone7122@mathbot.i7o0at3.mongodb.net/?retryWrites=true&w=majority";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 // In-memory user database (for demo purposes)
 let users = [
@@ -38,7 +50,6 @@ const generateVerificationCode = () => {
     return verificationCode;
 };
 
-
 // Define CORS options
 const corsOptions = {
     origin: 'https://mathbot-5zr7.onrender.com/', // Replace with the actual origin of your frontend application
@@ -50,6 +61,19 @@ const corsOptions = {
 // Enable CORS with options
 app.use(cors());
 app.use(express.json());
+
+// Async function to connect to MongoDB
+async function connectToMongoDB() {
+    try {
+        // Connect the client to the server (optional starting in v4.7)
+        await client.connect();
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+    }
+}
 
 // Middleware to check if the user is authenticated
 const authenticateUser = (req, res, next) => {
@@ -121,16 +145,42 @@ const sendVerificationEmail = async (req, res, next) => {
 app.use(express.static('public'));
 
 // Login endpoint
-app.post('/login', authenticateUser, (req, res) => {
+app.post('/login', authenticateUser, async (req, res) => {
     const { email, password } = req.body;
 
-    const user = users.find((u) => u.email === email && u.password === password);
-    if (user) {
-        authenticatedUser = user;
-        // Include the user's token balance in the response
-        res.json({ message: 'Login successful', user: { ...user, password: undefined, tokens: user.tokens } });
-    } else {
-        res.status(401).json({ error: 'Invalid credentials' });
+    try {
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const creds = await collection.findOne( { email: email, password: password } );
+		console.log('Credentials found:', creds);
+	
+		if (credentials) {
+			// Search for the user information in the "MathbotUserInfo" collection
+            const userInfoCollection = db.collection("MathbotUserInfo");
+            const userInfo = await userInfoCollection.findOne({ email });
+			
+			if (userInfo) {
+                // Combine the user credentials and information
+                const user = { ...credentials, ...userInfo };
+                
+                // Include the user's token balance in the response
+                res.json({ message: 'Login successful', user: { ...user, password: undefined } });
+            } else {
+                // Handle case where user information is not found
+                res.status(500).json({ error: 'User information not found' });
+            }
+        } else {
+            // Handle case where credentials are not found
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+	} catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'An error occurred' });
+    } finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
     }
 });
 

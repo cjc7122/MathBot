@@ -290,6 +290,7 @@ function submitProblem() {
 			} else {
 				// Handle registration errors
 				if (response.status === 510) {
+					status.innerHTML = '';
 					alert('Out of MathCoins!');
 				}
 			}
