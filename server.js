@@ -89,14 +89,28 @@ const authenticateUser = (req, res, next) => {
 // Middleware to check if the user is already registered
 const checkDuplicateUser = (req, res, next) => {
     const { email } = req.body;
-    const userExists = users.some((u) => u.email === email);
-    if (userExists) {
-        return res.status(409).json({ error: 'Email already registered' });
+	
+	try {
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const creds = await collection.findOne( { email: email } );
+		console.log('Credentials found:', creds);
+	
+		if (creds) {
+            return res.status(409).json({ error: 'Email already registered' });
+		}
+	} catch (error) {
+        res.status(500).json({ error: 'An error occurred' });
+    } finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
     }
     next();
 };
 
-// Middleware to check if the user is already registered
+// Middleware to check if passwords are the same
 const checkPassword = (req, res, next) => {
     const { password1, password2 } = req.body;
 
