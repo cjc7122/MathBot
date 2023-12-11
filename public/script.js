@@ -284,7 +284,7 @@ function submitProblem() {
 		// Disable the Solve button to prevent multiple submissions
 		solveButton.disabled = true;
 		
-		const email = getCookie('email');
+		const email = decodeURIComponent(getCookie('email'));
 		console.log(email);
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {

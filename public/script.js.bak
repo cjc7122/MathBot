@@ -285,6 +285,7 @@ function submitProblem() {
 		solveButton.disabled = true;
 		
 		const email = getCookie('email');
+		console.log(email);
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
 			method: 'POST',

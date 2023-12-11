@@ -166,8 +166,8 @@ app.post('/login', async (req, res) => {
 			
 			if (userInfo) {
 				// Set cookies upon successful login
-				res.cookie('email', email);
-				res.cookie('firstName', userInfo.firstName);
+				res.cookie('email', encodeURIComponent(email));
+				res.cookie('firstName', encodeURIComponent(userInfo.firstName));
                 
                 res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
             } else {
@@ -241,8 +241,8 @@ app.post('/verify', async (req, res) => {
 		const result2 = await collection2.insertOne(newUserInfo);
 		
 		// Set cookies upon successful verification
-		res.cookie('email', email);
-		res.cookie('firstName', firstName);
+		res.cookie('email', encodeURIComponent(email));
+		res.cookie('firstName', encodeURIComponent(userInfo.firstName));
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
