@@ -281,21 +281,21 @@ function submitProblem() {
 
 		// Disable the Solve button to prevent multiple submissions
 		solveButton.disabled = true;
+		
+		const email = getCookie('email');
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ problem: prompt }),
+			body: JSON.stringify({ problem: prompt, email }),
 		})
 		.then((response) => {
 			if (response.ok) {
 				return response.json().then((data) => {
 					// Display the result
 					result.innerHTML = `Solution: ${data.solution}`;
-					// Update the user's token balance
-					const { user } = data;
 					userInfoElement2.textContent = `:${data.user.tokens}`;
 					// Clear the 'Calculation in progress' message
 					status.innerHTML = '';
@@ -375,6 +375,11 @@ function watchAd() {
 			WatchAd.disabled = false;
 		});
 	}
-	
-	
+}
+
+// Function to get a cookie by name
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
