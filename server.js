@@ -146,7 +146,7 @@ app.use(express.static('public'));
 
 // Login endpoint
 app.post('/login', authenticateUser, async (req, res) => {
-    const { email, password1 } = req.body;
+    const { email, password } = req.body;
 
     try {
 		await client.connect();
