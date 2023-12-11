@@ -306,7 +306,7 @@ app.post('/solve', async (req, res) => {
         const solution = processResponse(response.data);
 		//const user = users.find((u) => u.email === authenticatedUser.email);
         // Return the solution and the updated token balance
-        res.json({ solution, user.tokens } });
+        res.json({ solution, tokens: user.tokens } });
     } catch (error) {
         console.error('Error:', error.message);
 
