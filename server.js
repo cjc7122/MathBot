@@ -311,12 +311,12 @@ app.post('/solve', async (req, res) => {
         console.error('Error:', error.message);
 
         // If an error occurs, roll back the deduction of tokens
-        if (userIndex !== -1) {
+        if (user) {
             user.tokens += 1;
-			await collection.updateOne(
-				{ email: email },
-				{ $set: { tokens: user.tokens } }
-			);
+            await collection.updateOne(
+                { email: email },
+                { $set: { tokens: user.tokens } }
+            );
         }
 		
         res.status(500).json({ error: 'An error occurred' });
