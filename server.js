@@ -269,7 +269,7 @@ app.post('/verify', async (req, res) => {
 
         // Log the error details
         res.status(500).json({ error: 'Internal Server Error' });
-    } finally (
+    } finally {
 		// Ensure that the client will close when you finish/error
         await client.close();
 	}
