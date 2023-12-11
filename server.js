@@ -298,29 +298,26 @@ app.post('/verify', async (req, res) => {
 
 // /solve endpoint
 app.post('/solve', async (req, res) => {
-    const { problem } = req.body;
+    const { problem, email } = req.body;
 
     try {
-        // Find the authenticated user
-        const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
-
 		await client.connect();
  
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUserInfo");
 
-		//const user = await collection.findOne( { email: email } );
-
-        // Ensure the user is found
-        if (userIndex === -1) {
-            return res.status(500).json({ error: 'Authenticated user not found' });
-        }
+		const user = await collection.findOne( { email: email } );
 		
-		if (users[userIndex].tokens <= 0) {
+		if (user.tokens <= 0) {
 			return res.status(510).json({ error: 'No more tokens' });
 		}
         // Deduct 1 from the user's tokens
-        users[userIndex].tokens -= 1;
+        user.tokens -= 1;
+		
+		await collection.updateOne(
+            { email: email },
+            { $set: { tokens: user.tokens } }
+        );
         // Make the request to OpenAI
         const response = await axios.post(
             'https://api.openai.com/v1/chat/completions',
@@ -341,7 +338,7 @@ app.post('/solve', async (req, res) => {
         );
         // Process the OpenAI response
         const solution = processResponse(response.data);
-		const user = users.find((u) => u.email === authenticatedUser.email);
+		//const user = users.find((u) => u.email === authenticatedUser.email);
         // Return the solution and the updated token balance
         res.json({ solution, user: { ...user, password: undefined, tokens: user.tokens } });
     } catch (error) {
@@ -349,7 +346,11 @@ app.post('/solve', async (req, res) => {
 
         // If an error occurs, roll back the deduction of tokens
         if (userIndex !== -1) {
-            users[userIndex].tokens += 1;
+            user.tokens += 1;
+			await collection.updateOne(
+				{ email: email },
+				{ $set: { tokens: user.tokens } }
+			);
         }
 
 		
