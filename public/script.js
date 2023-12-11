@@ -202,18 +202,7 @@ function login() {
 		},
 		body: JSON.stringify({ email, password }),
 	})
-	.then(response => {
-		if (response.ok) {
-			// If the response status is OK (200), proceed to parse JSON
-			return response.json();
-		} else if (response.status === 401) {
-			// If the response status is Unauthorized (401), handle it here
-			throw new Error('Invalid username or password');
-		} else {
-			// Handle other status codes
-			throw new Error('An error occurred during login');
-		}
-	})
+	.then(response => response.json())
 	.then(data => {
 		if (data.message === 'Login successful') {
 			// Successful login
