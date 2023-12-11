@@ -256,24 +256,23 @@ app.post('/verify', async (req, res) => {
 		const collection2 = db.collection("MathbotUserInfo");
 
 		const result = await collection.insertOne(newUser);
-        console.log(`Inserted ${result.insertedCount} document into the collection`);
 		const result2 = await collection2.insertOne(newUserInfo);
-        console.log(`Inserted ${result2.insertedCount} document into the collection`);
-        // Add the user to the main users array
-        users.push({ firstName, lastName, email, password, tokens: 10, ad_free: false });
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
 		
-		const user = users.find((u) => u.email === email && u.password === password);
+		const user = await collection2.findOne({ email });
 
-        res.json({ message: 'Verification successful', user: { email, firstName, tokens: 10 } });
+        res.json({ message: 'Verification successful', user });
     } catch (error) {
         console.error('Error during verification:', error);
 
         // Log the error details
         res.status(500).json({ error: 'Internal Server Error' });
-    }
+    } finally (
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
 });
 
 
