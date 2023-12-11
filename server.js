@@ -87,7 +87,7 @@ const authenticateUser = (req, res, next) => {
 };
 
 // Middleware to check if the user is already registered
-const checkDuplicateUser = (req, res, next) => {
+const checkDuplicateUser = async (req, res, next) => {
     const { email } = req.body;
 	
 	try {
@@ -168,7 +168,6 @@ app.post('/login', authenticateUser, async (req, res) => {
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUsers");
 		const creds = await collection.findOne( { email: email, password: password } );
-		console.log('Credentials found:', creds);
 	
 		if (creds) {
 			// Search for the user information in the "MathbotUserInfo" collection
@@ -179,7 +178,6 @@ app.post('/login', authenticateUser, async (req, res) => {
                 // Combine the user credentials and information
                 const user = { ...creds, ...userInfo };
                 
-                // Include the user's token balance in the response
                 res.json({ message: 'Login successful', user: { ...user, password: undefined } });
             } else {
                 // Handle case where user information is not found
@@ -190,7 +188,6 @@ app.post('/login', authenticateUser, async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
 	} catch (error) {
-        console.error('Error during login:', error);
         res.status(500).json({ error: 'An error occurred' });
     } finally {
         // Ensure that the client will close when you finish/error
