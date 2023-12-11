@@ -4,6 +4,7 @@ const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -61,6 +62,7 @@ const corsOptions = {
 // Enable CORS with options
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
@@ -76,27 +78,54 @@ async function connectToMongoDB() {
 }
 
 // Middleware to check if the user is authenticated
-const authenticateUser = (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = users.find((u) => u.email === email	&& u.password === password);
-    if (user) {
-        next();
-    } else {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
+	
+	try {
+		await client.connect();
+		
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const creds = await collection.findOne( { email: email, password: password } );
+		
+		if (creds) {
+			next();
+		} else {
+			return res.status(401).json({ error: 'Unauthorized' });
+		}
+	} catch (error) {
+        res.status(500).json({ error: 'An error occurred' });
+	} finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
+	}
 };
 
 // Middleware to check if the user is already registered
-const checkDuplicateUser = (req, res, next) => {
+const checkDuplicateUser = async (req, res, next) => {
     const { email } = req.body;
-    const userExists = users.some((u) => u.email === email);
-    if (userExists) {
-        return res.status(409).json({ error: 'Email already registered' });
+	
+	try {
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const creds = await collection.findOne( { email: email } );
+		console.log('Credentials found:', creds);
+	
+		if (creds) {
+            return res.status(409).json({ error: 'Email already registered' });
+		}
+	} catch (error) {
+        res.status(500).json({ error: 'An error occurred' });
+    } finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
     }
     next();
 };
 
-// Middleware to check if the user is already registered
+// Middleware to check if passwords are the same
 const checkPassword = (req, res, next) => {
     const { password1, password2 } = req.body;
 
@@ -144,6 +173,18 @@ const sendVerificationEmail = async (req, res, next) => {
 
 app.use(express.static('public'));
 
+app.get('/set-cookie', (req, res) => {
+    // Set a cookie with some data
+    res.cookie('user', 'John Doe', { maxAge: 900000, httpOnly: true });
+    res.send('Cookie has been set');
+});
+
+app.get('/get-cookie', (req, res) => {
+    // Retrieve and display the value of the 'user' cookie
+    const username = req.cookies.user;
+    res.send(`User: ${username || 'Not set'}`);
+});
+
 // Login endpoint
 app.post('/login', authenticateUser, async (req, res) => {
     const { email, password } = req.body;
@@ -153,19 +194,17 @@ app.post('/login', authenticateUser, async (req, res) => {
  
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUsers");
-		const creds = await Scollection.findOne( { email: email, password: password } );
-		console.log('Credentials found:', creds);
+		const creds = await collection.findOne( { email: email, password: password } );
 	
-		if (credentials) {
+		if (creds) {
 			// Search for the user information in the "MathbotUserInfo" collection
             const userInfoCollection = db.collection("MathbotUserInfo");
             const userInfo = await userInfoCollection.findOne({ email });
 			
 			if (userInfo) {
                 // Combine the user credentials and information
-                const user = { ...credentials, ...userInfo };
+                const user = { ...creds, ...userInfo };
                 
-                // Include the user's token balance in the response
                 res.json({ message: 'Login successful', user: { ...user, password: undefined } });
             } else {
                 // Handle case where user information is not found
@@ -176,7 +215,6 @@ app.post('/login', authenticateUser, async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
 	} catch (error) {
-        console.error('Error during login:', error);
         res.status(500).json({ error: 'An error occurred' });
     } finally {
         // Ensure that the client will close when you finish/error
@@ -195,12 +233,23 @@ app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, 
     res.json({ message: 'Register successful' });
 });
 
-app.post('/verify', (req, res) => {
+app.post('/verify', async (req, res) => {
     try {
         console.log('Verification request received:', req.body);
 
         const { firstName, lastName, email, password3, verificationCode } = req.body;
         const password = password3;
+		const newUser = {
+			email: email,
+			password: password
+		};
+		const newUserInfo = {
+			email: email,
+			firstName: firstName,
+			lastName: lastName,
+			tokens: 10,
+			ad_free: false
+		};
 
         console.log('Verification data:', { firstName, lastName, email, password, verificationCode });
 
@@ -213,22 +262,31 @@ app.post('/verify', (req, res) => {
 
         // Remove the matching entry from the temporary verification array
         tempVerify = tempVerify.filter(entry => entry.email !== email);
+	
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUsers");
+		const collection2 = db.collection("MathbotUserInfo");
 
-        // Add the user to the main users array
-        users.push({ firstName, lastName, email, password, tokens: 10, ad_free: false });
+		const result = await collection.insertOne(newUser);
+		const result2 = await collection2.insertOne(newUserInfo);
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
 		
-		const user = users.find((u) => u.email === email && u.password === password);
+		const user = await collection2.findOne({ email });
 
-        res.json({ message: 'Verification successful', user: { email, firstName, tokens: 10 } });
+        res.json({ message: 'Verification successful', user });
     } catch (error) {
         console.error('Error during verification:', error);
 
         // Log the error details
         res.status(500).json({ error: 'Internal Server Error' });
-    }
+    } finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
 });
 
 
@@ -239,6 +297,13 @@ app.post('/solve', async (req, res) => {
     try {
         // Find the authenticated user
         const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
+
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUserInfo");
+
+		//const user = await collection.findOne( { email: email } );
 
         // Ensure the user is found
         if (userIndex === -1) {
@@ -283,7 +348,10 @@ app.post('/solve', async (req, res) => {
 
 		
         res.status(500).json({ error: 'An error occurred' });
-    }
+    } finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
 });
 
 // Update your backend API endpoint for watching an ad

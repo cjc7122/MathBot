@@ -4,6 +4,7 @@ const axios = require('axios');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -61,6 +62,7 @@ const corsOptions = {
 // Enable CORS with options
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
@@ -189,9 +191,10 @@ app.post('/login', authenticateUser, async (req, res) => {
 			
 			if (userInfo) {
                 // Combine the user credentials and information
-                const user = { ...creds, ...userInfo };
+                const user = { userInfo };
                 
-                res.json({ message: 'Login successful', user: { ...user, password: undefined } });
+				res.cookie('user-info', user);
+                res.json({ message: 'Login successful', user: { user } });
             } else {
                 // Handle case where user information is not found
                 res.status(500).json({ error: 'User information not found' });
@@ -284,6 +287,13 @@ app.post('/solve', async (req, res) => {
         // Find the authenticated user
         const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
 
+		await client.connect();
+ 
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUserInfo");
+
+		//const user = await collection.findOne( { email: email } );
+
         // Ensure the user is found
         if (userIndex === -1) {
             return res.status(500).json({ error: 'Authenticated user not found' });
@@ -327,7 +337,10 @@ app.post('/solve', async (req, res) => {
 
 		
         res.status(500).json({ error: 'An error occurred' });
-    }
+    } finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
 });
 
 // Update your backend API endpoint for watching an ad
