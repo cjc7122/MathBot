@@ -222,13 +222,12 @@ function login() {
 			isLoggedIn = true;
 			isLoginSuccessful = true;
 			
-			// Retrieve the first name from the cookie
-			const firstName = getCookie('firstName');
-			const { user } = data;
+			// Retrieve user information from the response
+			const { email, firstName, tokens } = data.user;
 			
             userInfoElement1.textContent = `Hi ${firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
-			userInfoElement2.textContent = `:${user.tokens}`;
+			userInfoElement2.textContent = `:${tokens}`;
 			SuccessLogin();
 			// Successful login, close the popup
 			document.getElementById('login-popup').style.display = 'none';
