@@ -87,11 +87,13 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			let { user } = data;
+			console.log(user);
             userInfoElement1.textContent = `Hi ${data.user.firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
 			userInfoElement2.textContent = `:${data.user.tokens}`;
 			document.getElementById('logout-btn').style.display = 'block';
-			document.getElementById('user-info').style.display = 'block';
+			document.getElementById('user-info1').style.display = 'block';
+			document.getElementById('user-info2').style.display = 'block';
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
