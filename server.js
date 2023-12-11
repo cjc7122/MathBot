@@ -154,8 +154,8 @@ app.post('/login', authenticateUser, async (req, res) => {
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUsers");
 		//console.log('Attempting to find user:', { email, password });
-		const creds = await db.collection.findOne();
-		console.log('Credentials found:', credentials);
+		const creds = await db.collection.findOne( { email: email, password: password } );
+		console.log('Credentials found:', creds);
 	
 		if (credentials) {
 			// Search for the user information in the "MathbotUserInfo" collection
