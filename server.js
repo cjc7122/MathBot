@@ -80,7 +80,11 @@ async function connectToMongoDB() {
 // Middleware to check if the user is authenticated
 const authenticateUser = async (req, res, next) => {
     const { email, password } = req.body;
-	
+	if (req.cookies.email && req.cookies.firstName) {
+        // Set authenticatedUser using cookies
+        authenticatedUser = { email: req.cookies.email, firstName: req.cookies.firstName };
+        return next();
+    }
 	try {
 		await client.connect();
 		
@@ -192,6 +196,10 @@ app.post('/login', authenticateUser, async (req, res) => {
 			if (userInfo) {
                 // Combine the user credentials and information
                 const user = { ...creds, ...userInfo };
+				
+				// Set cookies upon successful login
+				res.cookie('email', email);
+				res.cookie('firstName', user.firstName);
                 
                 res.json({ message: 'Login successful', user: { ...user, password: undefined } });
             } else {
@@ -213,11 +221,14 @@ app.post('/login', authenticateUser, async (req, res) => {
 // Logout endpoint
 app.post('/logout', (req, res) => {
     authenticatedUser = null;
+	// Clear cookies on logout
+    res.clearCookie('email');
+    res.clearCookie('firstName');
     res.json({ message: 'Logout successful' });
 });
 
 // Registration endpoint
-app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {
+app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {	
     res.json({ message: 'Register successful' });
 });
 
@@ -259,6 +270,10 @@ app.post('/verify', async (req, res) => {
 
 		const result = await collection.insertOne(newUser);
 		const result2 = await collection2.insertOne(newUserInfo);
+		
+		// Set cookies upon successful verification
+		res.cookie('email', email);
+		res.cookie('firstName', firstName);
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
