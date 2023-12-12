@@ -285,7 +285,6 @@ function submitProblem() {
 		solveButton.disabled = true;
 		
 		const email = decodeURIComponent(getCookie('email'));
-		console.log(email);
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
 			method: 'POST',
@@ -356,13 +355,15 @@ function watchAd() {
 	
 	WatchAd.disabled = true;
 	
+	const email = decodeURIComponent(getCookie('email'));
+	
 	if (isLoggedIn && isLoginSuccessful) {
 		fetch('https://mathbot-5zr7.onrender.com/watch-ad', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({}),
+			body: JSON.stringify({ email }),
 		})
 		.then((response) => response.json())
 		.then((data) => {
