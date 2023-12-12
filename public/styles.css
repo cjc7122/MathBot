@@ -103,6 +103,8 @@ header {
 	flex-direction: row;
 	justify-content: space-between; /* Distribute space between items */
 	position: fixed;
+	background-color: #f0f0f0; /* Light gray color */
+	z-index: 10; /* or a higher value if necessary */
 }
 
 .top-right {
@@ -113,11 +115,6 @@ header {
 	align-items: center;
 	gap: 5px;
 	margin: 10px;
-}
-
-header {
-	background-color: #f0f0f0; /* Light gray color */
-	z-index: 10; /* or a higher value if necessary */
 }
 
 /* Styles for header buttons */
