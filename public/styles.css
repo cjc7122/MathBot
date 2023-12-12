@@ -224,7 +224,7 @@ header #MathCoin {
 }
 
 footer {
-	background-color: #333
+	background-color: #333;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
