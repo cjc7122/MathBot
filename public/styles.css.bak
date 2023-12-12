@@ -45,7 +45,7 @@ body {
 }
 
 /* Styles for larger screens */
-@media only screen and (max-width: 869px) and (min-width: 720px) {
+@media only screen and (max-width: 869px) and (min-width: 760px) {
 	.container {
 		width: 60%;
 		margin: 0 auto;
@@ -70,7 +70,7 @@ body {
 }
 
 /* Styles for larger screens */
-@media only screen and (max-width: 720px){
+@media only screen and (max-width: 760px){
 	.container {
 		width: 60%;
 		margin: 0 auto;
@@ -113,6 +113,10 @@ header {
 	align-items: center;
 	gap: 5px;
 	margin: 10px;
+}
+
+header {
+	z-index: 10; /* or a higher value if necessary */
 }
 
 /* Styles for header buttons */
@@ -220,8 +224,20 @@ header #MathCoin {
 }
 
 footer {
+	background-color: #333
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	text-align: center;
+	z-index: 10; /* or a higher value if necessary */
+}
+
+.rectangle {
+	width: 50px; /* Adjust the width of the rectangle */
+	height: 20px; /* Adjust the height of the rectangle */
+	background-color: #ff0000; /* Adjust the background color of the rectangle */
+	position: fixed;
+	bottom: 0;
+	left: 50%; /* Adjust the position of the rectangle */
+	transform: translateX(-50%); /* Center the rectangle horizontally */
 }

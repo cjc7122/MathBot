@@ -256,6 +256,7 @@ function logout() {
 	document.getElementById('user-info1').style.display = 'none';
 	document.getElementById('MathCoin').style.display = 'none';
 	document.getElementById('user-info2').style.display = 'none';
+	document.getElementById('result').innerHTML = '';
 	// Clear the problem input
 	document.getElementById('problem-input').value = '';
 	// Show the Login button
@@ -331,6 +332,7 @@ function openGetCoinPage() {
 	document.getElementById('GoHome').style.display = 'block';
 	document.getElementById('WatchAd').style.display = '';
 	document.getElementById('Ad-Text').style.display = '';
+	document.getElementById('result').innerHTML = '';
 }
 
 function GoHome() {
