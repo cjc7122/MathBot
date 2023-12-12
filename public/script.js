@@ -299,7 +299,7 @@ function submitProblem() {
 				return response.json().then((data) => {
 					// Display the result
 					result.innerHTML = `Solution: ${data.solution}`;
-					userInfoElement2.textContent = `:${data.user.tokens}`;
+					userInfoElement2.textContent = `:${data.tokens}`;
 					// Clear the 'Calculation in progress' message
 					status.innerHTML = '';
 				});
