@@ -232,11 +232,11 @@ footer {
 	z-index: 10; /* or a higher value if necessary */
 }
 
-.rectangle {
+footer.rectangle {
 	z-index: 9; /* or a higher value if necessary */
-	width: 50px; /* Adjust the width of the rectangle */
+	width: 100%; /* Adjust the width of the rectangle */
 	height: 20px; /* Adjust the height of the rectangle */
-	background-color: #ff0000; /* Adjust the background color of the rectangle */
+	background-color: #333; /* Adjust the background color of the rectangle */
 	position: fixed;
 	bottom: 0;
 	left: 50%; /* Adjust the position of the rectangle */
