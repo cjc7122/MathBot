@@ -294,7 +294,6 @@ app.post('/solve', async (req, res) => {
         );
         // Process the OpenAI response
         const solution = processResponse(response.data);
-		//const user = users.find((u) => u.email === authenticatedUser.email);
         // Return the solution and the updated token balance
         res.json({ solution, tokens: user.tokens });
     } catch (error) {
@@ -340,7 +339,7 @@ app.post('/watch-ad', async (req, res) => {
 
         // If an error occurs, roll back the deduction of tokens
         if (user) {
-            users.tokens -= 5;
+            user.tokens -= 5;
 			await collection.updateOne(
                 { email: email },
                 { $set: { tokens: user.tokens } }

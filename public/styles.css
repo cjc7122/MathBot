@@ -224,7 +224,6 @@ header #MathCoin {
 }
 
 footer {
-	background-color: #333;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
@@ -236,7 +235,7 @@ footer.rectangle {
 	z-index: 9; /* or a higher value if necessary */
 	width: 100%; /* Adjust the width of the rectangle */
 	height: 20px; /* Adjust the height of the rectangle */
-	background-color: #333; /* Adjust the background color of the rectangle */
+	background-color: #f0f0f0; /* Light gray color */
 	position: fixed;
 	bottom: 0;
 	left: 50%; /* Adjust the position of the rectangle */
