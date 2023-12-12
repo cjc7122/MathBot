@@ -116,6 +116,7 @@ header {
 }
 
 header {
+	background-color: #f0f0f0; /* Light gray color */
 	z-index: 10; /* or a higher value if necessary */
 }
 
@@ -230,15 +231,4 @@ footer {
 	width: 100%;
 	text-align: center;
 	z-index: 10; /* or a higher value if necessary */
-}
-
-footer.rectangle {
-	z-index: 9; /* or a higher value if necessary */
-	width: 100%; /* Adjust the width of the rectangle */
-	height: 20px; /* Adjust the height of the rectangle */
-	background-color: #f0f0f0; /* Light gray color */
-	position: fixed;
-	bottom: 0;
-	left: 50%; /* Adjust the position of the rectangle */
-	transform: translateX(-50%); /* Center the rectangle horizontally */
 }
