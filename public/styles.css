@@ -115,6 +115,10 @@ header {
 	margin: 10px;
 }
 
+header {
+	z-index: 10; /* or a higher value if necessary */
+}
+
 /* Styles for header buttons */
 header button {
 	background-color: #333;
@@ -220,8 +224,10 @@ header #MathCoin {
 }
 
 footer {
+	background-color: #333
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	text-align: center;
+	z-index: 10; /* or a higher value if necessary */
 }
