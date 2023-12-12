@@ -324,7 +324,7 @@ app.post('/solve', async (req, res) => {
 });
 
 // Update your backend API endpoint for watching an ad
-app.post('/watch-ad', (req, res) => {
+app.post('/watch-ad', async (req, res) => {
 	try {
 		await client.connect();
 		const db = client.db("Mathbot");
