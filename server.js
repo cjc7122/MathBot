@@ -242,7 +242,7 @@ app.post('/verify', async (req, res) => {
 		
 		// Set cookies upon successful verification
 		res.cookie('email', email);
-		res.cookie('firstName', userInfo.firstName);
+		res.cookie('firstName', firstName);
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
