@@ -367,8 +367,7 @@ function watchAd() {
 		.then((response) => response.json())
 		.then((data) => {
 			const { user } = data;
-			userInfoElement2.textContent = `:${data.user.tokens}`;
-			console.log('Watch Ad response:', data);
+			userInfoElement2.textContent = `:${user.tokens}`;
 		})
 		.catch((error) => {
 			console.error('Error watching ad:', error);

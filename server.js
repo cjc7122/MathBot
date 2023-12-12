@@ -265,17 +265,12 @@ app.post('/verify', async (req, res) => {
 // /solve endpoint
 app.post('/solve', async (req, res) => {
     const { problem, email } = req.body;
-	console.log(email);
-	
 
     try {
 		await client.connect();
-		console.log('1');
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUserInfo");
-		console.log('2');
 		const user = await collection.findOne( { email: email } );
-		console.log('3');
 		if (user.tokens <= 0) {
 			return res.status(510).json({ error: 'No more tokens' });
 		}
@@ -331,26 +326,36 @@ app.post('/solve', async (req, res) => {
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', (req, res) => {
 	try {
-		// Assume authentication has already been handled
-		const userIndex = users.findIndex((u) => u.email === authenticatedUser.email);
-
-		if (userIndex === -1) {
-            return res.status(500).json({ error: 'Authenticated user not found' });
-        }
+		await client.connect();
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUserInfo");
+		const user = await collection.findOne( { email: email } );
 
 		// Increment the user's MathCoins (e.g., reward 5 MathCoins for watching an ad)
-		users[userIndex].tokens += 5; // Adjust the reward amount as needed
-		const user = users.find((u) => u.email === authenticatedUser.email);
-		res.json({ message: 'Ad watched successfully', user: { ...user, password: undefined, tokens: user.tokens } });
+		user.tokens += 5; // Adjust the reward amount as needed
+		
+		await collection.updateOne(
+            { email: email },
+            { $set: { tokens: user.tokens } }
+        );
+		
+		res.json({ user: { tokens: user.tokens } });
 	} catch (error) {
 		console.error('Error:', error.message);
 
         // If an error occurs, roll back the deduction of tokens
-        if (userIndex !== -1) {
+        if (user) {
             users[userIndex].tokens -= 5;
+			await collection.updateOne(
+                { email: email },
+                { $set: { tokens: user.tokens } }
+            );
         }
 
         res.status(500).json({ error: 'An error occurred' });
+	} finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
 	}
 });
 

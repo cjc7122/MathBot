@@ -20,7 +20,7 @@ body {
 }
 
 /* Styles for larger screens */
-@media only screen and (min-width: 810px) {
+@media only screen and (min-width: 869px) {
 	.container {
 		width: 50%;
 		margin: 0 auto;
@@ -45,7 +45,7 @@ body {
 }
 
 /* Styles for larger screens */
-@media only screen and (max-width: 810px) and (min-width: 720px) {
+@media only screen and (max-width: 869px) and (min-width: 720px) {
 	.container {
 		width: 60%;
 		margin: 0 auto;
@@ -199,6 +199,10 @@ header #MathCoin {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+#WatchAd:hover {
+    opacity: 0.8;
 }
 
 /* Styles for the solve button */

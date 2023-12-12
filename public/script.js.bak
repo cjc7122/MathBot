@@ -284,7 +284,7 @@ function submitProblem() {
 		// Disable the Solve button to prevent multiple submissions
 		solveButton.disabled = true;
 		
-		const email = getCookie('email');
+		const email = decodeURIComponent(getCookie('email'));
 		console.log(email);
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
@@ -299,7 +299,7 @@ function submitProblem() {
 				return response.json().then((data) => {
 					// Display the result
 					result.innerHTML = `Solution: ${data.solution}`;
-					userInfoElement2.textContent = `:${data.user.tokens}`;
+					userInfoElement2.textContent = `:${data.tokens}`;
 					// Clear the 'Calculation in progress' message
 					status.innerHTML = '';
 				});
