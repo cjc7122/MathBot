@@ -325,6 +325,8 @@ app.post('/solve', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', async (req, res) => {
+    const { email } = req.body;
+	
 	try {
 		await client.connect();
 		const db = client.db("Mathbot");
@@ -345,7 +347,7 @@ app.post('/watch-ad', async (req, res) => {
 
         // If an error occurs, roll back the deduction of tokens
         if (user) {
-            users[userIndex].tokens -= 5;
+            users.tokens -= 5;
 			await collection.updateOne(
                 { email: email },
                 { $set: { tokens: user.tokens } }
