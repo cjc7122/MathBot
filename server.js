@@ -370,9 +370,9 @@ app.post('/checkLoggedIn', async (req, res) => {
 	console.log('1');
 	try {
 		console.log('2');
-		const email = getCookie('email');
+		const email = req.cookies.email;
 		console.log('3');
-		const JWTtoken = getCookie('token');
+		const JWTtoken = req.cookies.token;
 		console.log(email);
 		console.log(JWTtoken);		
 		
@@ -402,17 +402,6 @@ app.post('/checkLoggedIn', async (req, res) => {
         await client.close();
 	}
 });
-
-function getCookie(name) {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-        const [cookieName, cookieValue] = cookie.split('=').map((c) => c.trim());
-        if (cookieName === name) {
-            return decodeURIComponent(cookieValue);
-        }
-    }
-    return null;
-}
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
