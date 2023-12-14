@@ -367,8 +367,11 @@ app.post('/watch-ad', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/checkLoggedIn', async (req, res) => {
+	console.log('1');
 	try {
+		console.log('2');
 		const email = decodeURIComponent(getCookie('email'));
+		console.log('3');
 		const JWTtoken = decodeURIComponent(getCookie('token'));
 		console.log(email);
 		console.log(JWTtoken);		
