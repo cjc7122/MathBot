@@ -371,18 +371,24 @@ app.post('/checkLoggedIn', async (req, res) => {
 		const email = decodeURIComponent(getCookie('email'));
 		const JWTtoken = decodeURIComponent(getCookie('token'));
 		
-		await client.connect();
-		const db = client.db("Mathbot");
-		const collection = db.collection("MathbotUserInfo");
-		const user = await collection.findOne( { JWTtoken: JWTtoken } );
+		jwt.verify(JWTtoken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+            if (err) {
+                // Token verification failed
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
 		
-		if (user) {
-			res.json({ user: { firstName: user.firstName, tokens: user.tokens } });
-		} else {
-			next();
-		}
+			await client.connect();
+			const db = client.db("Mathbot");
+			const collection = db.collection("MathbotUserInfo");
+			const user = await collection.findOne( { email } );
+			
+			if (user) {
+				res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
+			} else {
+				res.json({ isLoggedIn: false });
+			}
 	} catch (error) {
-		next();
+		res.status(500).json({ error: 'Internal Server Error' });
 	} finally {
 		// Ensure that the client will close when you finish/error
         await client.close();
