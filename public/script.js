@@ -392,14 +392,11 @@ function checkLoggedIn() {
 	.then((response) => response.json())
 	.then((data) => {
 		const { user } = data;
-		const { email, firstName, tokens } = user;
+		const { firstName, tokens } = user;
 			
             userInfoElement1.textContent = `Hi ${firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
 			userInfoElement2.textContent = `:${tokens}`;
-			SuccessLogin();
-			// Successful login, close the popup
-			document.getElementById('login-popup').style.display = 'none';
 			// Show the Logout button
 			document.getElementById('logout-btn').style.display = 'block';
 			document.getElementById('user-info1').style.display = 'block';
