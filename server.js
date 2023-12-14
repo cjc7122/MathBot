@@ -168,7 +168,7 @@ app.post('/login', async (req, res) => {
                 res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
 				
 				// Update the user document in the "MathbotUserInfo" collection with the new token
-                await userInfoCollection.updateOne({ email }, { $set: { tokens: [token] } });
+                await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
                 
                 res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
             } else {
@@ -249,7 +249,7 @@ app.post('/verify', async (req, res) => {
 		res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
 		
 		// Update the user document in the "MathbotUserInfo" collection with the new token
-		await collection2.updateOne({ email }, { $set: { tokens: [token] } });
+		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
