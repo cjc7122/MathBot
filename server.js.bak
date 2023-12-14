@@ -5,13 +5,14 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 10000; // Update with your desired port
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-const uri = "mongodb+srv://ccressman:$Cellphone7122@mathbot.i7o0at3.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -158,9 +159,15 @@ app.post('/login', async (req, res) => {
             const userInfo = await userInfoCollection.findOne({ email });
 			
 			if (userInfo) {
-				// Set cookies upon successful login
-				res.cookie('email', email);
-				res.cookie('firstName', userInfo.firstName);
+				// Create a token with user information
+                const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+				// Set cookies with the token
+                res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+                res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+				
+				// Update the user document in the "MathbotUserInfo" collection with the new token
+                await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
                 
                 res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
             } else {
@@ -233,16 +240,21 @@ app.post('/verify', async (req, res) => {
 		const result = await collection.insertOne(newUser);
 		const result2 = await collection2.insertOne(newUserInfo);
 		
-		// Set cookies upon successful verification
-		res.cookie('email', email);
-		res.cookie('firstName', firstName);
+		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+		
+		// Set cookies with the token
+		res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+		res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+		
+		// Update the user document in the "MathbotUserInfo" collection with the new token
+		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
 		
 		const user = await collection2.findOne({ email });
 		
-        res.json({ message: 'Verification successful', user });
+        res.json({ message: 'Verification successful', user: {...user, JWTtoken: undefined} });
     } catch (error) {
         console.error('Error during verification:', error);
 
@@ -257,8 +269,8 @@ app.post('/verify', async (req, res) => {
 
 // /solve endpoint
 app.post('/solve', async (req, res) => {
-    const { problem, email } = req.body;
-
+    const problem = req.body;
+	const email = decodeURIComponent(getCookie('email'));
     try {
 		await client.connect();
 		const db = client.db("Mathbot");
@@ -317,7 +329,7 @@ app.post('/solve', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', async (req, res) => {
-    const { email } = req.body;
+    const email = decodeURIComponent(getCookie('email'));
 	
 	try {
 		await client.connect();

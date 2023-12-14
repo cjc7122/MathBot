@@ -11,7 +11,10 @@ function adjustTextareaHeight() {
 
 // Call the adjustTextareaHeight function on page load
 window.onload = function () {
-	adjustTextareaHeight();
+	checkLoggedIn();
+    adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load
+};
+
 };
 
 function openLoginPopup() {
@@ -87,7 +90,6 @@ function Verify() {
 			// Show the Logout button
 			// Successful login, close the popup
 			let { user } = data;
-			console.log(user);
             userInfoElement1.textContent = `Hi ${data.user.firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
 			userInfoElement2.textContent = `:${data.user.tokens}`;
@@ -284,15 +286,13 @@ function submitProblem() {
 
 		// Disable the Solve button to prevent multiple submissions
 		solveButton.disabled = true;
-		
-		const email = decodeURIComponent(getCookie('email'));
 
 		fetch('https://mathbot-5zr7.onrender.com/solve', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ problem: prompt, email }),
+			body: JSON.stringify({ problem: prompt }),
 		})
 		.then((response) => {
 			if (response.ok) {
@@ -357,15 +357,13 @@ function watchAd() {
 	
 	WatchAd.disabled = true;
 	
-	const email = decodeURIComponent(getCookie('email'));
-	
 	if (isLoggedIn && isLoginSuccessful) {
 		fetch('https://mathbot-5zr7.onrender.com/watch-ad', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ email }),
+			body: JSON.stringify({}),
 		})
 		.then((response) => response.json())
 		.then((data) => {
@@ -382,9 +380,34 @@ function watchAd() {
 	}
 }
 
-// Function to get a cookie by name
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+function checkLoggedIn() {
+	fetch('https://mathbot-5zr7.onrender.com/checkLoggedIn', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({}),
+	})
+	.then((response) => response.json())
+	.then((data) => {
+		const { user } = data;
+		const { email, firstName, tokens } = user;
+			
+            userInfoElement1.textContent = `Hi ${firstName}!`;
+			document.getElementById('MathCoin').style.display = 'block';
+			userInfoElement2.textContent = `:${tokens}`;
+			SuccessLogin();
+			// Successful login, close the popup
+			document.getElementById('login-popup').style.display = 'none';
+			// Show the Logout button
+			document.getElementById('logout-btn').style.display = 'block';
+			document.getElementById('user-info1').style.display = 'block';
+			document.getElementById('user-info2').style.display = 'block';
+			// Hide the Login button
+			document.getElementById('login-button').style.display = 'none';
+			document.getElementById('register-btn').style.display = 'none';
+	})
+	.catch((error) => {
+		console.error('Error with JWTtoken', error);
+	});
 }

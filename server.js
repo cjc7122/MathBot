@@ -164,8 +164,7 @@ app.post('/login', async (req, res) => {
 
 				// Set cookies with the token
                 res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-                res.cookie('email', email, { maxAge: 3600000 });
-                res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
+                res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
 				
 				// Update the user document in the "MathbotUserInfo" collection with the new token
                 await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
@@ -245,8 +244,7 @@ app.post('/verify', async (req, res) => {
 		
 		// Set cookies with the token
 		res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-		res.cookie('email', email, { maxAge: 3600000 });
-		res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
+		res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
 		
 		// Update the user document in the "MathbotUserInfo" collection with the new token
 		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
@@ -256,7 +254,7 @@ app.post('/verify', async (req, res) => {
 		
 		const user = await collection2.findOne({ email });
 		
-        res.json({ message: 'Verification successful', user });
+        res.json({ message: 'Verification successful', user: {...user, JWTtoken: undefined} });
     } catch (error) {
         console.error('Error during verification:', error);
 
@@ -271,8 +269,8 @@ app.post('/verify', async (req, res) => {
 
 // /solve endpoint
 app.post('/solve', async (req, res) => {
-    const { problem, email } = req.body;
-
+    const problem = req.body;
+	const email = decodeURIComponent(getCookie('email'));
     try {
 		await client.connect();
 		const db = client.db("Mathbot");
@@ -331,7 +329,7 @@ app.post('/solve', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', async (req, res) => {
-    const { email } = req.body;
+    const email = decodeURIComponent(getCookie('email'));
 	
 	try {
 		await client.connect();
@@ -361,6 +359,30 @@ app.post('/watch-ad', async (req, res) => {
         }
 
         res.status(500).json({ error: 'An error occurred' });
+	} finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
+});
+
+// Update your backend API endpoint for watching an ad
+app.post('/checkLoggedIn', async (req, res) => {
+	try {
+		const email = decodeURIComponent(getCookie('email'));
+		const JWTtoken = decodeURIComponent(getCookie('token'));
+		
+		await client.connect();
+		const db = client.db("Mathbot");
+		const collection = db.collection("MathbotUserInfo");
+		const user = await collection.findOne( { JWTtoken: JWTtoken } );
+		
+		if (user) {
+			res.json({ user: { firstName: user.firstName, tokens: user.tokens } });
+		} else {
+			next();
+		}
+	} catch (error) {
+		next();
 	} finally {
 		// Ensure that the client will close when you finish/error
         await client.close();

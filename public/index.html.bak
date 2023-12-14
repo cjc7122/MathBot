@@ -49,6 +49,8 @@
             </form>
             <div id="result"></div>
             <div id="status"></div>
+            <div id="buffer"></div>
+			
         </div>
 		
 		<!-- Login pop-up -->
