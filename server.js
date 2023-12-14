@@ -387,6 +387,7 @@ app.post('/checkLoggedIn', async (req, res) => {
 			} else {
 				res.json({ isLoggedIn: false });
 			}
+		}
 	} catch (error) {
 		res.status(500).json({ error: 'Internal Server Error' });
 	} finally {
