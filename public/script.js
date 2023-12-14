@@ -15,8 +15,6 @@ window.onload = function () {
     adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load
 };
 
-};
-
 function openLoginPopup() {
 	document.getElementById('login-popup').style.display = 'block';
 	document.getElementById('Register-popup').style.display = 'none';
@@ -381,6 +379,9 @@ function watchAd() {
 }
 
 function checkLoggedIn() {
+	let userInfoElement1 = document.getElementById('user-info1');
+	let userInfoElement2 = document.getElementById('user-info2');
+	
 	fetch('https://mathbot-5zr7.onrender.com/checkLoggedIn', {
 		method: 'POST',
 		headers: {
