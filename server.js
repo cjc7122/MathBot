@@ -370,13 +370,17 @@ app.post('/checkLoggedIn', async (req, res) => {
 	try {
 		const email = decodeURIComponent(getCookie('email'));
 		const JWTtoken = decodeURIComponent(getCookie('token'));
+		console.log(email);
+		console.log(JWTtoken);		
 		
 		jwt.verify(JWTtoken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
             if (err) {
                 // Token verification failed
                 return res.status(401).json({ error: 'Unauthorized' });
-            }
-		
+            } else {
+				console.log('good');
+			}
+			
 			await client.connect();
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUserInfo");
