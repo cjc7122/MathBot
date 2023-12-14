@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -158,9 +159,16 @@ app.post('/login', async (req, res) => {
             const userInfo = await userInfoCollection.findOne({ email });
 			
 			if (userInfo) {
-				// Set cookies upon successful login
-				res.cookie('email', email);
-				res.cookie('firstName', userInfo.firstName);
+				// Create a token with user information
+                const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+				// Set cookies with the token
+                res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+                res.cookie('email', email, { maxAge: 3600000 });
+                res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
+				
+				// Update the user document in the "MathbotUserInfo" collection with the new token
+                await userInfoCollection.updateOne({ email }, { $set: { tokens: [token] } });
                 
                 res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
             } else {
@@ -233,9 +241,15 @@ app.post('/verify', async (req, res) => {
 		const result = await collection.insertOne(newUser);
 		const result2 = await collection2.insertOne(newUserInfo);
 		
-		// Set cookies upon successful verification
-		res.cookie('email', email);
-		res.cookie('firstName', firstName);
+		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+		
+		// Set cookies with the token
+		res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+		res.cookie('email', email, { maxAge: 3600000 });
+		res.cookie('firstName', userInfo.firstName, { maxAge: 3600000 });
+		
+		// Update the user document in the "MathbotUserInfo" collection with the new token
+		await collection2.updateOne({ email }, { $set: { tokens: [token] } });
 
         // Log the verification success
         console.log(`Verification successful for ${email}`);
