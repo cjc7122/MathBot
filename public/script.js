@@ -262,6 +262,14 @@ function logout() {
 	// Show the Login button
 	document.getElementById('register-btn').style.display = 'block';
 	document.getElementById('login-button').style.display = 'block';
+	
+	fetch('https://mathbot-5zr7.onrender.com/logout', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({}),
+	});
 }
 
 function submitProblem() {

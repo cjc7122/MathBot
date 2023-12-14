@@ -270,7 +270,7 @@ app.post('/verify', async (req, res) => {
 // /solve endpoint
 app.post('/solve', async (req, res) => {
     const problem = req.body;
-	const email = decodeURIComponent(getCookie('email'));
+	const email = req.cookies.email;
     try {
 		await client.connect();
 		const db = client.db("Mathbot");
@@ -329,7 +329,7 @@ app.post('/solve', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', async (req, res) => {
-    const email = decodeURIComponent(getCookie('email'));
+    const email = req.cookies.email;
 	
 	try {
 		await client.connect();

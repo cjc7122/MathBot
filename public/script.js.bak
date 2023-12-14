@@ -15,8 +15,6 @@ window.onload = function () {
     adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load
 };
 
-};
-
 function openLoginPopup() {
 	document.getElementById('login-popup').style.display = 'block';
 	document.getElementById('Register-popup').style.display = 'none';
@@ -264,6 +262,8 @@ function logout() {
 	// Show the Login button
 	document.getElementById('register-btn').style.display = 'block';
 	document.getElementById('login-button').style.display = 'block';
+	
+	//add clearCookie(); to clear cookies on logout
 }
 
 function submitProblem() {
@@ -381,6 +381,9 @@ function watchAd() {
 }
 
 function checkLoggedIn() {
+	let userInfoElement1 = document.getElementById('user-info1');
+	let userInfoElement2 = document.getElementById('user-info2');
+	
 	fetch('https://mathbot-5zr7.onrender.com/checkLoggedIn', {
 		method: 'POST',
 		headers: {
@@ -391,7 +394,19 @@ function checkLoggedIn() {
 	.then((response) => response.json())
 	.then((data) => {
 		const { user } = data;
-		userInfoElement2.textContent = `:${user.tokens}`;
+		console.log(user);
+		const { firstName, tokens } = user;
+			
+            userInfoElement1.textContent = `Hi ${firstName}!`;
+			document.getElementById('MathCoin').style.display = 'block';
+			userInfoElement2.textContent = `:${tokens}`;
+			// Show the Logout button
+			document.getElementById('logout-btn').style.display = 'block';
+			document.getElementById('user-info1').style.display = 'block';
+			document.getElementById('user-info2').style.display = 'block';
+			// Hide the Login button
+			document.getElementById('login-button').style.display = 'none';
+			document.getElementById('register-btn').style.display = 'none';
 	})
 	.catch((error) => {
 		console.error('Error with JWTtoken', error);

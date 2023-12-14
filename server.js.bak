@@ -365,6 +365,44 @@ app.post('/watch-ad', async (req, res) => {
 	}
 });
 
+// Update your backend API endpoint for watching an ad
+app.post('/checkLoggedIn', async (req, res) => {
+	console.log('1');
+	try {
+		console.log('2');
+		const email = req.cookies.email;
+		console.log('3');
+		const JWTtoken = req.cookies.token;
+		console.log(email);
+		console.log(JWTtoken);		
+		
+		jwt.verify(JWTtoken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+            if (err) {
+                // Token verification failed
+                return res.status(401).json({ error: 'Unauthorized' });
+            } else {
+				console.log('good');
+			}
+			
+			await client.connect();
+			const db = client.db("Mathbot");
+			const collection = db.collection("MathbotUserInfo");
+			const user = await collection.findOne( { email } );
+			console.log(user);
+			if (user) {
+				res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
+			} else {
+				res.json({ isLoggedIn: false });
+			}
+		});
+	} catch (error) {
+		res.status(500).json({ error: 'Internal Server Error' });
+	} finally {
+		// Ensure that the client will close when you finish/error
+        await client.close();
+	}
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
