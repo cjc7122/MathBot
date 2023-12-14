@@ -381,7 +381,7 @@ app.post('/checkLoggedIn', async (req, res) => {
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUserInfo");
 			const user = await collection.findOne( { email } );
-			
+			console.log(user);
 			if (user) {
 				res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
 			} else {
