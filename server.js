@@ -232,15 +232,22 @@ app.post('/logout', async (req, res) => {
 });
 
 // Registration endpoint
-app.post('/register', [body('email').isEmail().normalizeEmail(), body('password1').isLength({ min: 8 }).escape(), body('password2').custom((value, { req }) => { if (value !== req.body.password1) { throw new Error('Passwords do not match');} return true;}), checkDuplicateUser, sendVerificationEmail, (req, res) => {	
+app.post('/register', [ body('email').isEmail().normalizeEmail(),
+    body('password1').isLength({ min: 8 }).escape(),
+    body('password2').custom((value, { req }) => {
+		if (value !== req.body.password1) {throw new Error('Passwords do not match');}
+		return true;
+    }), checkDuplicateUser, sendVerificationEmail], (req, res) => {
+		
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-	
-	res.json({ message: 'Register successful' });
-});
+
+    res.json({ message: 'Register successful' });
+  }
+);
 
 app.post('/verify', async (req, res) => {
     try {
