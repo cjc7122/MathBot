@@ -424,7 +424,12 @@ app.post('/checkLoggedIn', async (req, res) => {
 				const collection = db.collection("MathbotUserInfo");
 				const user = await collection.findOne( { email } );
 				if (user) {
-					res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
+					// Check if user.firstName exists before destructure
+                    const userResponse = {
+                        isLoggedIn: true,
+                        user: user.firstName ? { firstName: user.firstName, tokens: user.tokens } : null
+                    };
+                    res.json(userResponse);
 				} else {
 					res.json({ isLoggedIn: false });
 				}
