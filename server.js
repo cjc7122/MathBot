@@ -8,8 +8,15 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const saltRounds = 10; // Number of salt rounds
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -61,6 +68,7 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet.contentSecurityPolicy());
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
@@ -136,7 +144,7 @@ const sendVerificationEmail = async (req, res, next) => {
 app.use(express.static('public'));
 
 // Login endpoint
-app.post('/login', [ body('email').isEmail().normalizeEmail(), body('password').isLength({ min: 8 }).escape(), ], async (req, res) => {
+app.post('/login', limiter, [ body('email').isEmail().normalizeEmail(), body('password').isLength({ min: 8 }).escape(), ], async (req, res) => {
 	const errors = validationResult(req);
 	
 	if (!errors.isEmpty()) {
@@ -169,8 +177,8 @@ app.post('/login', [ body('email').isEmail().normalizeEmail(), body('password').
                     const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 
                     // Set cookies with the token
-                    res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-                    res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+                    res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
+                    res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
 
                     // Update the user document in the "MathbotUserInfo" collection with the new token
                     await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
@@ -288,8 +296,8 @@ app.post('/verify', async (req, res) => {
 		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 		
 		// Set cookies with the token
-		res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-		res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+		res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
+		res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
 		
 		// Update the user document in the "MathbotUserInfo" collection with the new token
 		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
