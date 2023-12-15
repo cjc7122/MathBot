@@ -194,9 +194,23 @@ app.post('/logout', (req, res) => {
     res.clearCookie('email');
     res.clearCookie('firstName');
 	
-	// Clear Token out of mongoDB also
-	
-    res.json({ message: 'Logout successful' });
+	// Clear Token out of mongoDB
+    try {
+        await client.connect();
+        const db = client.db("Mathbot");
+        const collection = db.collection("MathbotUserInfo");
+
+        // Assuming you have a field named 'token' in your user document
+        await collection.updateOne({ email }, { $set: { token: null } });
+
+        res.json({ message: 'Logout successful' });
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'An error occurred during logout' });
+    } finally {
+        // Ensure that the client will close when you finish/error
+        await client.close();
+    }
 });
 
 // Registration endpoint
