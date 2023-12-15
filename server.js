@@ -193,6 +193,9 @@ app.post('/logout', (req, res) => {
 	// Clear cookies on logout
     res.clearCookie('email');
     res.clearCookie('firstName');
+	
+	// Clear Token out of mongoDB also
+	
     res.json({ message: 'Logout successful' });
 });
 
@@ -266,66 +269,86 @@ app.post('/verify', async (req, res) => {
 	}
 });
 
-
-// /solve endpoint
 app.post('/solve', async (req, res) => {
     const problem = req.body;
-	const email = req.cookies.email;
+    const email = req.cookies.email;
+
     try {
-		await client.connect();
-		const db = client.db("Mathbot");
-		const collection = db.collection("MathbotUserInfo");
-		const user = await collection.findOne( { email: email } );
-		if (user.tokens <= 0) {
-			return res.status(510).json({ error: 'No more tokens' });
-		}
-        // Deduct 1 from the user's tokens
-        user.tokens -= 1;
-		
-		await collection.updateOne(
-            { email: email },
-            { $set: { tokens: user.tokens } }
-        );
+        await client.connect();
+        const db = client.db("Mathbot");
+        const collection = db.collection("MathbotUserInfo");
+        const user = await collection.findOne({ email: email });
+
+        // Check if the user has enough tokens
+        if (!user || user.tokens <= 0) {
+            return res.status(510).json({ error: 'Insufficient tokens' });
+        }
+
+        // Deduct tokens from the user
+        const updatedTokens = await deductTokens(collection, email, 1);
+
         // Make the request to OpenAI
-        const response = await axios.post(
-            'https://api.openai.com/v1/chat/completions',
-            {
-                model: 'gpt-3.5-turbo',
-                messages: [
-                    { role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled ||Step 1, ||Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
-                    { role: 'user', content: `${problem}` }
-                ],
-                temperature: 0,
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+        const response = await makeOpenAIRequest(problem);
+
         // Process the OpenAI response
         const solution = processResponse(response.data);
+
         // Return the solution and the updated token balance
-        res.json({ solution, tokens: user.tokens });
+        res.json({ solution, tokens: updatedTokens });
     } catch (error) {
         console.error('Error:', error.message);
 
         // If an error occurs, roll back the deduction of tokens
         if (user) {
-            user.tokens += 1;
-            await collection.updateOne(
-                { email: email },
-                { $set: { tokens: user.tokens } }
-            );
+            await deductTokens(collection, email, -1);
         }
-		
+
         res.status(500).json({ error: 'An error occurred' });
     } finally {
-		// Ensure that the client will close when you finish/error
+        // Ensure that the client will close when you finish/error
         await client.close();
-	}
+    }
 });
+
+async function deductTokens(collection, email, amount) {
+    // Deduct tokens from the user
+    const user = await collection.findOne({ email: email });
+
+    if (!user || user.tokens + amount < 0) {
+        throw new Error('Invalid token deduction');
+    }
+
+    user.tokens -= amount;
+
+    await collection.updateOne(
+        { email: email },
+        { $set: { tokens: user.tokens } }
+    );
+
+    return user.tokens;
+}
+
+async function makeOpenAIRequest(problem) {
+    // Make the request to OpenAI
+	const response = await axios.post(
+		'https://api.openai.com/v1/chat/completions',
+		{
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{ role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled ||Step 1, ||Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
+				{ role: 'user', content: `${problem}` }
+			],
+			temperature: 0,
+		},
+		{
+			headers: {
+				'Authorization': `Bearer ${OPENAI_API_KEY}`,
+				'Content-Type': 'application/json',
+			},
+		}
+	);
+	return response;
+}
 
 // Update your backend API endpoint for watching an ad
 app.post('/watch-ad', async (req, res) => {
@@ -367,32 +390,24 @@ app.post('/watch-ad', async (req, res) => {
 
 // Update your backend API endpoint for watching an ad
 app.post('/checkLoggedIn', async (req, res) => {
-	console.log('1');
 	try {
-		console.log('2');
 		const email = req.cookies.email;
-		console.log('3');
-		const JWTtoken = req.cookies.token;
-		console.log(email);
-		console.log(JWTtoken);		
+		const JWTtoken = req.cookies.token;	
 		
 		jwt.verify(JWTtoken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
             if (err) {
                 // Token verification failed
                 return res.status(401).json({ error: 'Unauthorized' });
             } else {
-				console.log('good');
-			}
-			
-			await client.connect();
-			const db = client.db("Mathbot");
-			const collection = db.collection("MathbotUserInfo");
-			const user = await collection.findOne( { email } );
-			console.log(user);
-			if (user) {
-				res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
-			} else {
-				res.json({ isLoggedIn: false });
+				await client.connect();
+				const db = client.db("Mathbot");
+				const collection = db.collection("MathbotUserInfo");
+				const user = await collection.findOne( { email } );
+				if (user) {
+					res.json({ isLoggedIn: true, user: { firstName: user.firstName, tokens: user.tokens } });
+				} else {
+					res.json({ isLoggedIn: false });
+				}
 			}
 		});
 	} catch (error) {
