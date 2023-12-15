@@ -190,9 +190,7 @@ app.post('/login', async (req, res) => {
 // Logout endpoint
 app.post('/logout', async (req, res) => {
     authenticatedUser = null;
-	// Clear cookies on logout
-    res.clearCookie('email');
-    res.clearCookie('firstName');
+	const email = req.cookies.email;
 	
 	// Clear Token out of mongoDB
     try {
@@ -201,13 +199,16 @@ app.post('/logout', async (req, res) => {
         const collection = db.collection("MathbotUserInfo");
 
         // Assuming you have a field named 'token' in your user document
-        await collection.updateOne({ email }, { $set: { token: null } });
+        await collection.updateOne({ email }, { $set: { JWTtoken: null } });
 
         res.json({ message: 'Logout successful' });
     } catch (error) {
         console.error('Error:', error.message);
         res.status(500).json({ error: 'An error occurred during logout' });
     } finally {
+		// Clear cookies on logout
+		res.clearCookie('email');
+		res.clearCookie('firstName');
         // Ensure that the client will close when you finish/error
         await client.close();
     }

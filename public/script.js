@@ -400,7 +400,6 @@ function checkLoggedIn() {
 	.then((response) => response.json())
 	.then((data) => {
 		const { user } = data;
-		console.log(user);
 		const { firstName, tokens } = user;
 			
             userInfoElement1.textContent = `Hi ${firstName}!`;

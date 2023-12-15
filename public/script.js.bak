@@ -263,7 +263,13 @@ function logout() {
 	document.getElementById('register-btn').style.display = 'block';
 	document.getElementById('login-button').style.display = 'block';
 	
-	//add clearCookie(); to clear cookies on logout
+	fetch('https://mathbot-5zr7.onrender.com/logout', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({}),
+	});
 }
 
 function submitProblem() {
