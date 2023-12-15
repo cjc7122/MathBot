@@ -188,7 +188,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Logout endpoint
-app.post('/logout', (req, res) => {
+app.post('/logout', async (req, res) => {
     authenticatedUser = null;
 	// Clear cookies on logout
     res.clearCookie('email');
