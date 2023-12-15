@@ -400,19 +400,18 @@ function checkLoggedIn() {
 	.then((response) => response.json())
 	.then((data) => {
 		const { user } = data;
-		console.log(user);
 		const { firstName, tokens } = user;
 			
-            userInfoElement1.textContent = `Hi ${firstName}!`;
-			document.getElementById('MathCoin').style.display = 'block';
-			userInfoElement2.textContent = `:${tokens}`;
-			// Show the Logout button
-			document.getElementById('logout-btn').style.display = 'block';
-			document.getElementById('user-info1').style.display = 'block';
-			document.getElementById('user-info2').style.display = 'block';
-			// Hide the Login button
-			document.getElementById('login-button').style.display = 'none';
-			document.getElementById('register-btn').style.display = 'none';
+		userInfoElement1.textContent = `Hi ${firstName}!`;
+		document.getElementById('MathCoin').style.display = 'block';
+		userInfoElement2.textContent = `:${tokens}`;
+		// Show the Logout button
+		document.getElementById('logout-btn').style.display = 'block';
+		document.getElementById('user-info1').style.display = 'block';
+		document.getElementById('user-info2').style.display = 'block';
+		// Hide the Login button
+		document.getElementById('login-button').style.display = 'none';
+		document.getElementById('register-btn').style.display = 'none';
 	})
 	.catch((error) => {
 		console.error('Error with JWTtoken', error);
