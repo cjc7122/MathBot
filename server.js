@@ -272,15 +272,12 @@ app.post('/verify', async (req, res) => {
 app.post('/solve', async (req, res) => {
     const problem = req.body;
     const email = req.cookies.email;
-	console.log(email);
-	console.log(problem);
 	
     try {
         await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
         const user = await collection.findOne({ email: email });
-		console.log(user);
         // Check if the user has enough tokens
         if (!user || user.tokens <= 0) {
             return res.status(510).json({ error: 'Insufficient tokens' });
@@ -350,6 +347,7 @@ async function makeOpenAIRequest(problem) {
 			},
 		}
 	);
+	console.log(response);
 	return response;
 }
 
