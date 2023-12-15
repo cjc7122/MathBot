@@ -6,6 +6,9 @@ const crypto = require('crypto');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+const saltRounds = 10; // Number of salt rounds
 
 const app = express();
 const port = 10000; // Update with your desired port
@@ -147,38 +150,50 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-		await client.connect();
- 
-		const db = client.db("Mathbot");
-		const collection = db.collection("MathbotUsers");
-		const creds = await collection.findOne( { email: email, password: password } );
-	
-		if (creds) {
-			// Search for the user information in the "MathbotUserInfo" collection
-            const userInfoCollection = db.collection("MathbotUserInfo");
-            const userInfo = await userInfoCollection.findOne({ email });
-			
-			if (userInfo) {
-				// Create a token with user information
-                const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+        await client.connect();
 
-				// Set cookies with the token
-                res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-                res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
-				
-				// Update the user document in the "MathbotUserInfo" collection with the new token
-                await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
-                
-                res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens }	});
+        const db = client.db("Mathbot");
+        const collection = db.collection("MathbotUsers");
+        
+        // Retrieve the hashed password from the database based on the provided email
+        const user = await collection.findOne({ email });
+
+        if (user) {
+            // Compare the entered password with the hashed password using bcrypt
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (passwordMatch) {
+                // Passwords match, proceed with login
+
+                // Search for the user information in the "MathbotUserInfo" collection
+                const userInfoCollection = db.collection("MathbotUserInfo");
+                const userInfo = await userInfoCollection.findOne({ email });
+
+                if (userInfo) {
+                    // Create a token with user information
+                    const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+
+                    // Set cookies with the token
+                    res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+                    res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+
+                    // Update the user document in the "MathbotUserInfo" collection with the new token
+                    await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
+
+                    res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens } });
+                } else {
+                    // Handle case where user information is not found
+                    res.status(500).json({ error: 'User information not found' });
+                }
             } else {
-                // Handle case where user information is not found
-                res.status(500).json({ error: 'User information not found' });
+                // Passwords do not match
+                res.status(401).json({ error: 'Invalid credentials' });
             }
         } else {
             // Handle case where credentials are not found
             res.status(401).json({ error: 'Invalid credentials' });
         }
-	} catch (error) {
+    } catch (error) {
         console.error('Login error:', error); // Add this line for detailed error logging
         res.status(500).json({ error: 'An error occurred during login' });
     } finally {
@@ -230,7 +245,7 @@ app.post('/verify', async (req, res) => {
         console.log('Verification request received:', req.body);
 
         const { firstName, lastName, email, password3, verificationCode } = req.body;
-        const password = password3;
+        const password = await bcrypt.hash(password3, saltRounds);
 		const newUser = {
 			email: email,
 			password: password
@@ -242,8 +257,6 @@ app.post('/verify', async (req, res) => {
 			tokens: 10,
 			ad_free: false
 		};
-
-        console.log('Verification data:', { firstName, lastName, email, password, verificationCode });
 
         const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
 
