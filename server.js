@@ -329,14 +329,13 @@ async function deductTokens(collection, email, amount) {
 
 async function makeOpenAIRequest(problem) {
     // Make the request to OpenAI
-	console.log(problem);
 	const response = await axios.post(
 		'https://api.openai.com/v1/chat/completions',
 		{
 			model: 'gpt-3.5-turbo',
 			messages: [
 				{ role: 'system', content: 'You are a helpful assistant that provides solutions to math problems. Give your answers labeled ||Step 1, ||Step 2, ect... do one calculation at a time. do not round. do not make assumptions. do not simplify. Show answer in fraction form.' },
-				{ role: 'user', content: `${problem}` }
+				{ role: 'user', content: problem.problem }
 			],
 			temperature: 0,
 		},
@@ -347,7 +346,6 @@ async function makeOpenAIRequest(problem) {
 			},
 		}
 	);
-	console.log(response);
 	return response;
 }
 
