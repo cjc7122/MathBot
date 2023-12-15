@@ -18,11 +18,11 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-		default-src 'self';
-		script-src 'self' www.googletagmanager.com 'nonce-g/Y9XQg9JJUUsHBh6YDrdA==' https://www.google-analytics.com;
+		default-src 'none';
+		script-src 'self' www.google-analytics.com;
 		style-src 'self' 'unsafe-inline';
 		img-src 'self' data: https://www.google-analytics.com;
-		connect-src 'self' *.google-analytics.com;  <!-- Allow all subdomains -->
+		connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net;
 	">
 </head>
 
@@ -39,7 +39,7 @@
             <img src="./Pictures/MathBotLogo.png" alt="MathBot" id="MathBotLogo">
         </div>
         <div class="header-container">
-			<div class="top-right">
+			<div class="top-right">  <!-- set all header buttons to display:none and then on window load decide which one to show. -->
 				<button id="login-button" onclick="openLoginPopup()">Login</button>
 				<button id="register-btn" onclick="openRegisterPopup()">Register</button>
 				<label id="user-info1" style="display:none;">empty</label>
