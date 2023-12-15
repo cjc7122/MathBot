@@ -421,10 +421,7 @@ function checkLoggedIn() {
                 // Hide the Login button
                 document.getElementById('login-button').style.display = 'none';
                 document.getElementById('register-btn').style.display = 'none';
-            } else {
-                // Handle the case when user data is incomplete or undefined
-                console.error('Incomplete or undefined user data');
-            }
+            } 
         })
         .catch((error) => {
             console.error('Error with JWTtoken', error);
