@@ -272,13 +272,15 @@ app.post('/verify', async (req, res) => {
 app.post('/solve', async (req, res) => {
     const problem = req.body;
     const email = req.cookies.email;
-
+	console.log(email);
+	console.log(problem);
+	
     try {
         await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
         const user = await collection.findOne({ email: email });
-
+		console.log(user);
         // Check if the user has enough tokens
         if (!user || user.tokens <= 0) {
             return res.status(510).json({ error: 'Insufficient tokens' });
@@ -286,7 +288,7 @@ app.post('/solve', async (req, res) => {
 
         // Deduct tokens from the user
         const updatedTokens = await deductTokens(collection, email, 1);
-
+		
         // Make the request to OpenAI
         const response = await makeOpenAIRequest(problem);
 
@@ -330,6 +332,7 @@ async function deductTokens(collection, email, amount) {
 
 async function makeOpenAIRequest(problem) {
     // Make the request to OpenAI
+	console.log(problem);
 	const response = await axios.post(
 		'https://api.openai.com/v1/chat/completions',
 		{
