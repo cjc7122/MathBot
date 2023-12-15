@@ -3,7 +3,7 @@
 <head>
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HH2W57YHBZ"></script>
-	<script>
+	<script nonce="g/Y9XQg9JJUUsHBh6YDrdA==">
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
@@ -16,7 +16,15 @@
     <title>Math Problem Solver</title>
 	<link rel="icon" href="./Pictures/TabPicture.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+		script-src 'self' https://*.googletagmanager.com;
+		img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com;
+		connect-src https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
+	">
 </head>
+
+
 
 <body>
     <!-- Header Section -->
@@ -29,7 +37,7 @@
             <img src="./Pictures/MathBotLogo.png" alt="MathBot" id="MathBotLogo">
         </div>
         <div class="header-container">
-			<div class="top-right">
+			<div class="top-right">  <!-- set all header buttons to display:none and then on window load decide which one to show. -->
 				<button id="login-button" onclick="openLoginPopup()">Login</button>
 				<button id="register-btn" onclick="openRegisterPopup()">Register</button>
 				<label id="user-info1" style="display:none;">empty</label>
@@ -64,7 +72,7 @@
 		<div id="login-popup" class="login-popup">
 			<h2>Login</h2>
 			<label for="username">Username:</label>
-			<input type="text" id="username" name="username" class="username-input" required><br>
+			<input type="email" id="username" name="username" class="username-input" required><br>
 
 			<label for="password">Password:</label>
 			<input type="password" id="password" name="password" required><br>
@@ -86,7 +94,7 @@
 			<input type="text" id="Last_Name" name="Last_Name" class="LastName-input" required><br>
 			
 			<label for="E-Mail">E-Mail:</label>
-			<input type="text" id="E-Mail" name="E-Mail" class="Email-input" required><br>
+			<input type="email" id="E-Mail" name="E-Mail" class="Email-input" required><br>
 
 			<label for="password1">Password:</label>
 			<input type="password" id="password1" name="password1" required><br>

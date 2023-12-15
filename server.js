@@ -79,22 +79,9 @@ app.use((req, res, next) => {
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
-            defaultSrc: ["'self'"],
             scriptSrc: ["'self'", "www.googletagmanager.com", "'nonce-g/Y9XQg9JJUUsHBh6YDrdA=='"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:"],
-            connectSrc: ["'self'"],
-            fontSrc: ["'self'"],
-            objectSrc: ["'none'"],
-            mediaSrc: ["'self'"],
-            frameSrc: ["'none'"],
-            workerSrc: ["'self'"],
-            frameAncestors: ["'none'"],
-            upgradeInsecureRequests: [],
-            blockAllMixedContent: [],
-            scriptSrcAttr: ["'nonce-g/Y9XQg9JJUUsHBh6YDrdA=='"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"],
+            imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
+            connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
         },
     })
 );
