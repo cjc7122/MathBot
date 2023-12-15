@@ -19,10 +19,12 @@
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
 		default-src 'none';
-		script-src 'self' www.google-analytics.com;
+		script-src 'self' https://*.googletagmanager.com 'nonce-g/Y9XQg9JJUUsHBh6YDrdA==';
 		style-src 'self' 'unsafe-inline';
-		img-src 'self' data: https://www.google-analytics.com;
-		connect-src 'self' https://www.google-analytics.com https://stats.g.doubleclick.net;
+		img-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com
+             https://*.g.doubleclick.net https://*.google.com https://*.google.<TLD>
+		connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com
+             https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.google.<TLD>
 	">
 </head>
 
