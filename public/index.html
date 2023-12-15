@@ -22,8 +22,8 @@
 		script-src 'self' www.googletagmanager.com 'nonce-g/Y9XQg9JJUUsHBh6YDrdA==' https://www.google-analytics.com;
 		style-src 'self' 'unsafe-inline';
 		img-src 'self' data: https://www.google-analytics.com;
-		connect-src 'self' https://www.google-analytics.com;
-    ">
+		connect-src 'self' *.google-analytics.com;  <!-- Allow all subdomains -->
+	">
 </head>
 
 
