@@ -102,7 +102,7 @@ const checkPassword = (req, res, next) => {
         return res.status(400).json({ error: 'Passwords do not match' });
     }
 	
-	return res.json({ message: 'Register successful' });
+	next();
 };
 
 // Middleware to handle email verification
