@@ -80,11 +80,12 @@ app.use(
     helmet.contentSecurityPolicy({
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", 'www.googletagmanager.com', (req, res) => `'nonce-${res.locals.nonce}'`],
-            // Add other directives as needed
+            scriptSrc: ["'self'", 'www.googletagmanager.com', (req, res) => `'nonce-${res.locals.nonce}'`, "'unsafe-inline'"],
+            scriptSrcAttr: ["'none'", (req, res) => `'nonce-${res.locals.nonce}'`],
         },
     })
 );
+
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
