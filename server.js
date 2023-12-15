@@ -7,6 +7,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator');
 
 const saltRounds = 10; // Number of salt rounds
 
@@ -97,17 +98,6 @@ const checkDuplicateUser = async (req, res, next) => {
     next();
 };
 
-// Middleware to check if passwords are the same
-const checkPassword = (req, res, next) => {
-    const { password1, password2 } = req.body;
-
-	if (password1 !== password2) {
-        return res.status(400).json({ error: 'Passwords do not match' });
-    }
-	
-	next();
-};
-
 // Middleware to handle email verification
 const sendVerificationEmail = async (req, res, next) => {
     // Check if the passwords match and the email is not already registered
@@ -146,7 +136,13 @@ const sendVerificationEmail = async (req, res, next) => {
 app.use(express.static('public'));
 
 // Login endpoint
-app.post('/login', async (req, res) => {
+app.post('/login', [ body('email').isEmail().normalizeEmail(), body('password').isLength({ min: 8 }).escape(), ], async (req, res) => {
+	const errors = validationResult(req);
+	
+	if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+	
     const { email, password } = req.body;
 
     try {
@@ -236,8 +232,14 @@ app.post('/logout', async (req, res) => {
 });
 
 // Registration endpoint
-app.post('/register', checkDuplicateUser, checkPassword, sendVerificationEmail, (req, res) => {	
-    res.json({ message: 'Register successful' });
+app.post('/register', [body('email').isEmail().normalizeEmail(), body('password1').isLength({ min: 8 }).escape(), body('password2').custom((value, { req }) => { if (value !== req.body.password1) { throw new Error('Passwords do not match');} return true;}), checkDuplicateUser, sendVerificationEmail, (req, res) => {	
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+	
+	res.json({ message: 'Register successful' });
 });
 
 app.post('/verify', async (req, res) => {

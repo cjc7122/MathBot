@@ -138,7 +138,7 @@ function register() {
 	}
 
     // Add password complexity requirements
-    const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&-]{8,}$/;
 
     if (!passwordRequirementsRegex.test(password1)) {
         // Password does not meet complexity requirements
