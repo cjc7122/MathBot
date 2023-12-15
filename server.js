@@ -68,7 +68,23 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet.contentSecurityPolicy());
+
+const nonce = crypto.randomBytes(16).toString('base64');
+
+app.use((req, res, next) => {
+    res.locals.nonce = nonce;
+    next();
+});
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", 'www.googletagmanager.com', (req, res) => `'nonce-${res.locals.nonce}'`],
+            // Add other directives as needed
+        },
+    })
+);
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
