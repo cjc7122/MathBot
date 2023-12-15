@@ -153,11 +153,11 @@ app.post('/login', [ body('email').isEmail().normalizeEmail(), body('password').
         
         // Retrieve the hashed password from the database based on the provided email
         const user = await collection.findOne({ email });
-
+		console.log(user);
         if (user) {
             // Compare the entered password with the hashed password using bcrypt
             const passwordMatch = await bcrypt.compare(password, user.password);
-
+			console.log(passwordMatch);
             if (passwordMatch) {
                 // Passwords match, proceed with login
 
