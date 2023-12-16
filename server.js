@@ -258,6 +258,7 @@ app.post(
 		body('password2').custom((value, { req }) => {
 			if (value !== req.body.password1) {
 				throw new Error('Passwords do not match');
+				return false;
 			}
 			return true;
 		}), 
