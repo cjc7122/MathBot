@@ -289,70 +289,83 @@ app.post(
 	}
 );
 
-app.post('/verify', async (req, res) => {
-    try {
-        console.log('Verification request received:', req.body);
-
-        const { firstName, lastName, email, password3, verificationCode } = req.body;
-        const password = await bcrypt.hash(password3, saltRounds);
-		const newUser = {
-			email: email,
-			password: password
-		};
-		const newUserInfo = {
-			email: email,
-			firstName: firstName,
-			lastName: lastName,
-			tokens: 10,
-			ad_free: false
-		};
-		console.log(tempVerify);
-		console.log(email);
-        const matchingEntry = tempVerify.find(
-			entry => entry.email === email && entry.verificationCode === verificationCode
-		);
-		console.log(matchingEntry);
-
-        if (!matchingEntry) {
-            console.log('Invalid verification code');
-            return res.status(401).json({ error: 'Invalid verification code' });
+app.post('/verify', [ 
+	body('email')
+    .isEmail()
+    .customSanitizer(value => {
+        const lowercasedEmail = value.toLowerCase();
+        // Manually retain the dot if it exists
+        const dotIndex = lowercasedEmail.indexOf('.');
+        if (dotIndex !== -1) {
+            return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
         }
+        return lowercasedEmail;
+    })],
+	async (req, res) => {
+		try {
+			console.log('Verification request received:', req.body);
 
-        // Remove the matching entry from the temporary verification array
-        tempVerify = tempVerify.filter(entry => entry.email !== email);
-	
-		await client.connect();
- 
-		const db = client.db("Mathbot");
-		const collection = db.collection("MathbotUsers");
-		const collection2 = db.collection("MathbotUserInfo");
+			const { firstName, lastName, email, password3, verificationCode } = req.body;
+			const password = await bcrypt.hash(password3, saltRounds);
+			const newUser = {
+				email: email,
+				password: password
+			};
+			const newUserInfo = {
+				email: email,
+				firstName: firstName,
+				lastName: lastName,
+				tokens: 10,
+				ad_free: false
+			};
+			console.log(tempVerify);
+			console.log(email);
+			const matchingEntry = tempVerify.find(
+				entry => entry.email === email && entry.verificationCode === verificationCode
+			);
+			console.log(matchingEntry);
 
-		const result = await collection.insertOne(newUser);
-		const result2 = await collection2.insertOne(newUserInfo);
+			if (!matchingEntry) {
+				console.log('Invalid verification code');
+				return res.status(401).json({ error: 'Invalid verification code' });
+			}
+
+			// Remove the matching entry from the temporary verification array
+			tempVerify = tempVerify.filter(entry => entry.email !== email);
 		
-		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
-			expiresIn: '1h', 
-		});
-		
-		// Set cookies with the token
-		res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-		res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
-		
-		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
-		
-		const user = await collection2.findOne({ email });
-		
-        res.json({ 
-			message: 'Verification successful', 
-			user: {...user, JWTtoken: undefined} 
-		});
-    } catch (error) {
-        console.error('Error during verification:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    } finally {
-        await client.close();
+			await client.connect();
+	 
+			const db = client.db("Mathbot");
+			const collection = db.collection("MathbotUsers");
+			const collection2 = db.collection("MathbotUserInfo");
+
+			const result = await collection.insertOne(newUser);
+			const result2 = await collection2.insertOne(newUserInfo);
+			
+			const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
+				expiresIn: '1h', 
+			});
+			
+			// Set cookies with the token
+			res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
+			res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
+			
+			await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
+			
+			const user = await collection2.findOne({ email });
+			
+			res.json({ 
+				message: 'Verification successful', 
+				user: {...user, JWTtoken: undefined} 
+			});
+		} catch (error) {
+			console.error('Error during verification:', error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		} finally {
+			await client.close();
+		}
 	}
-});
+);
 
 app.post('/solve', async (req, res) => {
     const problem = req.body;
