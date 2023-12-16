@@ -82,7 +82,7 @@ app.use(
             scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'", "'unsafe-inline'"],
             imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
             connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
-			scriptSrcAttr: ["'self'"],
+			scriptSrcAttr: ["'unsafe-inline'"],
         },
     })
 );
