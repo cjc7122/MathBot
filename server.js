@@ -240,6 +240,7 @@ app.post(
 		const { email } = req.body;
 		const verificationCode = generateVerificationCode();
 		tempVerify.push({ email, verificationCode });
+		console.log(tempVerify);
 
 		// Send verification email
 		const transporter = nodemailer.createTransport({
@@ -285,7 +286,7 @@ app.post('/verify', async (req, res) => {
 			tokens: 10,
 			ad_free: false
 		};
-
+		console.log(tempVerify);
         const matchingEntry = tempVerify.find(
 			entry => entry.email === email && entry.verificationCode === verificationCode
 		);
