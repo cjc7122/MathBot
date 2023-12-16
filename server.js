@@ -347,8 +347,8 @@ app.post('/verify', [
 			});
 			
 			// Set cookies with the token
-			res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-			res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
+			res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+			res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
 			
 			await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
 			
