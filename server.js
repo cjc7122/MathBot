@@ -457,7 +457,7 @@ app.post('/checkLoggedIn', async (req, res) => {
 		jwt.verify(JWTtoken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
             if (err) {
                 // Token verification failed
-                return res.status(401).json({ error: 'Unauthorized' });
+                res.json({ isLoggedIn: false });
             } else {
 				await client.connect();
 				const db = client.db("Mathbot");
