@@ -113,40 +113,6 @@ const checkDuplicateUser = async (req, res, next) => {
     next();
 };
 
-// Middleware to handle email verification
-const sendVerificationEmail = async (req, res, next) => {
-    if (!res.headersSent) {
-        const { email } = req.body;
-        const verificationCode = generateVerificationCode();
-		tempVerify.push({ email, verificationCode });
-		
-        // Send verification email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'mail.mathbot@gmail.com',
-                pass: 'ccwk rejs pwwf uysd',
-            },
-        });
-    
-        const mailOptions = {
-            from: 'mail.mathbot@gmail.com',
-            to: email,
-            subject: 'Verify Your Email',
-            text: `Your verification code is: ${verificationCode}`,
-        };
-    
-        transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				console.error('Error sending email:', error);
-				return res.status(402).json({ error: 'E-Mail failed to send!' });
-			}
-			console.log('Email sent:', info.response);
-		});
-    }
-	next();
-};
-
 app.use(express.static('public'));
 
 // Login endpoint
@@ -253,27 +219,53 @@ app.post('/logout', async (req, res) => {
 app.post(
 	'/register', 
 	[ 
-		body('email').isEmail().normalizeEmail(),
-		body('password1').isLength({ min: 8 }).escape(),
-		body('password2').custom((value, { req }) => {
-			if (value !== req.body.password1) {
-				throw new Error('Passwords do not match');
-				return false;
-			}
-			return true;
-		}), 
-		checkDuplicateUser, 
-		sendVerificationEmail
+	body('email').isEmail().normalizeEmail(),
+	body('password1').isLength({ min: 8 }).escape(),
+	body('password2').custom((value, { req }) => {
+		if (value !== req.body.password1) {
+			throw new Error('Passwords do not match');
+		}
+		return true;
+	}), 
+	checkDuplicateUser
 	], 
-	(req, res) => {
+	async (req, res) => {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-		  return res.status(400).json({ errors: errors.array() });
+			return res.status(400).json({ errors: errors.array() });
 		}
 
-		res.json({ message: 'Register successful' });
-    }
+		// If there are no validation errors, proceed with sending the verification email
+		const { email } = req.body;
+		const verificationCode = generateVerificationCode();
+		tempVerify.push({ email, verificationCode });
+
+		// Send verification email
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'mail.mathbot@gmail.com',
+				pass: 'ccwk rejs pwwf uysd',
+			},
+		});
+
+		const mailOptions = {
+			from: 'mail.mathbot@gmail.com',
+			to: email,
+			subject: 'Verify Your Email',
+			text: `Your verification code is: ${verificationCode}`,
+		};
+
+		try {
+			const info = await transporter.sendMail(mailOptions);
+			console.log('Email sent:', info.response);
+			res.json({ message: 'Register successful' });
+		} catch (error) {
+			console.error('Error sending email:', error);
+			return res.status(402).json({ error: 'E-Mail failed to send!' });
+		}
+	}
 );
 
 app.post('/verify', async (req, res) => {

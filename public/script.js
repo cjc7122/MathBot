@@ -397,38 +397,38 @@ function checkLoggedIn() {
         },
         body: JSON.stringify({}),
     })
-        .then((response) => {
-            // Check if the response status is okay
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then((data) => {
-            const { user } = data;
+	.then((response) => {
+		// Check if the response status is okay
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		return response.json();
+	})
+	.then((data) => {
+		const { user } = data;
 
-            // Check if user exists and has firstName and tokens properties
-            if (user && user.firstName && user.tokens !== undefined) {
-                const { firstName, tokens } = user;
+		// Check if user exists and has firstName and tokens properties
+		if (user && user.firstName && user.tokens !== undefined) {
+			const { firstName, tokens } = user;
 
-                userInfoElement1.textContent = `Hi ${firstName}!`;
-                document.getElementById('MathCoin').style.display = 'block';
-                userInfoElement2.textContent = `:${tokens}`;
-                document.getElementById('logout-btn').style.display = 'block';
-                document.getElementById('user-info1').style.display = 'block';
-                document.getElementById('user-info2').style.display = 'block';
-                document.getElementById('login-button').style.display = 'none';
-                document.getElementById('register-btn').style.display = 'none';
-            } else {
-                document.getElementById('MathCoin').style.display = 'none';
-                document.getElementById('logout-btn').style.display = 'none';
-                document.getElementById('user-info1').style.display = 'none';
-                document.getElementById('user-info2').style.display = 'none';
-                document.getElementById('login-button').style.display = 'block';
-                document.getElementById('register-btn').style.display = 'block';
-			}
-        })
-        .catch((error) => {
-            console.error('Error with JWTtoken', error);
-        });
+			userInfoElement1.textContent = `Hi ${firstName}!`;
+			document.getElementById('MathCoin').style.display = 'block';
+			userInfoElement2.textContent = `:${tokens}`;
+			document.getElementById('logout-btn').style.display = 'block';
+			document.getElementById('user-info1').style.display = 'block';
+			document.getElementById('user-info2').style.display = 'block';
+			document.getElementById('login-button').style.display = 'none';
+			document.getElementById('register-btn').style.display = 'none';
+		} else {
+			document.getElementById('MathCoin').style.display = 'none';
+			document.getElementById('logout-btn').style.display = 'none';
+			document.getElementById('user-info1').style.display = 'none';
+			document.getElementById('user-info2').style.display = 'none';
+			document.getElementById('login-button').style.display = 'block';
+			document.getElementById('register-btn').style.display = 'block';
+		}
+	})
+	.catch((error) => {
+		console.error('Error with JWTtoken', error);
+	});
 }

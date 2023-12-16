@@ -138,7 +138,7 @@ function register() {
 	}
 
     // Add password complexity requirements
-    const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRequirementsRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&-]{8,}$/;
 
     if (!passwordRequirementsRegex.test(password1)) {
         // Password does not meet complexity requirements
@@ -414,14 +414,19 @@ function checkLoggedIn() {
                 userInfoElement1.textContent = `Hi ${firstName}!`;
                 document.getElementById('MathCoin').style.display = 'block';
                 userInfoElement2.textContent = `:${tokens}`;
-                // Show the Logout button
                 document.getElementById('logout-btn').style.display = 'block';
                 document.getElementById('user-info1').style.display = 'block';
                 document.getElementById('user-info2').style.display = 'block';
-                // Hide the Login button
                 document.getElementById('login-button').style.display = 'none';
                 document.getElementById('register-btn').style.display = 'none';
-            } 
+            } else {
+                document.getElementById('MathCoin').style.display = 'none';
+                document.getElementById('logout-btn').style.display = 'none';
+                document.getElementById('user-info1').style.display = 'none';
+                document.getElementById('user-info2').style.display = 'none';
+                document.getElementById('login-button').style.display = 'block';
+                document.getElementById('register-btn').style.display = 'block';
+			}
         })
         .catch((error) => {
             console.error('Error with JWTtoken', error);
