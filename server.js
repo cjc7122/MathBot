@@ -173,29 +173,22 @@ app.post(
 			
 			// Retrieve the hashed password from the database based on the provided email
 			const user = await collection.findOne({ email });
-			console.log(email);
-			console.log(user);
 			if (user) {
 				// Compare the entered password with the hashed password using bcrypt
 				const passwordMatch = await bcrypt.compare(password, user.password);
-				console.log(passwordMatch);
 				if (passwordMatch) {
 					// Passwords match, proceed with login
 
 					// Search for the user information in the "MathbotUserInfo" collection
 					const userInfoCollection = db.collection("MathbotUserInfo");
 					const userInfo = await userInfoCollection.findOne({ email });
-					console.log(email);
-					console.log(user);
-					console.log(passwordMatch);
-					console.log(userInfo);
 					if (userInfo) {
 						// Create a token with user information
 						const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 
 						// Set cookies with the token
-						res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-						res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
+						res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+						res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
 
 						// Update the user document in the "MathbotUserInfo" collection with the new token
 						await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
