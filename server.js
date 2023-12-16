@@ -79,14 +79,16 @@ app.use((req, res, next) => {
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
-            scriptSrc: ["'self'", "www.googletagmanager.com", "'nonce-g/Y9XQg9JJUUsHBh6YDrdA=='"],
+            scriptSrc: ["'self'", "www.googletagmanager.com", `'nonce-${generateNonce()}'`],
             imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
             connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
         },
     })
 );
 
-
+function generateNonce() {
+	return crypto.randomBytes(16).toString('base64');
+}
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {

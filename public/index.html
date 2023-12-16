@@ -3,7 +3,7 @@
 <head>
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HH2W57YHBZ"></script>
-	<script nonce="g/Y9XQg9JJUUsHBh6YDrdA==">
+	<script nonce="<?php echo $nonce; ?>">
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-		script-src 'self' https://*.googletagmanager.com 'nonce-g/Y9XQg9JJUUsHBh6YDrdA==';
+		script-src 'self' https://*.googletagmanager.com 'nonce-<?php echo $nonce; ?>';;
 		img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com;
 		connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
 	">
