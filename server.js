@@ -120,7 +120,17 @@ app.post(
 	'/login', 
 	limiter, 
 	[ 
-		body('email').isEmail().normalizeEmail(), 
+		body('email')
+		.isEmail()
+		.customSanitizer(value => {
+			const lowercasedEmail = value.toLowerCase();
+			// Manually retain the dot if it exists
+			const dotIndex = lowercasedEmail.indexOf('.');
+			if (dotIndex !== -1) {
+				return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
+			}
+			return lowercasedEmail;
+		}), 
 		body('password').isLength({ min: 8 }).escape(), 
 	], 
 	async (req, res) => {
@@ -219,7 +229,17 @@ app.post('/logout', async (req, res) => {
 app.post(
 	'/register', 
 	[ 
-	body('email').isEmail().normalizeEmail(),
+	body('email')
+    .isEmail()
+    .customSanitizer(value => {
+        const lowercasedEmail = value.toLowerCase();
+        // Manually retain the dot if it exists
+        const dotIndex = lowercasedEmail.indexOf('.');
+        if (dotIndex !== -1) {
+            return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
+        }
+        return lowercasedEmail;
+    }),
 	body('password1').isLength({ min: 8 }).escape(),
 	body('password2').custom((value, { req }) => {
 		if (value !== req.body.password1) {
