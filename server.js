@@ -12,7 +12,6 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
 const saltRounds = 10; // Number of salt rounds
-
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
@@ -22,10 +21,7 @@ const app = express();
 const port = 10000; // Update with your desired port
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
 const uri = process.env.MONGODB_URI;
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -39,12 +35,13 @@ let tempVerify = [
     // Add more users as needed
 ];
 
-let authenticatedUser = null;
-
 // Function to process the GPT-3 API response
 const processResponse = (data) => {
-    const solution = data.choices.length > 0 ? data.choices[0].message.content.trim() : 'No solution found';
-    return solution;
+  const solution =
+    data.choices.length > 0
+      ? data.choices[0].message.content.trim()
+      : 'No solution found';
+  return solution;
 };
 
 // Function to generate a random verification code
@@ -52,7 +49,6 @@ const generateVerificationCode = () => {
     // Generate a random 3-byte (6-digit) hexadecimal code
     const randomBytes = crypto.randomBytes(3);
     const verificationCode = randomBytes.toString('hex').toUpperCase().slice(0, 6);
-
     return verificationCode;
 };
 
@@ -68,28 +64,18 @@ const corsOptions = {
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-
-const nonce = crypto.randomBytes(16).toString('base64');
-
-app.use((req, res, next) => {
-    res.locals.nonce = nonce;
-    next();
-});
+app.set('trust proxy', 1);
 
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
-            scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'", "'unsafe-inline'", "'unsafe-eval'"],
+            scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'", "'unsafe-inline'"],
             imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
             connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
-			scriptSrcAttr: ["'unsafe-inline'", "'unsafe-eval'"],
+			scriptSrcAttr: ["'unsafe-inline'"],
         },
     })
 );
-
-function generateNonce() {
-	return crypto.randomBytes(16).toString('base64');
-}
 
 // Async function to connect to MongoDB
 async function connectToMongoDB() {
@@ -129,7 +115,6 @@ const checkDuplicateUser = async (req, res, next) => {
 
 // Middleware to handle email verification
 const sendVerificationEmail = async (req, res, next) => {
-    // Check if the passwords match and the email is not already registered
     if (!res.headersSent) {
         const { email } = req.body;
         const verificationCode = generateVerificationCode();
@@ -165,66 +150,75 @@ const sendVerificationEmail = async (req, res, next) => {
 app.use(express.static('public'));
 
 // Login endpoint
-app.post('/login', limiter, [ body('email').isEmail().normalizeEmail(), body('password').isLength({ min: 8 }).escape(), ], async (req, res) => {
-	const errors = validationResult(req);
+app.post(
+	'/login', 
+	limiter, 
+	[ 
+		body('email').isEmail().normalizeEmail(), 
+		body('password').isLength({ min: 8 }).escape(), 
+	], 
+	async (req, res) => {
+		const errors = validationResult(req);
 	
-	if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() });
+		}
 	
-    const { email, password } = req.body;
-    try {
-        await client.connect();
+		const { email, password } = req.body;
+		try {
+			await client.connect();
 
-        const db = client.db("Mathbot");
-        const collection = db.collection("MathbotUsers");
-        
-        // Retrieve the hashed password from the database based on the provided email
-        const user = await collection.findOne({ email });
-		console.log(user);
-        if (user) {
-            // Compare the entered password with the hashed password using bcrypt
-            const passwordMatch = await bcrypt.compare(password, user.password);
-			console.log(passwordMatch);
-            if (passwordMatch) {
-                // Passwords match, proceed with login
+			const db = client.db("Mathbot");
+			const collection = db.collection("MathbotUsers");
+			
+			// Retrieve the hashed password from the database based on the provided email
+			const user = await collection.findOne({ email });
+			if (user) {
+				// Compare the entered password with the hashed password using bcrypt
+				const passwordMatch = await bcrypt.compare(password, user.password);
+				if (passwordMatch) {
+					// Passwords match, proceed with login
 
-                // Search for the user information in the "MathbotUserInfo" collection
-                const userInfoCollection = db.collection("MathbotUserInfo");
-                const userInfo = await userInfoCollection.findOne({ email });
+					// Search for the user information in the "MathbotUserInfo" collection
+					const userInfoCollection = db.collection("MathbotUserInfo");
+					const userInfo = await userInfoCollection.findOne({ email });
+					console.log(email);
+					console.log(user);
+					console.log(passwordMatch);
+					console.log(userInfo);
+					if (userInfo) {
+						// Create a token with user information
+						const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
 
-                if (userInfo) {
-                    // Create a token with user information
-                    const token = jwt.sign({ email, firstName: userInfo.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+						// Set cookies with the token
+						res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
+						res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
 
-                    // Set cookies with the token
-                    res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-                    res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
+						// Update the user document in the "MathbotUserInfo" collection with the new token
+						await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
 
-                    // Update the user document in the "MathbotUserInfo" collection with the new token
-                    await userInfoCollection.updateOne({ email }, { $set: { JWTtoken: [token] } });
-
-                    res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens } });
-                } else {
-                    // Handle case where user information is not found
-                    res.status(500).json({ error: 'User information not found' });
-                }
-            } else {
-                // Passwords do not match
-                res.status(401).json({ error: 'Invalid credentials' });
-            }
-        } else {
-            // Handle case where credentials are not found
-            res.status(401).json({ error: 'Invalid credentials' });
-        }
-    } catch (error) {
-        console.error('Login error:', error); // Add this line for detailed error logging
-        res.status(500).json({ error: 'An error occurred during login' });
-    } finally {
-        // Ensure that the client will close when you finish/error
-        await client.close();
-    }
-});
+						res.json({ message: 'Login successful', user: { email, firstName: userInfo.firstName, tokens: userInfo.tokens } });
+					} else {
+						// Handle case where user information is not found
+						res.status(500).json({ error: 'User information not found' });
+					}
+				} else {
+					// Passwords do not match
+					res.status(401).json({ error: 'Invalid credentials' });
+				}
+			} else {
+				// Handle case where credentials are not found
+				res.status(401).json({ error: 'Invalid credentials' });
+			}
+		} catch (error) {
+			console.error('Login error:', error); // Add this line for detailed error logging
+			res.status(500).json({ error: 'An error occurred during login' });
+		} finally {
+			// Ensure that the client will close when you finish/error
+			await client.close();
+		}
+	}
+);
 
 // Logout endpoint
 app.post('/logout', async (req, res) => {
@@ -260,21 +254,29 @@ app.post('/logout', async (req, res) => {
 });
 
 // Registration endpoint
-app.post('/register', [ body('email').isEmail().normalizeEmail(),
-    body('password1').isLength({ min: 8 }).escape(),
-    body('password2').custom((value, { req }) => {
-		if (value !== req.body.password1) {throw new Error('Passwords do not match');}
-		return true;
-    }), checkDuplicateUser, sendVerificationEmail], (req, res) => {
-		
-    const errors = validationResult(req);
+app.post(
+	'/register', 
+	[ 
+		body('email').isEmail().normalizeEmail(),
+		body('password1').isLength({ min: 8 }).escape(),
+		body('password2').custom((value, { req }) => {
+			if (value !== req.body.password1) {
+				throw new Error('Passwords do not match');
+			}
+			return true;
+		}), 
+		checkDuplicateUser, 
+		sendVerificationEmail
+	], 
+	(req, res) => {
+		const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+		if (!errors.isEmpty()) {
+		  return res.status(400).json({ errors: errors.array() });
+		}
+
+		res.json({ message: 'Register successful' });
     }
-
-    res.json({ message: 'Register successful' });
-  }
 );
 
 app.post('/verify', async (req, res) => {
@@ -295,7 +297,9 @@ app.post('/verify', async (req, res) => {
 			ad_free: false
 		};
 
-        const matchingEntry = tempVerify.find(entry => entry.email === email && entry.verificationCode === verificationCode);
+        const matchingEntry = tempVerify.find(
+			entry => entry.email === email && entry.verificationCode === verificationCode
+		);
 
         if (!matchingEntry) {
             console.log('Invalid verification code');
@@ -314,28 +318,26 @@ app.post('/verify', async (req, res) => {
 		const result = await collection.insertOne(newUser);
 		const result2 = await collection2.insertOne(newUserInfo);
 		
-		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
+			expiresIn: '1h', 
+		});
 		
 		// Set cookies with the token
 		res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
 		res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
 		
-		// Update the user document in the "MathbotUserInfo" collection with the new token
 		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
-
-        // Log the verification success
-        console.log(`Verification successful for ${email}`);
 		
 		const user = await collection2.findOne({ email });
 		
-        res.json({ message: 'Verification successful', user: {...user, JWTtoken: undefined} });
+        res.json({ 
+			message: 'Verification successful', 
+			user: {...user, JWTtoken: undefined} 
+		});
     } catch (error) {
         console.error('Error during verification:', error);
-
-        // Log the error details
         res.status(500).json({ error: 'Internal Server Error' });
     } finally {
-		// Ensure that the client will close when you finish/error
         await client.close();
 	}
 });
@@ -349,39 +351,32 @@ app.post('/solve', async (req, res) => {
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
         const user = await collection.findOne({ email: email });
-        // Check if the user has enough tokens
+		
         if (!user || user.tokens <= 0) {
             return res.status(510).json({ error: 'Insufficient tokens' });
         }
 
-        // Deduct tokens from the user
         const updatedTokens = await deductTokens(collection, email, 1);
 		
-        // Make the request to OpenAI
         const response = await makeOpenAIRequest(problem);
 
-        // Process the OpenAI response
         const solution = processResponse(response.data);
 
-        // Return the solution and the updated token balance
         res.json({ solution, tokens: updatedTokens });
     } catch (error) {
         console.error('Error:', error.message);
 
-        // If an error occurs, roll back the deduction of tokens
         if (user) {
             await deductTokens(collection, email, -1);
         }
 
         res.status(500).json({ error: 'An error occurred' });
     } finally {
-        // Ensure that the client will close when you finish/error
         await client.close();
     }
 });
 
 async function deductTokens(collection, email, amount) {
-    // Deduct tokens from the user
     const user = await collection.findOne({ email: email });
 
     if (!user || user.tokens + amount < 0) {
@@ -399,7 +394,6 @@ async function deductTokens(collection, email, amount) {
 }
 
 async function makeOpenAIRequest(problem) {
-    // Make the request to OpenAI
 	const response = await axios.post(
 		'https://api.openai.com/v1/chat/completions',
 		{

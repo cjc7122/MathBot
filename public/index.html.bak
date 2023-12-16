@@ -17,10 +17,10 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-		script-src 'self' https://*.googletagmanager.com 'nonce-h6p3V7OqKUW0ZbF9' 'unsafe-inline';;
+		script-src 'self' https://*.googletagmanager.com 'nonce-h6p3V7OqKUW0ZbF9' 'unsafe-inline' 'unsafe-eval';
 		img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com;
 		connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
-		script-src-attr 'unsafe-inline';
+		script-src-attr 'unsafe-inline' 'unsafe-eval';
 	">
 </head>
 
