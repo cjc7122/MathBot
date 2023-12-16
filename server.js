@@ -307,9 +307,11 @@ app.post('/verify', async (req, res) => {
 			ad_free: false
 		};
 		console.log(tempVerify);
+		console.log(email);
         const matchingEntry = tempVerify.find(
 			entry => entry.email === email && entry.verificationCode === verificationCode
 		);
+		console.log(matchingEntry);
 
         if (!matchingEntry) {
             console.log('Invalid verification code');
