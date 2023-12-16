@@ -3,12 +3,11 @@
 <head>
 	<!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HH2W57YHBZ"></script>
-	<script nonce="g/Y9XQg9JJUUsHBh6YDrdA==">
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'G-HH2W57YHBZ');
+	<script nonce="h6p3V7OqKUW0ZbF9"> <!-- Replace with your chosen static nonce -->
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-HH2W57YHBZ');
 	</script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +17,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-		script-src 'self' https://*.googletagmanager.com 'nonce-g/Y9XQg9JJUUsHBh6YDrdA==';
+		script-src 'self' https://*.googletagmanager.com 'nonce-h6p3V7OqKUW0ZbF9';;
 		img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com;
 		connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
 	">
