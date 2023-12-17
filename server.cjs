@@ -27,7 +27,7 @@ const port = 10000; // Update with your desired port
 app.set('view engine', 'ejs');
 
 // Set the 'views' directory
-app.set('public', path.join(__dirname, 'public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const uri = process.env.MONGODB_URI;
