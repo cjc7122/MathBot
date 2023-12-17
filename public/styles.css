@@ -155,6 +155,7 @@ header #MathCoin {
     text-align: center;
     font-size: 18px;
     margin-bottom: 20px;
+	display: none;
 }
 
 /* Styles for the login pop-up */
@@ -181,6 +182,7 @@ header #MathCoin {
 .problem-textarea {
     height: 30px;
 	width: 100%;
+	display: none;
     /* Add more styles as needed */
 }
 
@@ -191,6 +193,7 @@ header #MathCoin {
     color: white;
     border: none;
     cursor: pointer;
+	display: none;
 }
 
 #solveButton:hover {
@@ -203,6 +206,7 @@ header #MathCoin {
     color: white;
     border: none;
     cursor: pointer;
+	display: none;
 }
 
 #WatchAd:hover {
