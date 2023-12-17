@@ -3,7 +3,7 @@ let isLoggedIn = false;
 let isRegisterSuccessful = false;
 let isVerificationSuccessful = false;
 
-document.getElementById('problem-input').oninput = function {
+document.getElementById('problem-input').oninput = function() {
 	const textarea = document.getElementById('problem-input');
 	textarea.style.height = 'auto'; // Reset height to auto to recalculate scrollHeight
 	textarea.style.height = (textarea.scrollHeight) + 'px';
