@@ -11,7 +11,6 @@ function adjustTextareaHeight() {
 
 // Call the adjustTextareaHeight function on page load
 window.onload = function () {
-    adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load	
 	checkLoggedIn();
 };
 
@@ -413,6 +412,7 @@ function checkLoggedIn() {
 			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
 			document.getElementById('problem-input').style.display = '';
+			//document.getElementById('problem-input').style.height = '30px';
 			document.getElementById('solveButton').style.display = '';
 			document.getElementById('intro-text').style.display = '';
 			document.getElementById('GetCoin').style.display = 'block';
