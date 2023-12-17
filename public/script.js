@@ -409,6 +409,7 @@ function checkLoggedIn() {
 	.then((data) => {
 		const { user } = data;
 		openPage = getCookie('page');
+		console.log(openPage);
 		if (openPage === 'Home') {
 			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
