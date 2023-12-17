@@ -11,7 +11,8 @@ const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const ejs = require('ejs');
-const path = require('path');
+const { fileURLToPath } = require('url');
+const { path, dirname } = require('path');
 
 const saltRounds = 10; // Number of salt rounds
 const limiter = rateLimit({
