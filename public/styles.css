@@ -156,7 +156,7 @@ header #MathCoin {
 }
 
 /* Styles for the login pop-up */
-.login-popup {
+.popup {
     display: none;
     position: fixed;
     top: 50%;
