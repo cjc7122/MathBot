@@ -238,13 +238,13 @@ function login() {
 			// Hide the Login button
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
+			document.getElementById('NoLogin').style.display = 'none';
 		} else {
 			document.getElementById('NoLogin').style.display = 'block';
 		}
 	})
 	.catch(error => {
-		console.error('Error:', error);
-		alert('An error occurred during login');
+		document.getElementById('NoLogin').style.display = 'block';
 	});
 }
 
