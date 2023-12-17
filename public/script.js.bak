@@ -239,7 +239,7 @@ function login() {
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
 		} else {
-			alert('Invalid username or password');
+			document.getElementById('NoLogin').style.display = 'block';
 		}
 	})
 	.catch(error => {
@@ -412,10 +412,10 @@ function checkLoggedIn() {
 		const { user } = data;
 
 		if (openPage === 'Home') {
-			document.getElementById('GoHome').style.display = '';
+			document.getElementById('GoHome').style.display = 'block';
 			document.getElementById('GetCoin').style.display = 'none';
 		} else if (openPage === 'GetCoin') {
-			document.getElementById('GetCoin').style.display = '';
+			document.getElementById('GetCoin').style.display = 'block';
 			document.getElementById('GoHome').style.display = 'none';
 		}
 

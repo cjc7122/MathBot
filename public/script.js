@@ -239,7 +239,7 @@ function login() {
 			document.getElementById('login-button').style.display = 'none';
 			document.getElementById('register-btn').style.display = 'none';
 		} else {
-			alert('Invalid username or password');
+			document.getElementById('NoLogin').style.display = 'block';
 		}
 	})
 	.catch(error => {
@@ -330,7 +330,7 @@ function submitProblem() {
 	}
 }
 
-let openPage = 'Home';
+let openPage = 'Home'; //TODO// keep track of this in cookie probs
 
 function openGetCoinPage() {
 	openPage = 'GetCoin';
