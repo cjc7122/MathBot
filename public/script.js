@@ -11,8 +11,8 @@ function adjustTextareaHeight() {
 
 // Call the adjustTextareaHeight function on page load
 window.onload = function () {
+    adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load	
 	checkLoggedIn();
-    adjustTextareaHeight(); // Call the adjustTextareaHeight function on page load
 };
 
 function openLoginPopup() {
@@ -409,7 +409,6 @@ function checkLoggedIn() {
 	.then((data) => {
 		const { user } = data;
 		openPage = getCookie('page');
-		console.log(openPage);
 		if (openPage === 'Home') {
 			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
@@ -430,7 +429,15 @@ function checkLoggedIn() {
 			document.getElementById('Ad-Text').style.display = '';
 			document.getElementById('result').innerHTML = '';
 		} else {
+			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
+			document.getElementById('problem-input').style.display = '';
+			document.getElementById('solveButton').style.display = '';
+			document.getElementById('intro-text').style.display = '';
+			document.getElementById('GetCoin').style.display = 'block';
+			document.getElementById('GoHome').style.display = 'none';
+			document.getElementById('WatchAd').style.display = 'none';
+			document.getElementById('Ad-Text').style.display = 'none';
 		}
 
 		// Check if user exists and has firstName and tokens properties
