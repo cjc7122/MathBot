@@ -413,9 +413,20 @@ function checkLoggedIn() {
 		if (openPage === 'Home') {
 			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
+			document.getElementById('problem-input').style.display = '';
+			document.getElementById('solveButton').style.display = '';
+			document.getElementById('intro-text').style.display = '';
+			document.getElementById('WatchAd').style.display = 'none';
+			document.getElementById('Ad-Text').style.display = 'none';
 		} else if (openPage === 'getCoin') {
 			document.getElementById('GetCoin').style.display = 'none';
 			document.getElementById('GoHome').style.display = 'block';
+			document.getElementById('problem-input').style.display = 'none';
+			document.getElementById('solveButton').style.display = 'none';
+			document.getElementById('intro-text').style.display = 'none';
+			document.getElementById('WatchAd').style.display = '';
+			document.getElementById('Ad-Text').style.display = '';
+			document.getElementById('result').innerHTML = '';
 		} else {
 			document.getElementById('GetCoin').style.display = 'block';
 		}
