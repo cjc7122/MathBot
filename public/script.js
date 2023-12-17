@@ -413,7 +413,7 @@ function checkLoggedIn() {
 		if (openPage === 'Home') {
 			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('GetCoin').style.display = 'block';
-		} else if (openPage === 'GetCoin') {
+		} else if (openPage === 'getCoin') {
 			document.getElementById('GetCoin').style.display = 'none';
 			document.getElementById('GoHome').style.display = 'block';
 		} else {
