@@ -22,6 +22,12 @@ const limiter = rateLimit({
 const app = express();
 const port = 10000; // Update with your desired port
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
@@ -520,7 +526,7 @@ app.post('/checkLoggedIn', async (req, res) => {
 	}
 });
 
-app.get('/', (req, res) => {
+app.get('/index', (req, res) => {
     // You can pass data to your EJS file like this
     const data = {
         title: 'Hello EJS!',
