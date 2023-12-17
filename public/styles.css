@@ -149,12 +149,17 @@ header #MathCoin {
 	cursor: pointer;
 }
 
+
+
 /* Intro text styles */
 .intro-text {
 	top: 100px;
     text-align: center;
     font-size: 18px;
     margin-bottom: 20px;
+}
+
+#intro-text {
 	display: none;
 }
 
@@ -182,7 +187,6 @@ header #MathCoin {
 .problem-textarea {
     height: 30px;
 	width: 100%;
-	display: none;
     /* Add more styles as needed */
 }
 
@@ -193,7 +197,6 @@ header #MathCoin {
     color: white;
     border: none;
     cursor: pointer;
-	display: none;
 }
 
 #solveButton:hover {
@@ -206,7 +209,6 @@ header #MathCoin {
     color: white;
     border: none;
     cursor: pointer;
-	display: none;
 }
 
 #WatchAd:hover {
