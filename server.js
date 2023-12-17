@@ -260,7 +260,6 @@ app.post(
 		const { email } = req.body;
 		const verificationCode = generateVerificationCode();
 		tempVerify.push({ email, verificationCode });
-		console.log(tempVerify);
 
 		// Send verification email
 		const transporter = nodemailer.createTransport({
@@ -303,8 +302,6 @@ app.post('/verify', [
     })],
 	async (req, res) => {
 		try {
-			console.log('Verification request received:', req.body);
-
 			const { firstName, lastName, email, password3, verificationCode } = req.body;
 			const password = await bcrypt.hash(password3, saltRounds);
 			const newUser = {
@@ -318,15 +315,11 @@ app.post('/verify', [
 				tokens: 10,
 				ad_free: false
 			};
-			console.log(tempVerify);
-			console.log(email);
 			const matchingEntry = tempVerify.find(
 				entry => entry.email === email && entry.verificationCode === verificationCode
 			);
-			console.log(matchingEntry);
 
 			if (!matchingEntry) {
-				console.log('Invalid verification code');
 				return res.status(401).json({ error: 'Invalid verification code' });
 			}
 
