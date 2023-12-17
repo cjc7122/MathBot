@@ -10,6 +10,7 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const ejs = require('ejs');
 
 const saltRounds = 10; // Number of salt rounds
 const limiter = rateLimit({
@@ -113,40 +114,6 @@ const checkDuplicateUser = async (req, res, next) => {
     next();
 };
 
-// Middleware to handle email verification
-const sendVerificationEmail = async (req, res, next) => {
-    if (!res.headersSent) {
-        const { email } = req.body;
-        const verificationCode = generateVerificationCode();
-		tempVerify.push({ email, verificationCode });
-		
-        // Send verification email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'mail.mathbot@gmail.com',
-                pass: 'ccwk rejs pwwf uysd',
-            },
-        });
-    
-        const mailOptions = {
-            from: 'mail.mathbot@gmail.com',
-            to: email,
-            subject: 'Verify Your Email',
-            text: `Your verification code is: ${verificationCode}`,
-        };
-    
-        transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				console.error('Error sending email:', error);
-				return res.status(402).json({ error: 'E-Mail failed to send!' });
-			}
-			console.log('Email sent:', info.response);
-		});
-    }
-	next();
-};
-
 app.use(express.static('public'));
 
 // Login endpoint
@@ -154,7 +121,17 @@ app.post(
 	'/login', 
 	limiter, 
 	[ 
-		body('email').isEmail().normalizeEmail(), 
+		body('email')
+		.isEmail()
+		.customSanitizer(value => {
+			const lowercasedEmail = value.toLowerCase();
+			// Manually retain the dot if it exists
+			const dotIndex = lowercasedEmail.indexOf('.');
+			if (dotIndex !== -1) {
+				return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
+			}
+			return lowercasedEmail;
+		}), 
 		body('password').isLength({ min: 8 }).escape(), 
 	], 
 	async (req, res) => {
@@ -251,119 +228,145 @@ app.post('/logout', async (req, res) => {
 
 // Registration endpoint
 app.post(
-  '/register', 
-  [ 
-    body('email').isEmail().normalizeEmail(),
-    body('password1').isLength({ min: 8 }).escape(),
-    body('password2').custom((value, { req }) => {
-      if (value !== req.body.password1) {
-        throw new Error('Passwords do not match');
-      }
-      return true;
-    }), 
-    checkDuplicateUser
-  ], 
-  async (req, res) => {
-    const errors = validationResult(req);
+	'/register', 
+	[ 
+	body('email')
+    .isEmail()
+    .customSanitizer(value => {
+        const lowercasedEmail = value.toLowerCase();
+        // Manually retain the dot if it exists
+        const dotIndex = lowercasedEmail.indexOf('.');
+        if (dotIndex !== -1) {
+            return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
+        }
+        return lowercasedEmail;
+    }),
+	body('password1').isLength({ min: 8 }).escape(),
+	body('password2').custom((value, { req }) => {
+		if (value !== req.body.password1) {
+			throw new Error('Passwords do not match');
+		}
+		return true;
+	}), 
+	checkDuplicateUser
+	], 
+	async (req, res) => {
+		const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() });
+		}
 
-    // If there are no validation errors, proceed with sending the verification email
-    const { email } = req.body;
-    const verificationCode = generateVerificationCode();
-    tempVerify.push({ email, verificationCode });
+		// If there are no validation errors, proceed with sending the verification email
+		const { email } = req.body;
+		const verificationCode = generateVerificationCode();
+		tempVerify.push({ email, verificationCode });
+		console.log(tempVerify);
 
-    // Send verification email
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'mail.mathbot@gmail.com',
-        pass: 'ccwk rejs pwwf uysd',
-      },
-    });
+		// Send verification email
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: 'mail.mathbot@gmail.com',
+				pass: 'ccwk rejs pwwf uysd',
+			},
+		});
 
-    const mailOptions = {
-      from: 'mail.mathbot@gmail.com',
-      to: email,
-      subject: 'Verify Your Email',
-      text: `Your verification code is: ${verificationCode}`,
-    };
+		const mailOptions = {
+			from: 'mail.mathbot@gmail.com',
+			to: email,
+			subject: 'Verify Your Email',
+			text: `Your verification code is: ${verificationCode}`,
+		};
 
-    try {
-      const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent:', info.response);
-      res.json({ message: 'Register successful' });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return res.status(402).json({ error: 'E-Mail failed to send!' });
-    }
-  }
+		try {
+			const info = await transporter.sendMail(mailOptions);
+			console.log('Email sent:', info.response);
+			res.json({ message: 'Register successful' });
+		} catch (error) {
+			console.error('Error sending email:', error);
+			return res.status(402).json({ error: 'E-Mail failed to send!' });
+		}
+	}
 );
 
-app.post('/verify', async (req, res) => {
-    try {
-        console.log('Verification request received:', req.body);
-
-        const { firstName, lastName, email, password3, verificationCode } = req.body;
-        const password = await bcrypt.hash(password3, saltRounds);
-		const newUser = {
-			email: email,
-			password: password
-		};
-		const newUserInfo = {
-			email: email,
-			firstName: firstName,
-			lastName: lastName,
-			tokens: 10,
-			ad_free: false
-		};
-
-        const matchingEntry = tempVerify.find(
-			entry => entry.email === email && entry.verificationCode === verificationCode
-		);
-
-        if (!matchingEntry) {
-            console.log('Invalid verification code');
-            return res.status(401).json({ error: 'Invalid verification code' });
+app.post('/verify', [ 
+	body('email')
+    .isEmail()
+    .customSanitizer(value => {
+        const lowercasedEmail = value.toLowerCase();
+        // Manually retain the dot if it exists
+        const dotIndex = lowercasedEmail.indexOf('.');
+        if (dotIndex !== -1) {
+            return lowercasedEmail.slice(0, dotIndex) + '.' + lowercasedEmail.slice(dotIndex + 1);
         }
+        return lowercasedEmail;
+    })],
+	async (req, res) => {
+		try {
+			console.log('Verification request received:', req.body);
 
-        // Remove the matching entry from the temporary verification array
-        tempVerify = tempVerify.filter(entry => entry.email !== email);
-	
-		await client.connect();
- 
-		const db = client.db("Mathbot");
-		const collection = db.collection("MathbotUsers");
-		const collection2 = db.collection("MathbotUserInfo");
+			const { firstName, lastName, email, password3, verificationCode } = req.body;
+			const password = await bcrypt.hash(password3, saltRounds);
+			const newUser = {
+				email: email,
+				password: password
+			};
+			const newUserInfo = {
+				email: email,
+				firstName: firstName,
+				lastName: lastName,
+				tokens: 10,
+				ad_free: false
+			};
+			console.log(tempVerify);
+			console.log(email);
+			const matchingEntry = tempVerify.find(
+				entry => entry.email === email && entry.verificationCode === verificationCode
+			);
+			console.log(matchingEntry);
 
-		const result = await collection.insertOne(newUser);
-		const result2 = await collection2.insertOne(newUserInfo);
+			if (!matchingEntry) {
+				console.log('Invalid verification code');
+				return res.status(401).json({ error: 'Invalid verification code' });
+			}
+
+			// Remove the matching entry from the temporary verification array
+			tempVerify = tempVerify.filter(entry => entry.email !== email);
 		
-		const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
-			expiresIn: '1h', 
-		});
-		
-		// Set cookies with the token
-		res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-		res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
-		
-		await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
-		
-		const user = await collection2.findOne({ email });
-		
-        res.json({ 
-			message: 'Verification successful', 
-			user: {...user, JWTtoken: undefined} 
-		});
-    } catch (error) {
-        console.error('Error during verification:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    } finally {
-        await client.close();
+			await client.connect();
+	 
+			const db = client.db("Mathbot");
+			const collection = db.collection("MathbotUsers");
+			const collection2 = db.collection("MathbotUserInfo");
+
+			const result = await collection.insertOne(newUser);
+			const result2 = await collection2.insertOne(newUserInfo);
+			
+			const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
+				expiresIn: '1h', 
+			});
+			
+			// Set cookies with the token
+			res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+			res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+			
+			await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
+			
+			const user = await collection2.findOne({ email });
+			
+			res.json({ 
+				message: 'Verification successful', 
+				user: {...user, JWTtoken: undefined} 
+			});
+		} catch (error) {
+			console.error('Error during verification:', error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		} finally {
+			await client.close();
+		}
 	}
-});
+);
 
 app.post('/solve', async (req, res) => {
     const problem = req.body;

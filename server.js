@@ -10,6 +10,8 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const ejs = require('ejs');
+const path = require('path');
 
 const saltRounds = 10; // Number of salt rounds
 const limiter = rateLimit({
@@ -19,6 +21,12 @@ const limiter = rateLimit({
 
 const app = express();
 const port = 10000; // Update with your desired port
+
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+
+// Set the 'views' directory
+app.set('public', path.join(__dirname, 'public'));
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const uri = process.env.MONGODB_URI;
@@ -510,6 +518,15 @@ app.post('/checkLoggedIn', async (req, res) => {
 		// Ensure that the client will close when you finish/error
         await client.close();
 	}
+});
+
+app.get('/index', (req, res) => {
+    // You can pass data to your EJS file like this
+    const data = {
+        title: 'Hello EJS!',
+        message: 'This is an example EJS file.',
+    };
+    res.render('index', data);
 });
 
 app.listen(port, () => {
