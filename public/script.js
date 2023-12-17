@@ -330,10 +330,8 @@ function submitProblem() {
 	}
 }
 
-let openPage = 'Home'; //TODO// keep track of this in cookie probs
-
 function openGetCoinPage() {
-	openPage = 'GetCoin';
+	setCookie('page', 'getCoin', 1/24);
 	document.getElementById('problem-input').style.display = 'none';
 	document.getElementById('solveButton').style.display = 'none';
 	document.getElementById('intro-text').style.display = 'none';
@@ -345,7 +343,7 @@ function openGetCoinPage() {
 }
 
 function GoHome() {
-	openPage = 'Home';
+	setCookie('page', 'Home', 1/24);
 	document.getElementById('problem-input').style.display = '';
 	document.getElementById('solveButton').style.display = '';
 	document.getElementById('intro-text').style.display = '';
@@ -410,13 +408,13 @@ function checkLoggedIn() {
 	})
 	.then((data) => {
 		const { user } = data;
-
+		openPage = getCookie('page');
 		if (openPage === 'Home') {
-			document.getElementById('GoHome').style.display = 'block';
-			document.getElementById('GetCoin').style.display = 'none';
-		} else if (openPage === 'GetCoin') {
-			document.getElementById('GetCoin').style.display = 'block';
 			document.getElementById('GoHome').style.display = 'none';
+			document.getElementById('GetCoin').style.display = 'block';
+		} else if (openPage === 'GetCoin') {
+			document.getElementById('GetCoin').style.display = 'none';
+			document.getElementById('GoHome').style.display = 'block';
 		}
 
 		// Check if user exists and has firstName and tokens properties
@@ -444,3 +442,30 @@ function checkLoggedIn() {
 		console.error('Error with JWTtoken', error);
 	});
 }
+
+// Function to set a cookie
+function setCookie(name, value, daysToExpire) {
+    const date = new Date();
+    date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+// Function to get the value of a cookie
+function getCookie(name) {
+    const cookieName = name + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(cookieName) == 0) {
+            return cookie.substring(cookieName.length, cookie.length);
+        }
+    }
+    return "";
+}
+
+// Example usage
+const currentPage = 'home'; // Replace with the actual page name or identifier
+setCookie('currentPage', currentPage, 7); // Set a cookie named "currentPage" with the value of the current page
