@@ -169,10 +169,22 @@ header #MathCoin {
     z-index: 1000;
 }
 
-.login-popup label,
-.login-popup input,
-.login-popup button {
+.popup label,
+.popup input {
     margin-top: 10px; /* Adjust the margin as needed */
+}
+
+.popup button {
+	margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.popup button:hover {
+    opacity: 0.8;
 }
 
 /* Styles for the textarea */
@@ -204,20 +216,6 @@ header #MathCoin {
 }
 
 #WatchAd:hover {
-    opacity: 0.8;
-}
-
-/* Styles for the solve button */
-#pop-up-Button {
-	margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#pop-up-Button:hover {
     opacity: 0.8;
 }
 

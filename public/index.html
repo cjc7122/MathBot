@@ -58,18 +58,18 @@
         <div id="math-solver">
             <form>
                 <textarea type="text" id="problem-input" name="problemInput" cols="100" class="problem-textarea" style="display:none;">Insert math problem here</textarea><br><br>
-                <button type="button" id="solveButton" onclick="submitProblem()" style="display:none;">Solve</button><br>
+                <button type="button" id="solveButton" style="display:none;">Solve</button><br>
 				<p class="intro-text" id="Ad-Text" style="display:none;">
 					If you have run out of MathCoins, Just click the "Watch Ad" button to earn some more!
 				</p>
-				<button type="button" id="WatchAd" onclick="watchAd()" style="display:none;">Watch Ad</button>
+				<button type="button" id="WatchAd" style="display:none;">Watch Ad</button>
             </form>
             <div id="result"></div>
             <div id="status"></div>			
         </div>
 		
 		<!-- Login pop-up -->
-		<div id="login-popup" class="login-popup">
+		<div id="login-popup" class="popup">
 			<h2>Login</h2>
 			<label for="username">Username:</label>
 			<input type="email" id="username" name="username" class="username-input" required><br>
@@ -77,15 +77,15 @@
 			<label for="password">Password:</label>
 			<input type="password" id="password" name="password" required><br>
 
-			<button type="button" id="pop-up-Button" onclick="login()">Login</button>
-			<button type="button" id="pop-up-Button" onclick="closeLoginPopup()">Close</button>
+			<button type="button" id="pop-up-login">Login</button>
+			<button type="button" id="pop-up-closelogin">Close</button>
 			
 			
 			<label id="NoLogin" style="display:none; color:red">Incorrect email or password!</label>
 		</div>
 		
 		<!-- Register pop-up -->
-		<div id="Register-popup" class="login-popup">
+		<div id="Register-popup" class="popup">
 			<h2>Register</h2>
 			<label for="First_Name">First Name:</label>
 			<input type="text" id="First_Name" name="First_Name" class="FirstName-input" required><br>
@@ -102,8 +102,8 @@
 			<label for="password2">Re-Type Password:</label>
 			<input type="password" id="password2" name="password2" required><br>
 
-			<button type="button" id="pop-up-Button" onclick="register()">Register</button>
-			<button type="button" id="pop-up-Button" onclick="closeRegisterPopup()">Close</button>
+			<button type="button" id="pop-up-register" onclick="register()">Register</button>
+			<button type="button" id="pop-up-closeregister" onclick="closeRegisterPopup()">Close</button>
 			
 			<label id="EmailDuplicate" style="display:none; color:red">E-Mail is already in use!</label>
 			<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
@@ -113,13 +113,13 @@
 		</div>
 		
 		<!-- Login pop-up -->
-		<div id="Verification-popup" class="login-popup">
+		<div id="Verification-popup" class="popup">
 			<h2>Verify Email</h2>
 			<label for="verificationCode">Verification Code:</label>
 			<input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
 
-			<button type="button" id="pop-up-Button" onclick="Verify()">Verify</button>
-			<button type="button" id="pop-up-Button" onclick="closeVerifyPopup()">Close</button>
+			<button type="button" id="pop-up-verify" onclick="Verify()">Verify</button>
+			<button type="button" id="pop-up-closeverify" onclick="closeVerifyPopup()">Close</button>
 			
 			<label id="CodeNoGo" style="display:none; color:red">That code did not match!</label>
 		</div>

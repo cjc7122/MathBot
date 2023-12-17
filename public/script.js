@@ -29,29 +29,29 @@ document.getElementById('GetCoin').onclick = function() {
 document.getElementById('GoHome').onclick = function() {
 	GoHome();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('solveButton').onclick = function() {
+	submitProblem();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('WatchAd').onclick = function() {
+	watchAd();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-login').onclick = function() {
+	login();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-closelogin').onclick = function() {
+	closeLoginPopup();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-register').onclick = function() {
+	register();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-closeregister').onclick = function() {
+	closeRegisterPopup();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-verify').onclick = function() {
+	Verify();
 };
-document.getElementById('').onclick = function() {
-	openLoginPopup();
+document.getElementById('pop-up-closeverify').onclick = function() {
+	closeVerifyPopup();
 };
 
 
