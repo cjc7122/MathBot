@@ -424,9 +424,9 @@ function checkLoggedIn() {
 			document.getElementById('problem-input').style.display = 'none';
 			document.getElementById('solveButton').style.display = 'none';
 			document.getElementById('intro-text').style.display = 'none';
-			document.getElementById('WatchAd').style.display = '';
-			document.getElementById('Ad-Text').style.display = '';
-			document.getElementById('result').innerHTML = '';
+			document.getElementById('WatchAd').style.display = 'block';
+			document.getElementById('Ad-Text').style.display = 'block';
+			document.getElementById('result').innerHTML = 'block';
 		} else {
 			document.getElementById('GetCoin').style.display = 'block';
 		}
