@@ -415,6 +415,8 @@ function checkLoggedIn() {
 		} else if (openPage === 'GetCoin') {
 			document.getElementById('GetCoin').style.display = 'none';
 			document.getElementById('GoHome').style.display = 'block';
+		} else {
+			document.getElementById('GetCoin').style.display = 'block';
 		}
 
 		// Check if user exists and has firstName and tokens properties
