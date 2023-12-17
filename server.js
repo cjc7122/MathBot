@@ -521,7 +521,7 @@ app.post('/checkLoggedIn', async (req, res) => {
 	}
 });
 
-app.get('/index', (req, res) => {
+app.get('/', (req, res) => {
     // You can pass data to your EJS file like this
     const data = {
         title: 'Hello EJS!',
