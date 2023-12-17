@@ -149,12 +149,18 @@ header #MathCoin {
 	cursor: pointer;
 }
 
+
+
 /* Intro text styles */
 .intro-text {
 	top: 100px;
     text-align: center;
     font-size: 18px;
     margin-bottom: 20px;
+}
+
+#intro-text {
+	display: none;
 }
 
 /* Styles for the login pop-up */

@@ -416,6 +416,8 @@ function checkLoggedIn() {
 			document.getElementById('problem-input').style.display = '';
 			document.getElementById('solveButton').style.display = '';
 			document.getElementById('intro-text').style.display = '';
+			document.getElementById('GetCoin').style.display = 'block';
+			document.getElementById('GoHome').style.display = 'none';
 			document.getElementById('WatchAd').style.display = 'none';
 			document.getElementById('Ad-Text').style.display = 'none';
 		} else if (openPage === 'getCoin') {
