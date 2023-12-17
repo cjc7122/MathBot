@@ -3,7 +3,7 @@ let isLoggedIn = false;
 let isRegisterSuccessful = false;
 let isVerificationSuccessful = false;
 
-function adjustTextareaHeight() {
+document.getElementById('problem-input').oninput = function {
 	const textarea = document.getElementById('problem-input');
 	textarea.style.height = 'auto'; // Reset height to auto to recalculate scrollHeight
 	textarea.style.height = (textarea.scrollHeight) + 'px';
@@ -17,6 +17,43 @@ window.onload = function () {
 document.getElementById('login-button').onclick = function() {
 	openLoginPopup();
 };
+document.getElementById('register-btn').onclick = function() {
+	openRegisterPopup();
+};
+document.getElementById('logout-btn').onclick = function() {
+	logout();
+};
+document.getElementById('GetCoin').onclick = function() {
+	openGetCoinPage();
+};
+document.getElementById('GoHome').onclick = function() {
+	GoHome();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+document.getElementById('').onclick = function() {
+	openLoginPopup();
+};
+
 
 function openLoginPopup() {
 	document.getElementById('login-popup').style.display = 'block';
