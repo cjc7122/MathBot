@@ -124,6 +124,7 @@ header button {
 	border: none;
 	padding: 10px 20px;
 	cursor: pointer;
+	display: none;
 }
 
 header button:hover {
@@ -134,6 +135,7 @@ header label {
 	color: black;
 	margin: 10px;
 	cursor: pointer;
+	display: none;
 }
 
 header #user-info1:hover {

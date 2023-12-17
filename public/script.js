@@ -330,7 +330,10 @@ function submitProblem() {
 	}
 }
 
+let openPage = 'Home';
+
 function openGetCoinPage() {
+	openPage = 'GetCoin';
 	document.getElementById('problem-input').style.display = 'none';
 	document.getElementById('solveButton').style.display = 'none';
 	document.getElementById('intro-text').style.display = 'none';
@@ -342,6 +345,7 @@ function openGetCoinPage() {
 }
 
 function GoHome() {
+	openPage = 'Home';
 	document.getElementById('problem-input').style.display = '';
 	document.getElementById('solveButton').style.display = '';
 	document.getElementById('intro-text').style.display = '';
@@ -406,6 +410,14 @@ function checkLoggedIn() {
 	})
 	.then((data) => {
 		const { user } = data;
+
+		if (openPage === 'Home') {
+			document.getElementById('GoHome').style.display = 'block';
+			document.getElementById('GetCoin').style.display = 'none';
+		} else if (openPage === 'GetCoin') {
+			document.getElementById('GetCoin').style.display = 'block';
+			document.getElementById('GoHome').style.display = 'none';
+		}
 
 		// Check if user exists and has firstName and tokens properties
 		if (user && user.firstName && user.tokens !== undefined) {

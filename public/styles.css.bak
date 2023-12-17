@@ -35,7 +35,6 @@ body {
 		top: 0;
 		left: 50%;
 		transform: translate(-50%);
-		background-color: #f0f0f0; /* Light gray color */
 	}
 
 	/* Add styles for the images */
@@ -61,7 +60,6 @@ body {
 		top: 95px;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		background-color: #f0f0f0; /* Light gray color */
 	}
 
 	/* Add styles for the images */
@@ -87,7 +85,6 @@ body {
 		top: 90px;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		background-color: #f0f0f0; /* Light gray color */
 	}
 
 	/* Add styles for the images */
@@ -118,7 +115,6 @@ header {
 	align-items: center;
 	gap: 5px;
 	margin: 10px;
-	background-color: #f0f0f0; /* Light gray color */
 }
 
 /* Styles for header buttons */
@@ -128,6 +124,7 @@ header button {
 	border: none;
 	padding: 10px 20px;
 	cursor: pointer;
+	display: none;
 }
 
 header button:hover {
