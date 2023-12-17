@@ -12,7 +12,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const ejs = require('ejs');
 const { fileURLToPath } = require('url');
-const { path, dirname } = require('path');
+const path = require('path');
 
 const saltRounds = 10; // Number of salt rounds
 const limiter = rateLimit({
@@ -22,12 +22,6 @@ const limiter = rateLimit({
 
 const app = express();
 const port = 10000; // Update with your desired port
-
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
