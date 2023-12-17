@@ -14,6 +14,10 @@ window.onload = function () {
 	checkLoggedIn();
 };
 
+document.getElementById('login-button').onclick = function() {
+	openLoginPopup();
+};
+
 function openLoginPopup() {
 	document.getElementById('login-popup').style.display = 'block';
 	document.getElementById('Register-popup').style.display = 'none';
