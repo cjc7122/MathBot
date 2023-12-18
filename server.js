@@ -30,11 +30,6 @@ const client = new MongoClient(uri, {
   }
 });
 
-let tempVerify = [
-    { email: 'user1', verificationCode: '######' },
-    // Add more users as needed
-];
-
 // Function to process the GPT-3 API response
 const processResponse = (data) => {
   const solution =
@@ -250,40 +245,64 @@ app.post(
 	checkDuplicateUser
 	], 
 	async (req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
-
-		// If there are no validation errors, proceed with sending the verification email
-		const { email } = req.body;
-		const verificationCode = generateVerificationCode();
-		tempVerify.push({ email, verificationCode });
-
-		// Send verification email
-		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: 'mail.mathbot@gmail.com',
-				pass: 'ccwk rejs pwwf uysd',
-			},
-		});
-
-		const mailOptions = {
-			from: 'mail.mathbot@gmail.com',
-			to: email,
-			subject: 'Verify Your Email',
-			text: `Your verification code is: ${verificationCode}`,
-		};
-
 		try {
-			const info = await transporter.sendMail(mailOptions);
-			console.log('Email sent:', info.response);
-			res.json({ message: 'Register successful' });
+			const errors = validationResult(req);
+
+			if (!errors.isEmpty()) {
+				return res.status(400).json({ errors: errors.array() });
+			}
+
+			// If there are no validation errors, proceed with sending the verification email
+			const { email } = req.body;
+			const verificationCode = generateVerificationCode();
+			
+			const tempCode = {
+				email: email,
+				verificationCode: verificationCode
+			};
+			
+			await client.connect();
+		 
+			const db = client.db("Mathbot");
+			const collection = db.collection("tempVerify");
+			
+			const check = await collection.findOne({ email });
+			
+			if (check) {
+				await collection.insertOne(tempCode);
+			} else {
+				await collection.updateOne( { email }, { $set: { verificationCode: [verificationCode] }} );
+			}
+
+			// Send verification email
+			const transporter = nodemailer.createTransport({
+				service: 'gmail',
+				auth: {
+					user: 'mail.mathbot@gmail.com',
+					pass: 'ccwk rejs pwwf uysd',
+				},
+			});
+
+			const mailOptions = {
+				from: 'mail.mathbot@gmail.com',
+				to: email,
+				subject: 'Verify Your Email',
+				text: `Your verification code is: ${verificationCode}`,
+			};
+
+			try {
+				const info = await transporter.sendMail(mailOptions);
+				console.log('Email sent:', info.response);
+				res.json({ message: 'Register successful' });
+			} catch (error) {
+				console.error('Error sending email:', error);
+				return res.status(402).json({ error: 'E-Mail failed to send!' });
+			}
 		} catch (error) {
-			console.error('Error sending email:', error);
-			return res.status(402).json({ error: 'E-Mail failed to send!' });
+			console.error('Registration Error');
+			return res.status(403).json({ error: 'Registration Error' });
+		} finally {
+			await client.close();
 		}
 	}
 );
@@ -315,42 +334,41 @@ app.post('/verify', [
 				tokens: 10,
 				ad_free: false
 			};
-			const matchingEntry = tempVerify.find(
-				entry => entry.email === email && entry.verificationCode === verificationCode
-			);
-
-			if (!matchingEntry) {
-				return res.status(401).json({ error: 'Invalid verification code' });
-			}
-
-			// Remove the matching entry from the temporary verification array
-			tempVerify = tempVerify.filter(entry => entry.email !== email);
-		
+			
 			await client.connect();
-	 
+			
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUsers");
 			const collection2 = db.collection("MathbotUserInfo");
-
-			const result = await collection.insertOne(newUser);
-			const result2 = await collection2.insertOne(newUserInfo);
+			const collection3 = db.collection("tempVerify");
 			
-			const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
-				expiresIn: '1h', 
-			});
+			const temp = await collection3.findOne({ email });
 			
-			// Set cookies with the token
-			res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
-			res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
-			
-			await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
-			
-			const user = await collection2.findOne({ email });
-			
-			res.json({ 
-				message: 'Verification successful', 
-				user: {...user, JWTtoken: undefined} 
-			});
+			if (temp.email === email && temp.verificationCode === verificationCode) {
+				const result = await collection.insertOne(newUser);
+				const result2 = await collection2.insertOne(newUserInfo);
+				
+				const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
+					expiresIn: '1h', 
+				});
+				
+				// Set cookies with the token
+				res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+				res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+				
+				await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
+				
+				const user = await collection2.findOne({ email });
+				
+				res.json({ 
+					message: 'Verification successful', 
+					user: {...user, JWTtoken: undefined} 
+				});
+				
+				await collection3.deleteOne({email});
+			} else {
+				return res.status(401).json({ error: 'Invalid verification code' });
+			}
 		} catch (error) {
 			console.error('Error during verification:', error);
 			res.status(500).json({ error: 'Internal Server Error' });
