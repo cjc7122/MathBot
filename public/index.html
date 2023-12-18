@@ -20,7 +20,6 @@
 		script-src 'self' https://*.googletagmanager.com 'nonce-h6p3V7OqKUW0ZbF9' 'unsafe-inline';
 		img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com;
 		connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
-		script-src-attr 'unsafe-inline';
 	">
 </head>
 
@@ -30,8 +29,10 @@
     <!-- Header Section -->
     <header>
         <div class="header-container">
-            <button id="GetCoin" style="display:none;">Get MathCoins</button>
-            <button id="GoHome" style="display:none;">Go Home</button>
+			<div class="top-left">
+				<button id="GetCoin" style="display:none;">Get MathCoins</button>
+				<button id="GoHome" style="display:none;">Go Home</button>
+			</div>
         </div>
         <div class="header-container centered-section">
             <img src="./Pictures/MathBotLogo.png" alt="MathBot" id="MathBotLogo">
@@ -102,8 +103,8 @@
 			<label for="password2">Re-Type Password:</label>
 			<input type="password" id="password2" name="password2" required><br>
 
-			<button type="button" id="pop-up-register" onclick="register()">Register</button>
-			<button type="button" id="pop-up-closeregister" onclick="closeRegisterPopup()">Close</button>
+			<button type="button" id="pop-up-register">Register</button>
+			<button type="button" id="pop-up-closeregister">Close</button>
 			
 			<label id="EmailDuplicate" style="display:none; color:red">E-Mail is already in use!</label>
 			<label id="PasswordsDifferent" style="display:none; color:red">Passwords do not match!</label>
@@ -118,8 +119,8 @@
 			<label for="verificationCode">Verification Code:</label>
 			<input type="text" id="verificationCode" name="verificationCode" class="code-input" required><br>
 
-			<button type="button" id="pop-up-verify" onclick="Verify()">Verify</button>
-			<button type="button" id="pop-up-closeverify" onclick="closeVerifyPopup()">Close</button>
+			<button type="button" id="pop-up-verify">Verify</button>
+			<button type="button" id="pop-up-closeverify">Close</button>
 			
 			<label id="CodeNoGo" style="display:none; color:red">That code did not match!</label>
 		</div>

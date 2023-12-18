@@ -65,10 +65,9 @@ app.set('trust proxy', 1);
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
-            scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'"],
             imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
             connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
-			scriptSrcAttr: ["'unsafe-inline'"],
         },
     })
 );

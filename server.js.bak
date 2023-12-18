@@ -23,17 +23,13 @@ const port = 10000; // Update with your desired port
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+	serverApi: {
+		version: ServerApiVersion.v1,
+		strict: true,
+		deprecationErrors: true,
+	},
+	maxPoolSize: 10,
 });
-
-let tempVerify = [
-    { email: 'user1', verificationCode: '######' },
-    // Add more users as needed
-];
 
 // Function to process the GPT-3 API response
 const processResponse = (data) => {
@@ -72,31 +68,27 @@ app.use(
             scriptSrc: ["'self'", "https://www.googletagmanager.com", "'nonce-h6p3V7OqKUW0ZbF9'", "'unsafe-inline'"],
             imgSrc: ["'self'", "https://*.google-analytics.com", "https://*.googletagmanager.com"],
             connectSrc: ["'self'", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://*.googletagmanager.com"],
-			scriptSrcAttr: ["'unsafe-inline'"],
         },
     })
 );
 
-// Async function to connect to MongoDB
 async function connectToMongoDB() {
-    try {
-        // Connect the client to the server (optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-    }
+	try {
+		await client.connect();
+		await client.db('admin').command({ ping: 1 });
+	} catch (error) {
+		console.error('Error connecting to MongoDB:', error);
+	}
 }
+
+// Call the connectToMongoDB function when your application starts
+connectToMongoDB();
 
 // Middleware to check if the user is already registered
 const checkDuplicateUser = async (req, res, next) => {
     const { email } = req.body;
 	
 	try {
-		await client.connect();
- 
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUsers");
 		const creds = await collection.findOne( { email: email } );
@@ -106,9 +98,6 @@ const checkDuplicateUser = async (req, res, next) => {
 		}
 	} catch (error) {
         res.status(500).json({ error: 'An error occurred' });
-    } finally {
-        // Ensure that the client will close when you finish/error
-        await client.close();
     }
     next();
 };
@@ -142,8 +131,6 @@ app.post(
 	
 		const { email, password } = req.body;
 		try {
-			await client.connect();
-
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUsers");
 			
@@ -185,9 +172,6 @@ app.post(
 		} catch (error) {
 			console.error('Login error:', error); // Add this line for detailed error logging
 			res.status(500).json({ error: 'An error occurred during login' });
-		} finally {
-			// Ensure that the client will close when you finish/error
-			await client.close();
 		}
 	}
 );
@@ -202,8 +186,6 @@ app.post('/logout', async (req, res) => {
     }
 
     try {
-        // Clear Token out of MongoDB
-        await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
 
@@ -216,9 +198,6 @@ app.post('/logout', async (req, res) => {
         // Clear cookies on logout
         res.clearCookie('email');
         res.clearCookie('firstName');
-        
-        // Ensure that the client will close when you finish/error
-        await client.close();
 
         // Send the response after completing the necessary operations
         return res.json({ message: 'Logout successful' });
@@ -250,41 +229,60 @@ app.post(
 	checkDuplicateUser
 	], 
 	async (req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			return res.status(400).json({ errors: errors.array() });
-		}
-
-		// If there are no validation errors, proceed with sending the verification email
-		const { email } = req.body;
-		const verificationCode = generateVerificationCode();
-		tempVerify.push({ email, verificationCode });
-		console.log(tempVerify);
-
-		// Send verification email
-		const transporter = nodemailer.createTransport({
-			service: 'gmail',
-			auth: {
-				user: 'mail.mathbot@gmail.com',
-				pass: 'ccwk rejs pwwf uysd',
-			},
-		});
-
-		const mailOptions = {
-			from: 'mail.mathbot@gmail.com',
-			to: email,
-			subject: 'Verify Your Email',
-			text: `Your verification code is: ${verificationCode}`,
-		};
-
 		try {
-			const info = await transporter.sendMail(mailOptions);
-			console.log('Email sent:', info.response);
-			res.json({ message: 'Register successful' });
+			const errors = validationResult(req);
+
+			if (!errors.isEmpty()) {
+				return res.status(400).json({ errors: errors.array() });
+			}
+
+			// If there are no validation errors, proceed with sending the verification email
+			const { email } = req.body;
+			const verificationCode = generateVerificationCode();
+			
+			const tempCode = {
+				email: email,
+				verificationCode: verificationCode
+			};
+		 
+			const db = client.db("Mathbot");
+			const collection = db.collection("tempVerify");
+			
+			const check = await collection.findOne({ email });
+			
+			if (check) {
+				await collection.updateOne( { email }, { $set: { verificationCode: [verificationCode] }} );
+			} else {
+				await collection.insertOne(tempCode);
+			}
+
+			// Send verification email
+			const transporter = nodemailer.createTransport({
+				service: 'gmail',
+				auth: {
+					user: 'mail.mathbot@gmail.com',
+					pass: 'ccwk rejs pwwf uysd',
+				},
+			});
+
+			const mailOptions = {
+				from: 'mail.mathbot@gmail.com',
+				to: email,
+				subject: 'Verify Your Email',
+				text: `Your verification code is: ${verificationCode}`,
+			};
+
+			try {
+				const info = await transporter.sendMail(mailOptions);
+				console.log('Email sent:', info.response);
+				res.json({ message: 'Register successful' });
+			} catch (error) {
+				console.error('Error sending email:', error);
+				return res.status(402).json({ error: 'E-Mail failed to send!' });
+			}
 		} catch (error) {
-			console.error('Error sending email:', error);
-			return res.status(402).json({ error: 'E-Mail failed to send!' });
+			console.error('Registration Error');
+			return res.status(403).json({ error: 'Registration Error' });
 		}
 	}
 );
@@ -303,8 +301,6 @@ app.post('/verify', [
     })],
 	async (req, res) => {
 		try {
-			console.log('Verification request received:', req.body);
-
 			const { firstName, lastName, email, password3, verificationCode } = req.body;
 			const password = await bcrypt.hash(password3, saltRounds);
 			const newUser = {
@@ -318,51 +314,42 @@ app.post('/verify', [
 				tokens: 10,
 				ad_free: false
 			};
-			console.log(tempVerify);
-			console.log(email);
-			const matchingEntry = tempVerify.find(
-				entry => entry.email === email && entry.verificationCode === verificationCode
-			);
-			console.log(matchingEntry);
-
-			if (!matchingEntry) {
-				console.log('Invalid verification code');
-				return res.status(401).json({ error: 'Invalid verification code' });
-			}
-
-			// Remove the matching entry from the temporary verification array
-			tempVerify = tempVerify.filter(entry => entry.email !== email);
-		
-			await client.connect();
-	 
+			
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUsers");
 			const collection2 = db.collection("MathbotUserInfo");
-
-			const result = await collection.insertOne(newUser);
-			const result2 = await collection2.insertOne(newUserInfo);
+			const collection3 = db.collection("tempVerify");
 			
-			const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
-				expiresIn: '1h', 
-			});
+			const temp = await collection3.findOne({ email });
 			
-			// Set cookies with the token
-			res.cookie('token', token, { maxAge: 3600000, httpOnly: true, secure });
-			res.cookie('email', email, { maxAge: 3600000, httpOnly: true, secure });
-			
-			await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
-			
-			const user = await collection2.findOne({ email });
-			
-			res.json({ 
-				message: 'Verification successful', 
-				user: {...user, JWTtoken: undefined} 
-			});
+			if (temp.email === email && temp.verificationCode === verificationCode) {
+				const result = await collection.insertOne(newUser);
+				const result2 = await collection2.insertOne(newUserInfo);
+				
+				const token = jwt.sign({ email, firstName }, process.env.JWT_SECRET_KEY, { 
+					expiresIn: '1h', 
+				});
+				
+				// Set cookies with the token
+				res.cookie('token', token, { maxAge: 3600000, httpOnly: true });
+				res.cookie('email', email, { maxAge: 3600000, httpOnly: true });
+				
+				await collection2.updateOne({ email }, { $set: { JWTtoken: [token] } });
+				
+				const user = await collection2.findOne({ email });
+				
+				res.json({ 
+					message: 'Verification successful', 
+					user: {...user, JWTtoken: undefined} 
+				});
+				
+				await collection3.deleteOne({email});
+			} else {
+				return res.status(401).json({ error: 'Invalid verification code' });
+			}
 		} catch (error) {
 			console.error('Error during verification:', error);
 			res.status(500).json({ error: 'Internal Server Error' });
-		} finally {
-			await client.close();
 		}
 	}
 );
@@ -372,7 +359,6 @@ app.post('/solve', async (req, res) => {
     const email = req.cookies.email;
 	
     try {
-        await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
         const user = await collection.findOne({ email: email });
@@ -396,8 +382,6 @@ app.post('/solve', async (req, res) => {
         }
 
         res.status(500).json({ error: 'An error occurred' });
-    } finally {
-        await client.close();
     }
 });
 
@@ -444,7 +428,6 @@ app.post('/watch-ad', async (req, res) => {
     const email = req.cookies.email;
 	
 	try {
-		await client.connect();
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUserInfo");
 		const user = await collection.findOne( { email: email } );
@@ -471,9 +454,6 @@ app.post('/watch-ad', async (req, res) => {
         }
 
         res.status(500).json({ error: 'An error occurred' });
-	} finally {
-		// Ensure that the client will close when you finish/error
-        await client.close();
 	}
 });
 
@@ -488,7 +468,6 @@ app.post('/checkLoggedIn', async (req, res) => {
                 // Token verification failed
                 res.json({ isLoggedIn: false });
             } else {
-				await client.connect();
 				const db = client.db("Mathbot");
 				const collection = db.collection("MathbotUserInfo");
 				const user = await collection.findOne( { email } );
@@ -506,9 +485,6 @@ app.post('/checkLoggedIn', async (req, res) => {
 		});
 	} catch (error) {
 		res.status(500).json({ error: 'Internal Server Error' });
-	} finally {
-		// Ensure that the client will close when you finish/error
-        await client.close();
 	}
 });
 
