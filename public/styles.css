@@ -144,6 +144,7 @@ header label {
 	color: black;
 	margin: 10px;
 	cursor: pointer;
+	margin: -10px;
 }
 
 header #user-info1:hover {
@@ -154,7 +155,6 @@ header #MathCoin {
 	width: 25px;
 	height: 25px;
 	margin: -10px;
-	margin-top: -20px;
 	cursor: pointer;
 }
 
