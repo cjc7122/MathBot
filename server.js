@@ -31,19 +31,6 @@ const client = new MongoClient(uri, {
 	poolSize: 10,
 });
 
-async function connectToMongoDB() {
-	try {
-		await client.connect();
-		await client.db('admin').command({ ping: 1 });
-		console.log('Pinged your deployment. You successfully connected to MongoDB!');
-	} catch (error) {
-		console.error('Error connecting to MongoDB:', error);
-	}
-}
-
-// Call the connectToMongoDB function when your application starts
-connectToMongoDB();
-
 // Function to process the GPT-3 API response
 const processResponse = (data) => {
   const solution =
@@ -85,6 +72,18 @@ app.use(
         },
     })
 );
+
+async function connectToMongoDB() {
+	try {
+		await client.connect();
+		await client.db('admin').command({ ping: 1 });
+	} catch (error) {
+		console.error('Error connecting to MongoDB:', error);
+	}
+}
+
+// Call the connectToMongoDB function when your application starts
+connectToMongoDB();
 
 // Middleware to check if the user is already registered
 const checkDuplicateUser = async (req, res, next) => {
