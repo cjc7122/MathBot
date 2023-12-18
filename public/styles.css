@@ -144,7 +144,7 @@ header label {
 	color: black;
 	margin: 10px;
 	cursor: pointer;
-	margin-top: 0px;
+	margin-top: 10px;
 }
 
 header #user-info1:hover {
