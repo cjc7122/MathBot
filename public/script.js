@@ -484,7 +484,8 @@ function checkLoggedIn() {
 		// Check if user exists and has firstName and tokens properties
 		if (user && user.firstName && user.tokens !== undefined) {
 			const { firstName, tokens } = user;
-
+			isLoggedIn = true;
+			isLoginSuccessful = true;
 			userInfoElement1.textContent = `Hi ${firstName}!`;
 			document.getElementById('MathCoin').style.display = 'block';
 			userInfoElement2.textContent = `:${tokens}`;
