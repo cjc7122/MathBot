@@ -269,9 +269,9 @@ app.post(
 			const check = await collection.findOne({ email });
 			
 			if (check) {
-				await collection.insertOne(tempCode);
-			} else {
 				await collection.updateOne( { email }, { $set: { verificationCode: [verificationCode] }} );
+			} else {
+				await collection.insertOne(tempCode);
 			}
 
 			// Send verification email
