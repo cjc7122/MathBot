@@ -28,7 +28,7 @@ const client = new MongoClient(uri, {
 		strict: true,
 		deprecationErrors: true,
 	},
-	poolSize: 10,
+	maxPoolSize: 10,
 });
 
 // Function to process the GPT-3 API response
