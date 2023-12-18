@@ -23,12 +23,26 @@ const port = 10000; // Update with your desired port
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+	serverApi: {
+		version: ServerApiVersion.v1,
+		strict: true,
+		deprecationErrors: true,
+	},
+	poolSize: 10,
 });
+
+async function connectToMongoDB() {
+	try {
+		await client.connect();
+		await client.db('admin').command({ ping: 1 });
+		console.log('Pinged your deployment. You successfully connected to MongoDB!');
+	} catch (error) {
+		console.error('Error connecting to MongoDB:', error);
+	}
+}
+
+// Call the connectToMongoDB function when your application starts
+connectToMongoDB();
 
 // Function to process the GPT-3 API response
 const processResponse = (data) => {
@@ -72,26 +86,11 @@ app.use(
     })
 );
 
-// Async function to connect to MongoDB
-async function connectToMongoDB() {
-    try {
-        // Connect the client to the server (optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-    }
-}
-
 // Middleware to check if the user is already registered
 const checkDuplicateUser = async (req, res, next) => {
     const { email } = req.body;
 	
 	try {
-		await client.connect();
- 
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUsers");
 		const creds = await collection.findOne( { email: email } );
@@ -101,9 +100,6 @@ const checkDuplicateUser = async (req, res, next) => {
 		}
 	} catch (error) {
         res.status(500).json({ error: 'An error occurred' });
-    } finally {
-        // Ensure that the client will close when you finish/error
-        await client.close();
     }
     next();
 };
@@ -137,8 +133,6 @@ app.post(
 	
 		const { email, password } = req.body;
 		try {
-			await client.connect();
-
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUsers");
 			
@@ -180,9 +174,6 @@ app.post(
 		} catch (error) {
 			console.error('Login error:', error); // Add this line for detailed error logging
 			res.status(500).json({ error: 'An error occurred during login' });
-		} finally {
-			// Ensure that the client will close when you finish/error
-			await client.close();
 		}
 	}
 );
@@ -197,8 +188,6 @@ app.post('/logout', async (req, res) => {
     }
 
     try {
-        // Clear Token out of MongoDB
-        await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
 
@@ -211,9 +200,6 @@ app.post('/logout', async (req, res) => {
         // Clear cookies on logout
         res.clearCookie('email');
         res.clearCookie('firstName');
-        
-        // Ensure that the client will close when you finish/error
-        await client.close();
 
         // Send the response after completing the necessary operations
         return res.json({ message: 'Logout successful' });
@@ -260,8 +246,6 @@ app.post(
 				email: email,
 				verificationCode: verificationCode
 			};
-			
-			await client.connect();
 		 
 			const db = client.db("Mathbot");
 			const collection = db.collection("tempVerify");
@@ -301,8 +285,6 @@ app.post(
 		} catch (error) {
 			console.error('Registration Error');
 			return res.status(403).json({ error: 'Registration Error' });
-		} finally {
-			await client.close();
 		}
 	}
 );
@@ -334,8 +316,6 @@ app.post('/verify', [
 				tokens: 10,
 				ad_free: false
 			};
-			
-			await client.connect();
 			
 			const db = client.db("Mathbot");
 			const collection = db.collection("MathbotUsers");
@@ -372,8 +352,6 @@ app.post('/verify', [
 		} catch (error) {
 			console.error('Error during verification:', error);
 			res.status(500).json({ error: 'Internal Server Error' });
-		} finally {
-			await client.close();
 		}
 	}
 );
@@ -383,7 +361,6 @@ app.post('/solve', async (req, res) => {
     const email = req.cookies.email;
 	
     try {
-        await client.connect();
         const db = client.db("Mathbot");
         const collection = db.collection("MathbotUserInfo");
         const user = await collection.findOne({ email: email });
@@ -407,8 +384,6 @@ app.post('/solve', async (req, res) => {
         }
 
         res.status(500).json({ error: 'An error occurred' });
-    } finally {
-        await client.close();
     }
 });
 
@@ -455,7 +430,6 @@ app.post('/watch-ad', async (req, res) => {
     const email = req.cookies.email;
 	
 	try {
-		await client.connect();
 		const db = client.db("Mathbot");
 		const collection = db.collection("MathbotUserInfo");
 		const user = await collection.findOne( { email: email } );
@@ -482,9 +456,6 @@ app.post('/watch-ad', async (req, res) => {
         }
 
         res.status(500).json({ error: 'An error occurred' });
-	} finally {
-		// Ensure that the client will close when you finish/error
-        await client.close();
 	}
 });
 
@@ -499,7 +470,6 @@ app.post('/checkLoggedIn', async (req, res) => {
                 // Token verification failed
                 res.json({ isLoggedIn: false });
             } else {
-				await client.connect();
 				const db = client.db("Mathbot");
 				const collection = db.collection("MathbotUserInfo");
 				const user = await collection.findOne( { email } );
@@ -517,9 +487,6 @@ app.post('/checkLoggedIn', async (req, res) => {
 		});
 	} catch (error) {
 		res.status(500).json({ error: 'Internal Server Error' });
-	} finally {
-		// Ensure that the client will close when you finish/error
-        await client.close();
 	}
 });
 
